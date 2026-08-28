@@ -38,9 +38,12 @@
   flex-shrink: 0;
 }
 
-.logoTree {
-  width: 40px;
-  height: 40px;
+.logoImg {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-gold-soft);
   flex-shrink: 0;
 }
 

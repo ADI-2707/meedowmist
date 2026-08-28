@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import SectionReveal from '@/components/SectionReveal/SectionReveal';
 import BrushDivider from '@/components/BrushDivider/BrushDivider';
 import styles from './page.module.css';
@@ -26,30 +27,18 @@ export default function OurStoryPage() {
 
         <BrushDivider />
 
-        {/* Tree SVG section */}
+        {/* Tree Emblem Showcase section */}
         <SectionReveal>
           <div className={styles.treeSection}>
-            <div className={styles.svgWrapper} aria-hidden="true">
-              <svg className={styles.treeSvg} viewBox="0 0 200 220" fill="none">
-                <path
-                  className={styles.treePath}
-                  d="M100 200 L100 120 M100 120 C100 120 70 100 60 75 C50 50 65 38 80 50 C72 36 90 28 98 48 C95 32 108 26 114 44 C122 30 138 38 138 62 C138 88 100 120 100 120Z"
-                  stroke="var(--color-gold)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="none"
-                />
-                <path
-                  d="M100 120 C100 120 78 108 68 88 M100 120 C100 120 122 108 132 90"
-                  stroke="var(--color-gold)"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                  opacity="0.5"
-                  className={styles.treePath}
-                />
-                <ellipse cx="100" cy="205" rx="24" ry="4" fill="var(--color-gold)" opacity="0.15"/>
-              </svg>
+            <div className={styles.logoShowcase}>
+              <Image
+                src="/images/logo.jpg"
+                alt="Meadow Mist Official Brand Logo"
+                width={360}
+                height={200}
+                className={styles.logoShowcaseImg}
+                priority
+              />
             </div>
             <blockquote className={styles.pullQuote}>
               <p className={styles.pullQuoteText}>

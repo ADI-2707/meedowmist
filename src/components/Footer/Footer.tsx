@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Footer.module.css';
 
@@ -63,10 +64,15 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         {/* Brand col */}
         <div className={styles.brand}>
-          <div className={styles.brandName}>
-            <span className={styles.brandMeadow}>MEADOW</span>
-            <span className={styles.brandMist}>Mist</span>
-          </div>
+          <Link href="/" className={styles.footerLogoLink}>
+            <Image
+              src="/images/logo.jpg"
+              alt="Meadow Mist Logo"
+              width={140}
+              height={75}
+              className={styles.footerLogoImg}
+            />
+          </Link>
           <p className={styles.tagline}>
             Hand-poured candles &amp; handmade ceramics,<br />
             crafted in small batches with intention.

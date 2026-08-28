@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
@@ -33,14 +34,14 @@ export default function SiteHeader() {
         <div className={`container ${styles.inner}`}>
           {/* Logo */}
           <Link href="/" className={styles.logo} aria-label="Meadow Mist — Home">
-            <svg className={styles.logoTree} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-              <path d="M24 44V28" stroke="var(--color-gold)" strokeWidth="1.5" strokeLinecap="round"/>
-              <path d="M24 28 C24 28 14 22 12 14 C10 6 18 4 22 10 C20 6 26 2 28 8 C30 4 36 6 36 14 C36 22 24 28 24 28Z" fill="var(--color-forest)" opacity="0.85"/>
-              <path d="M24 28 C24 28 16 24 14 18" stroke="var(--color-forest)" strokeWidth="1" strokeLinecap="round" fill="none"/>
-              <path d="M24 28 C24 28 32 24 34 18" stroke="var(--color-forest)" strokeWidth="1" strokeLinecap="round" fill="none"/>
-              <circle cx="24" cy="14" r="2.5" fill="var(--color-gold)" opacity="0.9"/>
-              <path d="M18 44 C18 44 20 42 24 44 C28 46 30 44 30 44" stroke="var(--color-forest)" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.6"/>
-            </svg>
+            <Image
+              src="/images/logo.jpg"
+              alt="Meadow Mist Logo"
+              width={42}
+              height={42}
+              className={styles.logoImg}
+              priority
+            />
             <span className={styles.logoWordmark}>
               <span className={styles.logoMeadow}>MEADOW</span>
               <span className={styles.logoMist}>Mist</span>
