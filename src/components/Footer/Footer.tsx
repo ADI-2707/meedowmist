@@ -1,0 +1,135 @@
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import Link from 'next/link';
+import styles from './Footer.module.css';
+
+const newsletterSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
+
+type NewsletterForm = z.infer<typeof newsletterSchema>;
+
+const NAV_SECTIONS = [
+  {
+    title: 'Shop',
+    links: [
+      { href: '/candles', label: 'All Candles' },
+      { href: '/ceramics', label: 'All Ceramics' },
+      { href: '/candles?badge=bestseller', label: 'Bestsellers' },
+      { href: '/candles?badge=new', label: 'New Arrivals' },
+    ],
+  },
+  {
+    title: 'About',
+    links: [
+      { href: '/our-story', label: 'Our Story' },
+      { href: '/journal', label: 'Journal' },
+      { href: '/contact', label: 'Contact Us' },
+    ],
+  },
+  {
+    title: 'Help',
+    links: [
+      { href: '/journal', label: 'Candle Care Guide' },
+      { href: '/journal', label: 'Gifting Guide' },
+      { href: '/contact', label: 'Returns & Exchanges' },
+    ],
+  },
+];
+
+export default function Footer() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful, isSubmitting },
+    reset,
+  } = useForm<NewsletterForm>({ resolver: zodResolver(newsletterSchema) });
+
+  const onSubmit = async (data: NewsletterForm) => {
+    // Demo: simulate a network call
+    await new Promise((r) => setTimeout(r, 800));
+    console.log('Newsletter signup:', data.email);
+    reset();
+  };
+
+  return (
+    <footer className={styles.footer}>
+      {/* Gold hairline top border */}
+      <div className={styles.topBorder} aria-hidden="true" />
+
+      <div className={`container ${styles.inner}`}>
+        {/* Brand col */}
+        <div className={styles.brand}>
+          <div className={styles.brandName}>
+            <span className={styles.brandMeadow}>MEADOW</span>
+            <span className={styles.brandMist}>Mist</span>
+          </div>
+          <p className={styles.tagline}>
+            Hand-poured candles &amp; handmade ceramics,<br />
+            crafted in small batches with intention.
+          </p>
+
+          {/* Newsletter */}
+          <div className={styles.newsletter}>
+            <p className={styles.newsletterLabel}>Stay in the loop</p>
+            {isSubmitSuccessful ? (
+              <p className={styles.successMsg}>✓ You&apos;re on the list. Thank you!</p>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className={styles.form} noValidate>
+                <div className={styles.inputRow}>
+                  <input
+                    id="footer-newsletter-email"
+                    type="email"
+                    placeholder="your@email.com"
+                    className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                    aria-label="Email address for newsletter"
+                    aria-describedby={errors.email ? 'footer-email-error' : undefined}
+                    {...register('email')}
+                  />
+                  <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                    {isSubmitting ? '…' : 'Subscribe'}
+                  </button>
+                </div>
+                {errors.email && (
+                  <p id="footer-email-error" className={styles.errorMsg} role="alert">
+                    {errors.email.message}
+                  </p>
+                )}
+              </form>
+            )}
+          </div>
+        </div>
+
+        {/* Nav cols */}
+        <div className={styles.navCols}>
+          {NAV_SECTIONS.map((section) => (
+            <nav key={section.title} aria-label={section.title}>
+              <p className={styles.navTitle}>{section.title}</p>
+              <ul className={styles.navList}>
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className={styles.navLink}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className={styles.bottomBar}>
+        <div className="container">
+          <p className={styles.copyright}>
+            © {new Date().getFullYear()} Meadow Mist. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

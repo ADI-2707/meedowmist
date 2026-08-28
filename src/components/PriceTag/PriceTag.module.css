@@ -1,0 +1,21 @@
+.priceTag {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.current {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: -0.01em;
+}
+
+.original {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--color-ink);
+  opacity: 0.45;
+  text-decoration: line-through;
+}
