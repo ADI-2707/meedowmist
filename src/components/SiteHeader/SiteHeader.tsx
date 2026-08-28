@@ -30,12 +30,30 @@ export default function SiteHeader() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
   return (
     <>
+      {/* Mobile backdrop */}
+      <div
+        className={`${styles.mobileBackdrop} ${menuOpen ? styles.mobileBackdropOpen : ''}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
       <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`} role="banner">
         <div className={`container ${styles.inner}`}>
           {/* Logo */}
-          <Link href="/" className={styles.logo} aria-label="Meadow Mist — Home">
+          <Link href="/" className={styles.logo} aria-label="Meadow Mist — Home" onClick={() => setMenuOpen(false)}>
             <Image
               src="/images/logo.jpg"
               alt="Meadow Mist Logo"

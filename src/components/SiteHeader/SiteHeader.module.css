@@ -188,6 +188,24 @@
 .barOpen2 { opacity: 0; transform: scaleX(0); }
 .barOpen3 { transform: translateY(-6.5px) rotate(-45deg); }
 
+/* ---------- Mobile Backdrop Overlay ---------- */
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(33, 43, 27, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 95;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
+.mobileBackdropOpen {
+  opacity: 1;
+  pointer-events: all;
+}
+
 /* ---------- Mobile Menu ---------- */
 .mobileMenu {
   position: absolute;
