@@ -1,0 +1,101 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import Image from 'next/image';
+import styles from './IntroLoader.module.css';
+
+export default function IntroLoader() {
+  const [show, setShow] = useState(true);
+  const [stage, setStage] = useState<'appear' | 'zoom' | 'done'>('appear');
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    // Check if intro has played in this session
+    const hasSeen = sessionStorage.getItem('meadow_mist_intro_seen');
+    if (hasSeen || prefersReduced) {
+      setShow(false);
+      setStage('done');
+      return;
+    }
+
+    // Lock scroll during intro
+    document.body.style.overflow = 'hidden';
+
+    // Step 1: Logo appears & grows slightly
+    const timer1 = setTimeout(() => {
+      setStage('zoom');
+    }, 1600);
+
+    // Step 2: Zoom in & reveal website
+    const timer2 = setTimeout(() => {
+      setStage('done');
+      setShow(false);
+      sessionStorage.setItem('meadow_mist_intro_seen', 'true');
+      document.body.style.overflow = '';
+    }, 2800);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      document.body.style.overflow = '';
+    };
+  }, [prefersReduced]);
+
+  if (!show || stage === 'done') return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className={styles.overlay}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: stage === 'zoom' ? 0 : 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        onClick={() => {
+          setStage('done');
+          setShow(false);
+          document.body.style.overflow = '';
+        }}
+      >
+        {/* Glow backdrop */}
+        <div className={styles.glow} aria-hidden="true" />
+
+        {/* Logo Container */}
+        <motion.div
+          className={styles.logoContainer}
+          initial={{ scale: 0.7, opacity: 0, y: 12 }}
+          animate={
+            stage === 'appear'
+              ? { scale: 1, opacity: 1, y: 0 }
+              : { scale: 22, opacity: 0 }
+          }
+          transition={
+            stage === 'appear'
+              ? { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+              : { duration: 1.1, ease: [0.7, 0, 0.84, 0] }
+          }
+        >
+          <Image
+            src="/images/logo.jpg"
+            alt="Meadow Mist Emblem"
+            width={180}
+            height={180}
+            priority
+            className={styles.logoImg}
+          />
+        </motion.div>
+
+        {/* Brand Tagline */}
+        <motion.p
+          className={styles.tagline}
+          initial={{ opacity: 0, y: 10 }}
+          animate={stage === 'appear' ? { opacity: 0.85, y: 0 } : { opacity: 0, y: -10 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+        >
+          MEADOW MIST
+        </motion.p>
+      </motion.div>
+    </AnimatePresence>
+  );
+}

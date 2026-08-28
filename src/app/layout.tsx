@@ -4,6 +4,8 @@ import { Fraunces, Jost } from 'next/font/google';
 import './globals.css';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import Footer from '@/components/Footer/Footer';
+import IntroLoader from '@/components/IntroLoader/IntroLoader';
+import ScrollProgressBar from '@/components/ScrollProgressBar/ScrollProgressBar';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -40,6 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${jost.variable}`}>
       <body>
+        <IntroLoader />
+        <ScrollProgressBar />
         <SiteHeader />
         <main id="main-content">
           {children}

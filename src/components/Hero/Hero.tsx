@@ -1,12 +1,23 @@
 'use client';
 
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform, type Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const yText = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : -60]);
+  const yImage = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : 80]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.85], [1, prefersReduced ? 1 : 0]);
 
   const containerVariants: Variants = {
     hidden: {},
@@ -25,11 +36,12 @@ export default function Hero() {
   };
 
   return (
-    <section className={styles.hero} aria-labelledby="hero-headline">
-      <div className={`container ${styles.inner}`}>
+    <section ref={sectionRef} className={styles.hero} aria-labelledby="hero-headline">
+      <motion.div className={`container ${styles.inner}`} style={{ opacity: opacityHero }}>
         {/* Text side */}
         <motion.div
           className={styles.textCol}
+          style={{ y: yText }}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -59,6 +71,7 @@ export default function Hero() {
         {/* Product image — floating hero */}
         <motion.div
           className={styles.imageCol}
+          style={{ y: yImage }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -106,7 +119,7 @@ export default function Hero() {
             />
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <motion.div

@@ -1,0 +1,18 @@
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-gold-soft) 50%, var(--color-clay) 100%);
+  transform-origin: 0%;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(180, 144, 63, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    display: none;
+  }
+}
