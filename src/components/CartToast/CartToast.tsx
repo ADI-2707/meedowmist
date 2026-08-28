@@ -34,43 +34,49 @@ export default function CartToast() {
     return () => clearTimeout(timer);
   }, [items]);
 
-  if (!toastItem) return null;
+  const handleViewBag = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    openDrawer();
+    setToastItem(null);
+  };
 
   return (
     <div className={styles.toastContainer}>
       <AnimatePresence mode="wait">
-        <motion.div
-          key={toastItem.id}
-          className={styles.toast}
-          initial={{ opacity: 0, y: -20, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -16, scale: 0.95 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          onClick={openDrawer}
-          role="status"
-          aria-live="polite"
-        >
-          <div className={styles.thumb}>
-            <Image
-              src={toastItem.image}
-              alt={toastItem.name}
-              fill
-              sizes="44px"
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
-          <div className={styles.info}>
-            <p className={styles.statusLine}>
-              <span className={styles.checkIcon}>✓</span> Added to your bag
-            </p>
-            <p className={styles.nameLine}>
-              {toastItem.name} · <span className={styles.price}>₹{toastItem.price.toLocaleString('en-IN')}</span>
-            </p>
-          </div>
-          <button className={styles.viewBtn} onClick={openDrawer}>
-            View Bag →
-          </button>
-        </motion.div>
+        {toastItem && (
+          <motion.div
+            key={toastItem.id}
+            className={styles.toast}
+            initial={{ opacity: 0, x: 60, scale: 0.94 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 120, scale: 0.9, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            onClick={handleViewBag}
+            role="status"
+            aria-live="polite"
+          >
+            <div className={styles.thumb}>
+              <Image
+                src={toastItem.image}
+                alt={toastItem.name}
+                fill
+                sizes="44px"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+            <div className={styles.info}>
+              <p className={styles.statusLine}>
+                <span className={styles.checkIcon}>✓</span> Added to your bag
+              </p>
+              <p className={styles.nameLine}>
+                {toastItem.name} · <span className={styles.price}>₹{toastItem.price.toLocaleString('en-IN')}</span>
+              </p>
+            </div>
+            <button type="button" className={styles.viewBtn} onClick={handleViewBag}>
+              View Bag →
+            </button>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
