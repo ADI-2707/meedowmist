@@ -15,8 +15,8 @@
 /* Organic blob — background decoration */
 .storyBlob {
   position: absolute;
-  width: 500px;
-  height: 500px;
+  width: min(500px, 90vw);
+  height: min(500px, 90vw);
   border-radius: var(--radius-organic);
   background: radial-gradient(ellipse at 40% 50%, rgba(180, 144, 63, 0.1), transparent 70%);
   top: 50%;
@@ -76,10 +76,16 @@
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: var(--color-gold);
-  transition: color var(--duration-fast);
+  transition: color var(--duration-fast), transform var(--duration-fast);
 }
 
-.storyLink:hover { color: var(--color-gold); }
+@media (hover: hover) {
+  .storyLink:hover { color: var(--color-gold); }
+}
+
+@media (hover: none) {
+  .storyLink:active { opacity: 0.8; transform: scale(0.97); }
+}
 
 /* Testimonial */
 .testimonial {

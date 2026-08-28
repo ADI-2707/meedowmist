@@ -25,13 +25,13 @@
   --font-script:   'Beau Rivage', cursive;
   --font-body:     'Jost', system-ui, sans-serif;
 
-  /* --- Type Scale (fluid clamp) --- */
-  --text-display-xl:  clamp(2.75rem, 5vw + 1rem, 5rem);
-  --text-display-lg:  clamp(2rem, 3vw + 1rem, 3.25rem);
-  --text-display-md:  clamp(1.5rem, 1.5vw + 1rem, 2rem);
-  --text-body-lg:     1.125rem;
-  --text-body:        1rem;
-  --text-caption:     0.8125rem;
+  /* --- Type Scale (fluid clamp with media query fallbacks) --- */
+  --text-display-xl:  clamp(2.25rem, 5vw + 0.75rem, 4.75rem);
+  --text-display-lg:  clamp(1.75rem, 3.5vw + 0.65rem, 3.25rem);
+  --text-display-md:  clamp(1.25rem, 2vw + 0.6rem, 2rem);
+  --text-body-lg:     clamp(1rem, 1vw + 0.75rem, 1.125rem);
+  --text-body:        clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+  --text-caption:     clamp(0.75rem, 0.35vw + 0.65rem, 0.8125rem);
 
   /* --- Spacing Scale (4px base) --- */
   --space-1:   4px;
@@ -40,10 +40,10 @@
   --space-4:   16px;
   --space-6:   24px;
   --space-8:   32px;
-  --space-12:  48px;
-  --space-16:  64px;
-  --space-24:  96px;
-  --space-32:  128px;
+  --space-12:  clamp(28px, 4vw, 48px);
+  --space-16:  clamp(40px, 6vw, 64px);
+  --space-24:  clamp(56px, 8vw, 96px);
+  --space-32:  clamp(72px, 10vw, 128px);
 
   /* --- Border Radius --- */
   --radius-sm:      6px;
@@ -71,8 +71,8 @@
 
   /* --- Layout --- */
   --container-max:  1280px;
-  --container-pad:  clamp(var(--space-4), 5vw, var(--space-12));
-  --nav-height:     72px;
+  --container-pad:  clamp(1rem, 4vw, 3rem);
+  --nav-height:     clamp(60px, 7vh, 72px);
 }
 
 /* ==========================================================

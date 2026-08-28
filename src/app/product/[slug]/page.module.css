@@ -6,9 +6,9 @@
 .productGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
+  gap: clamp(var(--space-6), 4vw, var(--space-16));
   align-items: start;
-  padding-block: var(--space-12);
+  padding-block: var(--space-8);
 }
 
 /* Gallery */
@@ -34,8 +34,10 @@
   transition: transform var(--duration-slow) var(--ease-smooth) !important;
 }
 
-.mainImage:hover .img {
-  transform: scale(1.03);
+@media (hover: hover) {
+  .mainImage:hover .img {
+    transform: scale(1.03);
+  }
 }
 
 /* Info panel */

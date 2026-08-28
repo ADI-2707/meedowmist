@@ -18,15 +18,29 @@
   background: none;
   color: var(--color-forest);
   cursor: pointer;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition:
     background-color var(--duration-fast),
     color var(--duration-fast),
-    border-color var(--duration-fast);
+    border-color var(--duration-fast),
+    transform var(--duration-fast);
 }
 
-.filterPill:hover {
-  border-color: var(--color-gold);
-  color: var(--color-gold);
+@media (hover: hover) {
+  .filterPill:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+  }
+}
+
+@media (hover: none) {
+  .filterPill:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
 }
 
 .filterPill.active {
@@ -51,8 +65,8 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(clamp(260px, 28vw, 360px), 1fr));
+  gap: clamp(var(--space-4), 3vw, var(--space-8));
 }
 
 .empty {
@@ -76,13 +90,25 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: var(--space-2);
 }
 
-@media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 560px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 600px) {
+  .filterBar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
+    scrollbar-width: none;
+  }
+  .filterBar::-webkit-scrollbar {
+    display: none;
+  }
+  .filterPill {
+    flex-shrink: 0;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
