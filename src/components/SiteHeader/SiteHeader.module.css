@@ -6,19 +6,13 @@
   z-index: 100;
   height: var(--nav-height);
   background-color: var(--color-canvas);
-  border-bottom: 1px solid transparent;
-  transition:
-    border-color var(--duration-base) var(--ease-smooth),
-    box-shadow var(--duration-base) var(--ease-smooth),
-    background-color var(--duration-base) var(--ease-smooth);
+  border-bottom: none;
 }
 
 .scrolled {
-  background-color: rgba(247, 242, 231, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom-color: var(--color-gold-soft);
-  box-shadow: 0 2px 24px rgba(51, 66, 42, 0.08);
+  background-color: var(--color-canvas);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .inner {
