@@ -20,6 +20,7 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://meadowmist.in'),
   title: {
     default: 'Meadow Mist — Handcrafted Candles & Ceramic Décor',
     template: '%s | Meadow Mist',
