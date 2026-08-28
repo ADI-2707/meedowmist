@@ -75,35 +75,36 @@ export default function ProductCard({ product }: Props) {
       onPointerMove={handlePointerMove}
       onPointerLeave={resetTilt}
     >
-      <Link
-        href={`/product/${product.slug}`}
-        className={styles.cardLink}
-        aria-label={`View ${product.name} — ₹${(product.salePrice ?? product.price).toLocaleString('en-IN')}`}
-      >
-        <div className={styles.inner} ref={innerRef}>
-          {/* Sheen overlay — simulates glaze light */}
-          <div className={styles.sheen} aria-hidden="true" />
+      <div className={styles.inner} ref={innerRef}>
+        {/* Sheen overlay — simulates glaze light */}
+        <div className={styles.sheen} aria-hidden="true" />
 
-          {/* Badge */}
-          {product.badge && (
-            <span className={`${styles.badge} ${styles[`badge-${product.badge}`]}`}>
-              {product.badge === 'bestseller' ? 'Bestseller' : product.badge === 'new' ? 'New' : 'Limited'}
-            </span>
-          )}
+        {/* Badge */}
+        {product.badge && (
+          <span className={`${styles.badge} ${styles[`badge-${product.badge}`]}`}>
+            {product.badge === 'bestseller' ? 'Bestseller' : product.badge === 'new' ? 'New' : 'Limited'}
+          </span>
+        )}
 
-          {/* Wishlist button */}
-          <button
-            className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
-            onClick={handleWishlist}
-            aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
-            aria-pressed={isWishlisted}
-          >
-            <svg viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-            </svg>
-          </button>
+        {/* Wishlist button */}
+        <button
+          type="button"
+          className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
+          onClick={handleWishlist}
+          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+          aria-pressed={isWishlisted}
+        >
+          <svg viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          </svg>
+        </button>
 
-          {/* Product image — lifted layer */}
+        {/* Product image — clickable link */}
+        <Link
+          href={`/product/${product.slug}`}
+          className={styles.imageLink}
+          aria-label={`View ${product.name} — ₹${(product.salePrice ?? product.price).toLocaleString('en-IN')}`}
+        >
           <div className={styles.imageWrapper}>
             <Image
               src={product.images[0]}
@@ -114,70 +115,75 @@ export default function ProductCard({ product }: Props) {
               className={styles.image}
             />
           </div>
+        </Link>
 
-          {/* Card body — stays grounded while image lifts */}
-          <div className={styles.body}>
-            <div className={styles.meta}>
-              {product.scentFamily && (
-                <ScentBadge family={product.scentFamily} colorFamily={product.colorFamily} />
-              )}
-              {product.subCategory && !product.scentFamily && (
-                <ScentBadge family={product.subCategory as 'floral'} colorFamily={product.colorFamily} />
-              )}
-            </div>
+        {/* Card body — stays grounded while image lifts */}
+        <div className={styles.body}>
+          <div className={styles.meta}>
+            {product.scentFamily && (
+              <ScentBadge family={product.scentFamily} colorFamily={product.colorFamily} />
+            )}
+            {product.subCategory && !product.scentFamily && (
+              <ScentBadge family={product.subCategory as 'floral'} colorFamily={product.colorFamily} />
+            )}
+          </div>
 
-            <h3 className={styles.name}>{product.name}</h3>
-            <p className={styles.story}>{product.story.slice(0, 72)}…</p>
+          <h3 className={styles.name}>
+            <Link href={`/product/${product.slug}`} className={styles.titleLink}>
+              {product.name}
+            </Link>
+          </h3>
+          <p className={styles.story}>{product.story.slice(0, 72)}…</p>
 
-            <div className={styles.footer}>
-              <PriceTag price={product.price} salePrice={product.salePrice} />
-              {qty > 0 ? (
-                <div
-                  className={styles.qtyControl}
+          <div className={styles.footer}>
+            <PriceTag price={product.price} salePrice={product.salePrice} />
+            {qty > 0 ? (
+              <div
+                className={styles.qtyControl}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <button
+                  type="button"
+                  className={styles.qtyMinusBtn}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    updateQty(product.id, qty - 1);
                   }}
+                  aria-label={`Decrease quantity of ${product.name}`}
                 >
-                  <button
-                    type="button"
-                    className={styles.qtyMinusBtn}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateQty(product.id, qty - 1);
-                    }}
-                    aria-label={`Decrease quantity of ${product.name}`}
-                  >
-                    −
-                  </button>
-                  <span className={styles.qtyCount}>{qty}</span>
-                  <button
-                    type="button"
-                    className={styles.qtyPlusBtn}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateQty(product.id, qty + 1);
-                    }}
-                    aria-label={`Increase quantity of ${product.name}`}
-                  >
-                    +
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className={styles.addBtn}
-                  onClick={handleAddToCart}
-                  aria-label={`Add ${product.name} to bag`}
-                >
-                  Add to bag
+                  −
                 </button>
-              )}
-            </div>
+                <span className={styles.qtyCount}>{qty}</span>
+                <button
+                  type="button"
+                  className={styles.qtyPlusBtn}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQty(product.id, qty + 1);
+                  }}
+                  aria-label={`Increase quantity of ${product.name}`}
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={styles.addBtn}
+                onClick={handleAddToCart}
+                aria-label={`Add ${product.name} to bag`}
+              >
+                Add to bag
+              </button>
+            )}
           </div>
         </div>
-      </Link>
+      </div>
     </article>
   );
 }

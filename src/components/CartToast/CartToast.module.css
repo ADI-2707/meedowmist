@@ -21,6 +21,8 @@
   color: var(--color-canvas);
   cursor: pointer;
   max-width: 380px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .thumb {
@@ -38,6 +40,8 @@
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .statusLine {
@@ -50,11 +54,15 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .checkIcon {
   font-weight: 900;
   color: var(--color-gold);
+  flex-shrink: 0;
 }
 
 .nameLine {
@@ -64,7 +72,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
+  max-width: 100%;
 }
 
 .price {
@@ -83,6 +91,7 @@
   padding: var(--space-1) var(--space-3);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: background-color var(--duration-fast);
 }
 
@@ -91,12 +100,26 @@
   color: var(--color-forest-deep);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .toastContainer {
     right: 12px;
     left: 12px;
   }
+  
   .toast {
     max-width: 100%;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .thumb {
+    width: 40px;
+    height: 40px;
+  }
+
+  .viewBtn {
+    padding: var(--space-1) var(--space-2);
+    font-size: 0.72rem;
   }
 }
