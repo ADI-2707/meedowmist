@@ -76,11 +76,13 @@
 
 .itemImg {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  max-width: 100px;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-md);
   overflow: hidden;
   background-color: var(--color-canvas-alt);
+  flex-shrink: 0;
 }
 
 .itemInfo {
@@ -273,14 +275,21 @@
     position: static;
   }
   .item {
-    grid-template-columns: 80px 1fr auto;
+    grid-template-columns: 90px 1fr auto;
+    gap: var(--space-4);
+  }
+  .itemImg {
+    max-width: 90px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
   .item {
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 76px 1fr;
     gap: var(--space-3);
+  }
+  .itemImg {
+    max-width: 76px;
   }
   .lineTotal {
     grid-column: 2;
