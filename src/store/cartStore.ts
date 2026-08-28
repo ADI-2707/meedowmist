@@ -38,12 +38,10 @@ export const useCartStore = create<CartStore>()(
             items: state.items.map((i) =>
               i.productId === item.productId ? { ...i, qty: i.qty + 1 } : i
             ),
-            isDrawerOpen: true,
           }));
         } else {
           set((state) => ({
             items: [...state.items, { ...item, qty: 1 }],
-            isDrawerOpen: true,
           }));
         }
       },
