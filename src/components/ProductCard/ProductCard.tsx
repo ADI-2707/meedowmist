@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/types/product';
@@ -18,10 +18,14 @@ export default function ProductCard({ product }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useRef(false);
-  const [isAdded, setIsAdded] = useState(false);
+  const items = useCartStore((s) => s.items);
   const addItem = useCartStore((s) => s.addItem);
+  const updateQty = useCartStore((s) => s.updateQty);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
+
+  const cartItem = items.find((i) => i.productId === product.id);
+  const qty = cartItem?.qty ?? 0;
 
   useEffect(() => {
     prefersReduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -56,8 +60,6 @@ export default function ProductCard({ product }: Props) {
       price: product.salePrice ?? product.price,
       image: product.images[0],
     });
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 2000);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -129,13 +131,49 @@ export default function ProductCard({ product }: Props) {
 
             <div className={styles.footer}>
               <PriceTag price={product.price} salePrice={product.salePrice} />
-              <button
-                className={`${styles.addBtn} ${isAdded ? styles.addedBtn : ''}`}
-                onClick={handleAddToCart}
-                aria-label={isAdded ? `Added ${product.name} to bag` : `Add ${product.name} to bag`}
-              >
-                {isAdded ? '✓ Added' : 'Add to bag'}
-              </button>
+              {qty > 0 ? (
+                <div
+                  className={styles.qtyControl}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <button
+                    type="button"
+                    className={styles.qtyMinusBtn}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateQty(product.id, qty - 1);
+                    }}
+                    aria-label={`Decrease quantity of ${product.name}`}
+                  >
+                    −
+                  </button>
+                  <span className={styles.qtyCount}>{qty}</span>
+                  <button
+                    type="button"
+                    className={styles.qtyPlusBtn}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateQty(product.id, qty + 1);
+                    }}
+                    aria-label={`Increase quantity of ${product.name}`}
+                  >
+                    +
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={styles.addBtn}
+                  onClick={handleAddToCart}
+                  aria-label={`Add ${product.name} to bag`}
+                >
+                  Add to bag
+                </button>
+              )}
             </div>
           </div>
         </div>

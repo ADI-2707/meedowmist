@@ -17,9 +17,44 @@
 }
 
 .btn:hover { background-color: var(--color-gold); transform: translateY(-2px); }
-.btn:active { transform: translateY(0); }
+.qtyPill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-forest);
+  border: 1.5px solid var(--color-forest);
+  border-radius: var(--radius-md);
+  color: var(--color-canvas);
+}
 
-.added {
-  background-color: var(--color-gold) !important;
-  transform: none !important;
+.qtyBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(247, 242, 231, 0.15);
+  color: var(--color-canvas);
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.qtyBtn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-forest-deep);
+}
+
+.qtyLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-canvas);
 }

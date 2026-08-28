@@ -210,11 +210,50 @@
   transform: scale(0.97);
 }
 
-.addedBtn {
-  background-color: var(--color-gold) !important;
-  border-color: var(--color-gold) !important;
-  color: var(--color-canvas) !important;
-  transform: scale(1.05);
+.qtyControl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-forest);
+  border: 1.5px solid var(--color-forest);
+  border-radius: var(--radius-md);
+  padding: 2px 4px;
+  color: var(--color-canvas);
+  gap: var(--space-2);
+}
+
+.qtyMinusBtn,
+.qtyPlusBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(247, 242, 231, 0.15);
+  color: var(--color-canvas);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  border: none;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.qtyMinusBtn:hover,
+.qtyPlusBtn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-forest-deep);
+}
+
+.qtyCount {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--color-canvas);
+  min-width: 18px;
+  text-align: center;
 }
 
 /* Touch device — disable tilt, use scale tap */
