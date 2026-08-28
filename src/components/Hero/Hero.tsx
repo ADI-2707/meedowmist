@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Hero.module.css';
@@ -8,19 +8,19 @@ import styles from './Hero.module.css';
 export default function Hero() {
   const prefersReduced = useReducedMotion();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: { staggerChildren: 0.12, delayChildren: 0.3 },
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: prefersReduced ? 0 : 24 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
     },
   };
 

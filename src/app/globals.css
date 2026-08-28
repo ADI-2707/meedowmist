@@ -142,9 +142,11 @@ h1, h2, h3, h4, h5, h6 {
     scroll-behavior: auto !important;
   }
 
-  /* 3D card tilt disabled entirely */
-  --card-rx: 0deg !important;
-  --card-ry: 0deg !important;
+  /* 3D card tilt disabled entirely — reset via :root */
+  :root {
+    --card-rx: 0deg;
+    --card-ry: 0deg;
+  }
 }
 
 /* ==========================================================

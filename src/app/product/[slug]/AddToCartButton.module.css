@@ -1,0 +1,25 @@
+.btn {
+  width: 100%;
+  padding: var(--space-4) var(--space-8);
+  background-color: var(--color-forest);
+  color: var(--color-canvas);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-base) var(--ease-smooth),
+    transform var(--duration-fast);
+}
+
+.btn:hover { background-color: var(--color-gold); transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.added {
+  background-color: var(--color-gold) !important;
+  transform: none !important;
+}
