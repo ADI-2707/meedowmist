@@ -196,7 +196,8 @@
   transition:
     background-color var(--duration-fast) var(--ease-smooth),
     color var(--duration-fast) var(--ease-smooth),
-    border-color var(--duration-fast) var(--ease-smooth);
+    border-color var(--duration-fast) var(--ease-smooth),
+    transform var(--duration-fast) var(--ease-smooth);
   white-space: nowrap;
 }
 
@@ -207,6 +208,13 @@
 
 .addBtn:active {
   transform: scale(0.97);
+}
+
+.addedBtn {
+  background-color: var(--color-gold) !important;
+  border-color: var(--color-gold) !important;
+  color: var(--color-canvas) !important;
+  transform: scale(1.05);
 }
 
 /* Touch device — disable tilt, use scale tap */

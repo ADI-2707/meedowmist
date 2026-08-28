@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/types/product';
@@ -18,6 +18,7 @@ export default function ProductCard({ product }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useRef(false);
+  const [isAdded, setIsAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
@@ -55,6 +56,8 @@ export default function ProductCard({ product }: Props) {
       price: product.salePrice ?? product.price,
       image: product.images[0],
     });
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -127,11 +130,11 @@ export default function ProductCard({ product }: Props) {
             <div className={styles.footer}>
               <PriceTag price={product.price} salePrice={product.salePrice} />
               <button
-                className={styles.addBtn}
+                className={`${styles.addBtn} ${isAdded ? styles.addedBtn : ''}`}
                 onClick={handleAddToCart}
-                aria-label={`Add ${product.name} to bag`}
+                aria-label={isAdded ? `Added ${product.name} to bag` : `Add ${product.name} to bag`}
               >
-                Add to bag
+                {isAdded ? '✓ Added' : 'Add to bag'}
               </button>
             </div>
           </div>

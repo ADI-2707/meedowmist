@@ -6,6 +6,7 @@ import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import Footer from '@/components/Footer/Footer';
 import IntroLoader from '@/components/IntroLoader/IntroLoader';
 import ScrollProgressBar from '@/components/ScrollProgressBar/ScrollProgressBar';
+import CartToast from '@/components/CartToast/CartToast';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <IntroLoader />
         <ScrollProgressBar />
+        <CartToast />
         <SiteHeader />
         <main id="main-content">
           {children}

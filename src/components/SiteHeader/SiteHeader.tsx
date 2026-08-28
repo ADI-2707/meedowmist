@@ -18,8 +18,10 @@ const NAV_LINKS = [
 export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const items = useCartStore((s) => s.items);
+  const isDrawerOpen = useCartStore((s) => s.isDrawerOpen);
+  const openDrawer = useCartStore((s) => s.openDrawer);
+  const closeDrawer = useCartStore((s) => s.closeDrawer);
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function SiteHeader() {
             <button
               id="cart-button"
               className={styles.cartButton}
-              onClick={() => setCartOpen(true)}
+              onClick={openDrawer}
               aria-label={`Open cart — ${itemCount} item${itemCount !== 1 ? 's' : ''}`}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -109,7 +111,7 @@ export default function SiteHeader() {
         </div>
       </header>
 
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartDrawer open={isDrawerOpen} onClose={closeDrawer} />
     </>
   );
 }
