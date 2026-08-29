@@ -25,6 +25,10 @@
   box-sizing: border-box;
 }
 
+.toastWithoutBtn {
+  cursor: default;
+}
+
 .thumb {
   position: relative;
   width: 44px;
