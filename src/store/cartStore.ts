@@ -120,7 +120,7 @@ export const useCartStore = create<CartStore>()(
       clearToast: () => set({ toast: null }),
 
       openDrawer: () => set({ isDrawerOpen: true }),
-      closeDrawer: () => set({ isDrawerOpen: false }),
+      closeDrawer: () => set({ isDrawerOpen: false, toast: null }),
 
       get itemCount() {
         return get().items.reduce((sum, i) => sum + i.qty, 0);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useCartStore, ToastInfo } from '@/store/cartStore';
@@ -8,24 +8,41 @@ import styles from './CartToast.module.css';
 
 export default function CartToast() {
   const toast = useCartStore((s) => s.toast);
+  const isDrawerOpen = useCartStore((s) => s.isDrawerOpen);
   const openDrawer = useCartStore((s) => s.openDrawer);
+  const clearToast = useCartStore((s) => s.clearToast);
   const [activeToast, setActiveToast] = useState<ToastInfo | null>(null);
+  const prevIsDrawerOpen = useRef(isDrawerOpen);
 
   useEffect(() => {
-    if (!toast) return;
+    if (!toast) {
+      setActiveToast(null);
+      return;
+    }
     setActiveToast(toast);
 
     const timer = setTimeout(() => {
       setActiveToast(null);
+      clearToast();
     }, 4000);
 
     return () => clearTimeout(timer);
-  }, [toast]);
+  }, [toast, clearToast]);
+
+  // If the bag drawer is closed before the default toast disappearing time, dismiss the toast as bag closes
+  useEffect(() => {
+    if (prevIsDrawerOpen.current && !isDrawerOpen) {
+      setActiveToast(null);
+      clearToast();
+    }
+    prevIsDrawerOpen.current = isDrawerOpen;
+  }, [isDrawerOpen, clearToast]);
 
   const handleToastClick = () => {
     if (activeToast?.showViewBag) {
       openDrawer();
       setActiveToast(null);
+      clearToast();
     }
   };
 
@@ -33,6 +50,7 @@ export default function CartToast() {
     e.stopPropagation();
     openDrawer();
     setActiveToast(null);
+    clearToast();
   };
 
   const getStatusText = (action: ToastInfo['action']) => {
