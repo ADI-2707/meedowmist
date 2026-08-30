@@ -186,40 +186,6 @@
   border-radius: var(--radius-lg);
 }
 
-/* Scroll hint */
-.scrollHint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  position: absolute;
-  bottom: var(--space-8);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scrollLine {
-  display: block;
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, var(--color-gold), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-.scrollText {
-  font-family: var(--font-body);
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-gold);
-  opacity: 0.7;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { opacity: 1; transform: scaleY(1); }
-  50% { opacity: 0.4; transform: scaleY(0.8); }
-}
-
 /* Responsive */
 @media (max-width: 900px) {
   .inner {
@@ -283,10 +249,6 @@
   .treePath {
     animation: none;
     stroke-dashoffset: 0;
-  }
-
-  .scrollLine {
-    animation: none;
   }
 
   .ctaPrimary:hover,
