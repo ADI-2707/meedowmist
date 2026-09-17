@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: '/our-story', label: 'Our Story' },
   { href: '/journal', label: 'Journal' },
   { href: '/contact', label: 'Contact' },
+  { href: '/account', label: 'Account' },
 ];
 
 export default function SiteHeader() {
@@ -43,7 +44,6 @@ export default function SiteHeader() {
 
   return (
     <>
-      {/* Mobile backdrop */}
       <div
         className={`${styles.mobileBackdrop} ${menuOpen ? styles.mobileBackdropOpen : ''}`}
         onClick={() => setMenuOpen(false)}
@@ -52,7 +52,6 @@ export default function SiteHeader() {
 
       <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`} role="banner">
         <div className={`container ${styles.inner}`}>
-          {/* Logo */}
           <Link href="/" className={styles.logo} aria-label="Meadow Mist — Home" onClick={() => setMenuOpen(false)}>
             <Image
               src="/images/logo.jpg"
@@ -68,20 +67,27 @@ export default function SiteHeader() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
           <nav className={styles.nav} aria-label="Main navigation">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className={styles.navLink}>
                 {link.label}
               </Link>
             ))}
-            <Link href="/account" className={`${styles.navLink} ${styles.navLinkDisabled}`} aria-disabled="true" tabIndex={-1}>
-              Account
-            </Link>
           </nav>
 
-          {/* Actions */}
           <div className={styles.actions}>
+            <Link
+              href="/account"
+              className={styles.cartButton}
+              aria-label="Account"
+              title="Account"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" width="20" height="20">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </Link>
+
             <button
               id="cart-button"
               className={styles.cartButton}
@@ -98,7 +104,6 @@ export default function SiteHeader() {
               )}
             </button>
 
-            {/* Mobile hamburger */}
             <button
               className={styles.hamburger}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -112,7 +117,6 @@ export default function SiteHeader() {
           </div>
         </div>
 
-        {/* Mobile menu */}
         <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ''}`} aria-hidden={!menuOpen}>
           <nav aria-label="Mobile navigation">
             {NAV_LINKS.map((link) => (
