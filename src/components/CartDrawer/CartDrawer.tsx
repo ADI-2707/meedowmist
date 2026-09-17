@@ -18,7 +18,6 @@ export default function CartDrawer({ open, onClose }: Props) {
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Focus trap & close on Escape
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -35,14 +34,12 @@ export default function CartDrawer({ open, onClose }: Props) {
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className={`${styles.backdrop} ${open ? styles.backdropOpen : ''}`}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
       <aside
         ref={drawerRef}
         className={`${styles.drawer} ${open ? styles.drawerOpen : ''}`}
@@ -94,6 +91,9 @@ export default function CartDrawer({ open, onClose }: Props) {
                       {item.name}
                     </Link>
                     <p className={styles.itemPrice}>₹{item.price.toLocaleString('en-IN')}</p>
+                    {item.selectedFragrance && (
+                      <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>Scent: {item.selectedFragrance}</p>
+                    )}
                     <div className={styles.qtyRow}>
                       <button
                         className={styles.qtyBtn}
@@ -125,9 +125,14 @@ export default function CartDrawer({ open, onClose }: Props) {
               <Link href="/cart" className={styles.viewCart} onClick={onClose}>
                 View full cart
               </Link>
-              <button className={styles.checkoutBtn} disabled aria-disabled="true">
-                Checkout — Coming Soon
-              </button>
+              <Link
+                href="/checkout"
+                className={styles.checkoutBtn}
+                onClick={onClose}
+                style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}
+              >
+                Proceed to Checkout →
+              </Link>
             </div>
           </>
         )}

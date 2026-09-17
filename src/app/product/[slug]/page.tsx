@@ -14,7 +14,8 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -42,9 +43,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <div className={styles.page}>
       <div className="container">
-        {/* Product main layout */}
         <div className={styles.productGrid}>
-          {/* Gallery */}
           <div className={styles.gallery}>
             <div className={styles.mainImage}>
               <Image
@@ -59,9 +58,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Info panel */}
           <div className={styles.info}>
-            {/* Badges */}
             <div className={styles.badgeRow}>
               {product.badge && (
                 <span className={`${styles.badge} ${styles[`badge-${product.badge}`]}`}>
@@ -78,10 +75,8 @@ export default async function ProductPage({ params }: Props) {
 
             <PriceTag price={product.price} salePrice={product.salePrice} />
 
-            {/* Story */}
             <p className={styles.story}>{product.story}</p>
 
-            {/* Scent notes */}
             {product.scentNotes && product.scentNotes.length > 0 && (
               <div className={styles.scentNotes}>
                 <p className={styles.detailLabel}>Scent Notes</p>
@@ -89,7 +84,6 @@ export default async function ProductPage({ params }: Props) {
               </div>
             )}
 
-            {/* Materials */}
             <div className={styles.materials}>
               <p className={styles.detailLabel}>Materials</p>
               <ul className={styles.materialList}>
@@ -99,7 +93,6 @@ export default async function ProductPage({ params }: Props) {
               </ul>
             </div>
 
-            {/* Dimensions */}
             {product.dimensions && (
               <div className={styles.dimensions}>
                 <p className={styles.detailLabel}>Dimensions</p>
@@ -107,7 +100,6 @@ export default async function ProductPage({ params }: Props) {
               </div>
             )}
 
-            {/* The making-of note */}
             <div className={styles.makingOf}>
               <p className={styles.makingOfLabel}>The making of</p>
               <p className={styles.makingOfText}>
@@ -117,14 +109,12 @@ export default async function ProductPage({ params }: Props) {
               </p>
             </div>
 
-            {/* CTA */}
             <div className={styles.ctaRow}>
               <AddToCartButton product={product} />
             </div>
           </div>
         </div>
 
-        {/* Related products */}
         {related.length > 0 && (
           <>
             <BrushDivider />

@@ -12,18 +12,16 @@ export const metadata: Metadata = {
     'Hand-poured soy candles and handmade ceramic home décor, crafted in small batches. Discover our lotus bowls, ribbed pillar candles, trinket boxes, and more.',
 };
 
-export default function HomePage() {
-  const featuredCandles = getFeaturedProducts(3, 'candle');
-  const featuredCeramics = getFeaturedProducts(3, 'ceramic');
+export default async function HomePage() {
+  const featuredCandles = await getFeaturedProducts(3, 'candle');
+  const featuredCeramics = await getFeaturedProducts(3, 'ceramic');
 
   return (
     <>
-      {/* Phase 6: Hero */}
       <Hero />
 
       <BrushDivider />
 
-      {/* Featured Candles */}
       <div className="container">
         <FeaturedCategory
           title="Hand-poured Candles"
@@ -36,7 +34,6 @@ export default function HomePage() {
 
       <BrushDivider />
 
-      {/* Brand Story Strip */}
       <section className={styles.storySection}>
         <div className="container">
           <SectionReveal>
@@ -50,7 +47,7 @@ export default function HomePage() {
                 </h2>
                 <p className={styles.storyBody}>
                   Meadow Mist began as a small experiment — what if everyday objects
-                  could feel as considered as something you&apos;d frame and hang on a wall?
+                  could feel as considered as something you would frame and hang on a wall?
                   The candles are poured in batches of 8. The ceramics are thrown,
                   trimmed, and glazed by one pair of hands. Nothing here is the same twice.
                 </p>
@@ -63,7 +60,6 @@ export default function HomePage() {
 
       <BrushDivider />
 
-      {/* Featured Ceramics */}
       <div className="container">
         <FeaturedCategory
           title="Handmade Ceramics"
@@ -74,14 +70,13 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Testimonial strip */}
       <SectionReveal>
         <section className={styles.testimonial}>
           <div className="container">
             <div className={styles.testimonialInner}>
               <p className={styles.quote}>
                 &ldquo;The black lotus tealight holder is the most beautiful thing
-                I&apos;ve bought this year. It looks like jewellery.&rdquo;
+                I have bought this year. It looks like jewellery.&rdquo;
               </p>
               <p className={styles.quoteAuthor}>— Priya M., Mumbai</p>
             </div>

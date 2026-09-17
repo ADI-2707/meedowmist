@@ -1,19 +1,121 @@
-import productsData from '@/data/products.json';
-import type { Product } from '@/types/product';
+import { prisma } from '@/lib/prisma';
+import type { Product, CustomOptions } from '@/types/product';
+import localProductsData from '@/data/products.json';
 
-// Today: import from local JSON.
-// Future: swap to → await fetch('/api/products') or CMS client call.
-// Every component consuming these functions stays untouched.
+function formatDbProduct(p: {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  price: number;
+  salePrice: number | null;
+  category: string;
+  subCategory: string;
+  images: string;
+  materials: string;
+  dimensions: string | null;
+  badge: string | null;
+  colorFamily: string;
+  scentFamily: string | null;
+  scentNotes: string | null;
+  customOptions: string | null;
+  stockQuantity: number;
+  lowStockThreshold: number;
+  inStock: boolean;
+  isFeatured: boolean;
+  isActive: boolean;
+}): Product {
+  let images: string[] = [];
+  try {
+    images = JSON.parse(p.images);
+  } catch {
+    images = [p.images];
+  }
 
-const products = productsData as Product[];
+  let materials: string[] = [];
+  try {
+    materials = JSON.parse(p.materials);
+  } catch {
+    materials = [p.materials];
+  }
+
+  let scentNotes: string[] = [];
+  try {
+    scentNotes = p.scentNotes ? JSON.parse(p.scentNotes) : [];
+  } catch {
+    scentNotes = [];
+  }
+
+  let customOptions: CustomOptions | null = null;
+  try {
+    customOptions = p.customOptions ? JSON.parse(p.customOptions) : null;
+  } catch {
+    customOptions = null;
+  }
+
+  return {
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    category: p.category as 'candle' | 'ceramic',
+    subCategory: p.subCategory,
+    price: p.price,
+    salePrice: p.salePrice,
+    images,
+    scentFamily: (p.scentFamily as Product['scentFamily']) || null,
+    materials,
+    dimensions: p.dimensions,
+    story: p.description,
+    scentNotes,
+    badge: (p.badge as Product['badge']) || null,
+    colorFamily: p.colorFamily as Product['colorFamily'],
+    inStock: p.inStock && p.stockQuantity > 0,
+    stockQuantity: p.stockQuantity,
+    lowStockThreshold: p.lowStockThreshold,
+    isFeatured: p.isFeatured,
+    isActive: p.isActive,
+    customOptions,
+  };
+}
 
 export async function getProducts(category?: 'candle' | 'ceramic'): Promise<Product[]> {
-  if (!category) return products;
-  return products.filter((p) => p.category === category);
+  try {
+    const whereClause: { isActive: boolean; category?: string } = { isActive: true };
+    if (category) {
+      whereClause.category = category;
+    }
+
+    const items = await prisma.product.findMany({
+      where: whereClause,
+      orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+    });
+
+    if (items.length > 0) {
+      return items.map(formatDbProduct);
+    }
+  } catch (err) {
+    console.error('Failed to query products from DB, falling back to static:', err);
+  }
+
+  const staticItems = localProductsData as unknown as Product[];
+  if (!category) return staticItems;
+  return staticItems.filter((p) => p.category === category);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  return products.find((p) => p.slug === slug) ?? null;
+  try {
+    const item = await prisma.product.findUnique({
+      where: { slug },
+    });
+    if (item && item.isActive) {
+      return formatDbProduct(item);
+    }
+  } catch (err) {
+    console.error('Failed to query product by slug from DB:', err);
+  }
+
+  const staticItems = localProductsData as unknown as Product[];
+  return staticItems.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getRelatedProducts(
@@ -21,21 +123,69 @@ export async function getRelatedProducts(
   category: 'candle' | 'ceramic',
   limit = 3
 ): Promise<Product[]> {
-  return products
+  try {
+    const items = await prisma.product.findMany({
+      where: {
+        category,
+        slug: { not: currentSlug },
+        isActive: true,
+      },
+      take: limit,
+      orderBy: { isFeatured: 'desc' },
+    });
+
+    if (items.length > 0) {
+      return items.map(formatDbProduct);
+    }
+  } catch (err) {
+    console.error('Failed to query related products from DB:', err);
+  }
+
+  const staticItems = localProductsData as unknown as Product[];
+  return staticItems
     .filter((p) => p.slug !== currentSlug && p.category === category)
     .slice(0, limit);
 }
 
-export function getAllSlugs(): string[] {
-  return products.map((p) => p.slug);
+export async function getAllSlugs(): Promise<string[]> {
+  try {
+    const items = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+    });
+    if (items.length > 0) {
+      return items.map((i) => i.slug);
+    }
+  } catch (err) {
+    console.error('Failed to query slugs from DB:', err);
+  }
+
+  const staticItems = localProductsData as unknown as Product[];
+  return staticItems.map((p) => p.slug);
 }
 
-export function getFeaturedProducts(limit = 3, category?: 'candle' | 'ceramic'): Product[] {
-  const filtered = category ? products.filter((p) => p.category === category) : products;
-  // Prefer bestsellers and new badges first
-  const sorted = [...filtered].sort((a, b) => {
-    const rank = { bestseller: 2, new: 1, limited: 1 } as Record<string, number>;
-    return (rank[b.badge ?? ''] ?? 0) - (rank[a.badge ?? ''] ?? 0);
-  });
-  return sorted.slice(0, limit);
+export async function getFeaturedProducts(
+  limit = 3,
+  category?: 'candle' | 'ceramic'
+): Promise<Product[]> {
+  try {
+    const whereClause: { isActive: boolean; category?: string } = { isActive: true };
+    if (category) whereClause.category = category;
+
+    const items = await prisma.product.findMany({
+      where: whereClause,
+      take: limit,
+      orderBy: [{ isFeatured: 'desc' }, { badge: 'desc' }],
+    });
+
+    if (items.length > 0) {
+      return items.map(formatDbProduct);
+    }
+  } catch (err) {
+    console.error('Failed to query featured products from DB:', err);
+  }
+
+  const staticItems = localProductsData as unknown as Product[];
+  const filtered = category ? staticItems.filter((p) => p.category === category) : staticItems;
+  return filtered.slice(0, limit);
 }

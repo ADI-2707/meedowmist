@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
 import styles from './page.module.css';
-import type { Metadata } from 'next';
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -37,6 +36,15 @@ export default function CartPage() {
                   <div className={styles.itemInfo}>
                     <Link href={`/product/${item.slug}`} className={styles.itemName}>{item.name}</Link>
                     <p className={styles.itemPrice}>₹{item.price.toLocaleString('en-IN')}</p>
+                    {item.selectedFragrance && (
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Scent: {item.selectedFragrance}</p>
+                    )}
+                    {item.selectedColor && (
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Shade: {item.selectedColor}</p>
+                    )}
+                    {item.selectedSize && (
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Size: {item.selectedSize}</p>
+                    )}
                     <div className={styles.qtyRow}>
                       <button className={styles.qtyBtn} onClick={() => updateQty(item.productId, item.qty - 1)}>−</button>
                       <span className={styles.qtyNum}>{item.qty}</span>
@@ -58,13 +66,17 @@ export default function CartPage() {
               </div>
               <div className={styles.summaryRow}>
                 <span>Shipping</span>
-                <span>Calculated at checkout</span>
+                <span>{total >= 1499 ? 'FREE' : '₹99 (Free above ₹1,499)'}</span>
               </div>
-              <button className={styles.checkoutBtn} disabled aria-disabled="true">
-                Checkout — Coming Soon
-              </button>
+              <Link
+                href="/checkout"
+                className={styles.checkoutBtn}
+                style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}
+              >
+                Proceed to Checkout →
+              </Link>
               <p className={styles.checkoutNote}>
-                Secure checkout will be available when we launch. Your cart is saved locally.
+                Sign in required at checkout to protect your address and order tracking.
               </p>
               <Link href="/candles" className={styles.continueLink}>← Continue shopping</Link>
             </div>

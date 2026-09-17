@@ -16,7 +16,17 @@
     transform var(--duration-fast);
 }
 
-.btn:hover { background-color: var(--color-gold); transform: translateY(-2px); }
+.btn:hover:not(:disabled) {
+  background-color: var(--color-gold);
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #a0aec0;
+}
+
 .qtyPill {
   display: flex;
   align-items: center;
@@ -57,4 +67,88 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--color-canvas);
+}
+
+.customSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--color-gold-soft);
+  border-radius: var(--radius-md);
+}
+
+.optionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.optionTitle {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-forest);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.pill {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-gold-soft);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  font-size: var(--text-caption);
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.pill:hover {
+  border-color: var(--color-forest);
+}
+
+.pillActive {
+  background-color: var(--color-forest);
+  border-color: var(--color-forest);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.notesInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-gold-soft);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-canvas);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--color-ink);
+}
+
+.notesInput:focus {
+  outline: none;
+  border-color: var(--color-forest);
+}
+
+.stockStatus {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-caption);
+  font-weight: 600;
+}
+
+.lowStock {
+  color: #c53030;
+}
+
+.inStock {
+  color: #2f855a;
 }
