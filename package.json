@@ -2,11 +2,22 @@
   "name": "meedow_mist",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "concurrently -n \"storefront,seller\" -c \"cyan,magenta\" \"npm run dev:storefront\" \"npm run dev:seller\"",
+    "dev:storefront": "npm run dev --workspace=@meadowmist/storefront",
+    "dev:seller": "npm run dev --workspace=@meadowmist/seller",
+    "build": "npm run build --workspaces",
+    "build:storefront": "npm run build --workspace=@meadowmist/storefront",
+    "build:seller": "npm run build --workspace=@meadowmist/seller",
+    "db:push": "npm run db:push --workspace=@meadowmist/database",
+    "db:seed": "npm run db:seed --workspace=@meadowmist/database",
+    "db:studio": "npm run db:studio --workspace=@meadowmist/database",
+    "db:generate": "npm run db:generate --workspace=@meadowmist/database",
+    "lint": "npm run lint --workspaces"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -28,6 +39,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "tsx": "^4.23.13",
