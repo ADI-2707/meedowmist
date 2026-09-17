@@ -10,6 +10,11 @@ export interface CartItem {
   price: number;
   qty: number;
   image: string;
+  category?: 'candle' | 'ceramic';
+  selectedFragrance?: string;
+  selectedColor?: string;
+  selectedSize?: string;
+  customNotes?: string;
 }
 
 export interface ToastInfo {
@@ -48,7 +53,16 @@ export const useCartStore = create<CartStore>()(
         if (existing) {
           set((state) => ({
             items: state.items.map((i) =>
-              i.productId === item.productId ? { ...i, qty: i.qty + 1 } : i
+              i.productId === item.productId
+                ? {
+                    ...i,
+                    qty: i.qty + 1,
+                    selectedFragrance: item.selectedFragrance ?? i.selectedFragrance,
+                    selectedColor: item.selectedColor ?? i.selectedColor,
+                    selectedSize: item.selectedSize ?? i.selectedSize,
+                    customNotes: item.customNotes ?? i.customNotes,
+                  }
+                : i
             ),
           }));
         } else {
