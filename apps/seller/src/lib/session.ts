@@ -27,3 +27,7 @@ export async function getAdminSessionUser(): Promise<TokenPayload | null> {
   if (!payload || payload.role !== 'ADMIN') return null;
   return payload;
 }
+
+export async function getSessionUser(): Promise<TokenPayload | null> {
+  return getAdminSessionUser();
+}
