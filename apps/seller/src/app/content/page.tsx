@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Upload, Plus, Trash2, Save } from 'lucide-react';
-import styles from '../products/products.module.css';
+import { Plus, Trash2, Save, Layers } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import styles from './content.module.css';
 
 interface BannerItem {
   id: string;
@@ -104,7 +105,7 @@ export default function AdminContentPage() {
   const handleCreateBanner = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newBanner.title || !newBanner.imageUrl) {
-      alert('Title and Image are required');
+      alert('Headline and image required');
       return;
     }
 
@@ -114,12 +115,21 @@ export default function AdminContentPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBanner),
       });
+
       if (res.ok) {
-        setNewBanner({ title: '', subtitle: '', badgeText: '', imageUrl: '', linkUrl: '/candles' });
+        setNewBanner({
+          title: '',
+          subtitle: '',
+          badgeText: '',
+          imageUrl: '',
+          linkUrl: '/candles',
+        });
         fetchData();
+      } else {
+        alert('Failed to save banner');
       }
     } catch {
-      alert('Failed to create banner');
+      alert('Error saving banner');
     }
   };
 
@@ -190,33 +200,27 @@ export default function AdminContentPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Store Content Management (CMS)</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Manage homepage banners, brand story copy, and customer FAQs.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Content Management (CMS)"
+        title="Storefront Content"
+        subtitle="Manage homepage billboard banners, artisan brand stories, and customer FAQs."
+      />
 
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--color-canvas-alt)', paddingBottom: '8px' }}>
+      <div className={styles.tabBar}>
         <button
-          className={`${styles.addBtn} ${tab !== 'banners' ? styles.cancelLink : ''}`}
-          style={{ background: tab === 'banners' ? 'var(--color-forest)' : 'none', color: tab === 'banners' ? '#fff' : 'var(--color-forest)' }}
+          className={`${styles.tabBtn} ${tab === 'banners' ? styles.tabBtnActive : ''}`}
           onClick={() => setTab('banners')}
         >
           Homepage Banners
         </button>
         <button
-          className={`${styles.addBtn} ${tab !== 'faqs' ? styles.cancelLink : ''}`}
-          style={{ background: tab === 'faqs' ? 'var(--color-forest)' : 'none', color: tab === 'faqs' ? '#fff' : 'var(--color-forest)' }}
+          className={`${styles.tabBtn} ${tab === 'faqs' ? styles.tabBtnActive : ''}`}
           onClick={() => setTab('faqs')}
         >
-          Frequently Asked Questions (FAQs)
+          Customer FAQs
         </button>
         <button
-          className={`${styles.addBtn} ${tab !== 'about' ? styles.cancelLink : ''}`}
-          style={{ background: tab === 'about' ? 'var(--color-forest)' : 'none', color: tab === 'about' ? '#fff' : 'var(--color-forest)' }}
+          className={`${styles.tabBtn} ${tab === 'about' ? styles.tabBtnActive : ''}`}
           onClick={() => setTab('about')}
         >
           About Us & Brand Story
@@ -224,45 +228,43 @@ export default function AdminContentPage() {
       </div>
 
       {tab === 'banners' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px' }}>
+        <div className={styles.splitGrid}>
           <div>
             <h2 className={styles.sectionTitle}>Active Storefront Banners</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {banners.map((b) => (
-                <div
-                  key={b.id}
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid var(--color-gold-soft)',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    display: 'flex',
-                    gap: '16px',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div style={{ width: '100px', height: '60px', position: 'relative', borderRadius: '4px', overflow: 'hidden' }}>
-                    <Image src={b.imageUrl} alt={b.title} fill style={{ objectFit: 'cover' }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontWeight: 600, color: 'var(--color-forest)' }}>{b.title}</p>
-                    {b.subtitle && <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>{b.subtitle}</p>}
-                    <p style={{ fontSize: '0.75rem', color: 'var(--color-gold)', fontWeight: 600 }}>
-                      Link: {b.linkUrl}
-                    </p>
-                  </div>
-                  <button onClick={() => handleDeleteBanner(b.id)} className={styles.deleteBtn}>
-                    <Trash2 size={14} />
-                  </button>
+            <div className={styles.bannerList}>
+              {banners.length === 0 ? (
+                <div className={styles.card} style={{ textAlign: 'center', opacity: 0.7 }}>
+                  No billboard banners created yet.
                 </div>
-              ))}
+              ) : (
+                banners.map((b) => (
+                  <div key={b.id} className={styles.bannerCard}>
+                    <div className={styles.bannerImgWrap}>
+                      <Image src={b.imageUrl} alt={b.title} fill style={{ objectFit: 'cover' }} />
+                    </div>
+                    <div className={styles.bannerBody}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <p className={styles.bannerTitle}>{b.title}</p>
+                          {b.subtitle && <p className={styles.bannerSub}>{b.subtitle}</p>}
+                          <p className={styles.bannerMeta}>Link: {b.linkUrl}</p>
+                        </div>
+                        <button onClick={() => handleDeleteBanner(b.id)} className={styles.deleteBtn}>
+                          <Trash2 size={13} />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
-          <form onSubmit={handleCreateBanner} className={styles.formCard}>
-            <h2 className={styles.sectionTitle}>+ Add New Banner</h2>
+          <form onSubmit={handleCreateBanner} className={styles.card}>
+            <h2 className={styles.sectionTitle}>Add New Billboard Banner</h2>
             <div className={styles.field}>
-              <label className={styles.label}>Headline *</label>
+              <label className={styles.label}>Banner Headline *</label>
               <input
                 required
                 className={styles.input}
@@ -271,26 +273,26 @@ export default function AdminContentPage() {
                 placeholder="Handcrafted Soy Candles & Ceramic Décor"
               />
             </div>
-            <div className={styles.field} style={{ marginTop: '12px' }}>
+            <div className={styles.field}>
               <label className={styles.label}>Subheading</label>
               <input
                 className={styles.input}
                 value={newBanner.subtitle}
                 onChange={(e) => setNewBanner({ ...newBanner, subtitle: e.target.value })}
-                placeholder="Hand-poured in batches of eight in India"
+                placeholder="Hand-poured in micro-batches in India"
               />
             </div>
-            <div className={styles.field} style={{ marginTop: '12px' }}>
-              <label className={styles.label}>Badge Text (e.g. New Collection)</label>
+            <div className={styles.field}>
+              <label className={styles.label}>Eyebrow Badge (Optional)</label>
               <input
                 className={styles.input}
                 value={newBanner.badgeText}
                 onChange={(e) => setNewBanner({ ...newBanner, badgeText: e.target.value })}
-                placeholder="Spring Release"
+                placeholder="Spring Collection"
               />
             </div>
-            <div className={styles.field} style={{ marginTop: '12px' }}>
-              <label className={styles.label}>Click-Through URL</label>
+            <div className={styles.field}>
+              <label className={styles.label}>Call to Action URL</label>
               <input
                 className={styles.input}
                 value={newBanner.linkUrl}
@@ -299,58 +301,54 @@ export default function AdminContentPage() {
               />
             </div>
 
-            <div style={{ marginTop: '16px' }}>
-              <label className={styles.label}>Banner Image</label>
-              <input type="file" accept="image/*" onChange={handleBannerUpload} style={{ marginTop: '6px' }} />
+            <div className={styles.field}>
+              <label className={styles.label}>Banner Image (Upload)</label>
+              <input type="file" accept="image/*" onChange={handleBannerUpload} />
               {newBanner.imageUrl && (
-                <div style={{ marginTop: '8px', width: '120px', height: '60px', position: 'relative' }}>
+                <div style={{ marginTop: '8px', width: '100%', height: '80px', position: 'relative', borderRadius: '4px', overflow: 'hidden' }}>
                   <Image src={newBanner.imageUrl} alt="Banner Preview" fill style={{ objectFit: 'cover' }} />
                 </div>
               )}
             </div>
 
-            <button type="submit" disabled={uploadingBanner} className={styles.addBtn} style={{ marginTop: '20px' }}>
-              <Plus size={14} style={{ display: 'inline', marginRight: '4px' }} />
-              Save Banner
+            <button type="submit" disabled={uploadingBanner} className={styles.submitBtn}>
+              <Plus size={14} />
+              <span>{uploadingBanner ? 'Uploading...' : 'Save Banner'}</span>
             </button>
           </form>
         </div>
       )}
 
       {tab === 'faqs' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px' }}>
+        <div className={styles.splitGrid}>
           <div>
-            <h2 className={styles.sectionTitle}>Current Store FAQs</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {faqs.map((f) => (
-                <div
-                  key={f.id}
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid var(--color-gold-soft)',
-                    borderRadius: '8px',
-                    padding: '16px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                      <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--color-gold)', fontWeight: 700 }}>
-                        {f.category}
-                      </span>
-                      <p style={{ fontWeight: 600, color: 'var(--color-forest)', margin: '4px 0' }}>{f.question}</p>
-                      <p style={{ fontSize: '0.85rem', lineHeight: 1.5, opacity: 0.85 }}>{f.answer}</p>
-                    </div>
-                    <button onClick={() => handleDeleteFaq(f.id)} className={styles.deleteBtn}>
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
+            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+            <div>
+              {faqs.length === 0 ? (
+                <div className={styles.card} style={{ textAlign: 'center', opacity: 0.7 }}>
+                  No FAQs added yet.
                 </div>
-              ))}
+              ) : (
+                faqs.map((f) => (
+                  <div key={f.id} className={styles.faqItem}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <div>
+                        <span className={styles.faqCat}>{f.category}</span>
+                        <p className={styles.faqQ}>{f.question}</p>
+                        <p className={styles.faqA}>{f.answer}</p>
+                      </div>
+                      <button onClick={() => handleDeleteFaq(f.id)} className={styles.deleteBtn}>
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
-          <form onSubmit={handleCreateFaq} className={styles.formCard}>
-            <h2 className={styles.sectionTitle}>+ Add New FAQ</h2>
+          <form onSubmit={handleCreateFaq} className={styles.card}>
+            <h2 className={styles.sectionTitle}>Add New FAQ Item</h2>
             <div className={styles.field}>
               <label className={styles.label}>Category</label>
               <select
@@ -364,7 +362,7 @@ export default function AdminContentPage() {
                 <option value="Ordering">Ordering & Returns</option>
               </select>
             </div>
-            <div className={styles.field} style={{ marginTop: '12px' }}>
+            <div className={styles.field}>
               <label className={styles.label}>Question *</label>
               <input
                 required
@@ -374,7 +372,7 @@ export default function AdminContentPage() {
                 placeholder="e.g. How do I care for soy wax wicks?"
               />
             </div>
-            <div className={styles.field} style={{ marginTop: '12px' }}>
+            <div className={styles.field}>
               <label className={styles.label}>Answer *</label>
               <textarea
                 required
@@ -385,16 +383,16 @@ export default function AdminContentPage() {
                 placeholder="Explain clearly in friendly artisan tone..."
               />
             </div>
-            <button type="submit" className={styles.addBtn} style={{ marginTop: '20px' }}>
-              <Plus size={14} style={{ display: 'inline', marginRight: '4px' }} />
-              Add FAQ
+            <button type="submit" className={styles.submitBtn}>
+              <Plus size={14} />
+              <span>Add FAQ</span>
             </button>
           </form>
         </div>
       )}
 
       {tab === 'about' && (
-        <form onSubmit={handleSaveAbout} className={styles.formCard} style={{ maxWidth: '700px' }}>
+        <form onSubmit={handleSaveAbout} className={styles.card} style={{ maxWidth: '720px' }}>
           <h2 className={styles.sectionTitle}>Edit Brand Story & Artisan Statement</h2>
 
           <div className={styles.field}>
@@ -406,7 +404,7 @@ export default function AdminContentPage() {
             />
           </div>
 
-          <div className={styles.field} style={{ marginTop: '14px' }}>
+          <div className={styles.field}>
             <label className={styles.label}>Origin & Philosophy (Displayed on Home & Our Story)</label>
             <textarea
               rows={5}
@@ -416,7 +414,7 @@ export default function AdminContentPage() {
             />
           </div>
 
-          <div className={styles.field} style={{ marginTop: '14px' }}>
+          <div className={styles.field}>
             <label className={styles.label}>The Making-Of Note (Displayed on product detail pages)</label>
             <textarea
               rows={4}
@@ -426,9 +424,9 @@ export default function AdminContentPage() {
             />
           </div>
 
-          <button type="submit" disabled={savingAbout} className={styles.addBtn} style={{ marginTop: '20px' }}>
-            <Save size={14} style={{ display: 'inline', marginRight: '6px' }} />
-            {savingAbout ? 'Saving...' : 'Save Story Content'}
+          <button type="submit" disabled={savingAbout} className={styles.submitBtn}>
+            <Save size={14} />
+            <span>{savingAbout ? 'Saving...' : 'Save Story Content'}</span>
           </button>
         </form>
       )}

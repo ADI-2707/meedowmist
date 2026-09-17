@@ -4,6 +4,8 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Truck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import { StockBadge } from '@/components/StockBadge/StockBadge';
 import styles from '../orders.module.css';
 
 interface Props {
@@ -167,14 +169,26 @@ export default function AdminOrderDetailPage({ params }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/orders" style={{ color: 'var(--color-forest)' }}>
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className={styles.title}>Order #{order.orderNumber}</h1>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Order Fulfillment"
+        title={`Order #${order.orderNumber}`}
+        subtitle={`Placed on ${new Date(order.createdAt).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        })}`}
+        actions={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <StockBadge status={order.status.toLowerCase() as any} />
+            <Link href="/orders" className={styles.viewBtn}>
+              <ArrowLeft size={14} style={{ display: 'inline', marginRight: '4px' }} />
+              Back to Orders
+            </Link>
+          </div>
+        }
+      />
 
       <div className={styles.detailGrid}>
         <div>

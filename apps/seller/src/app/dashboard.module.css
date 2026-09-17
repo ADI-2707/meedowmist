@@ -4,61 +4,6 @@
   gap: var(--space-6);
 }
 
-.welcomeRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
-.welcomeTitle {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--color-forest);
-  font-weight: 500;
-}
-
-.welcomeSubtitle {
-  font-size: var(--text-body);
-  color: var(--color-ink);
-  opacity: 0.75;
-}
-
-.actionRow {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.actionBtn {
-  background-color: var(--color-forest);
-  color: #ffffff;
-  padding: 10px 18px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  font-size: var(--text-caption);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color var(--duration-fast);
-}
-
-.actionBtn:hover {
-  background-color: var(--color-gold);
-}
-
-.actionBtnSecondary {
-  background-color: #ffffff;
-  color: var(--color-forest);
-  border: 1px solid var(--color-gold-soft);
-}
-
-.actionBtnSecondary:hover {
-  background-color: var(--color-canvas-alt);
-}
-
 .alertBanner {
   background-color: #fffaf0;
   border: 1px solid #fbd38d;
@@ -86,47 +31,8 @@
 
 .metricsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
-}
-
-.metricCard {
-  background-color: #ffffff;
-  border: 1px solid var(--color-gold-soft);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.metricHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--color-forest);
-}
-
-.metricLabel {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-gold);
-  font-weight: 600;
-}
-
-.metricVal {
-  font-family: var(--font-display);
-  font-size: 1.85rem;
-  font-weight: 600;
-  color: var(--color-forest);
-}
-
-.metricNote {
-  font-size: 0.75rem;
-  color: var(--color-ink);
-  opacity: 0.75;
 }
 
 .lowerGrid {
@@ -146,7 +52,7 @@
   border: 1px solid var(--color-gold-soft);
   border-radius: var(--radius-md);
   padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(33, 43, 27, 0.04);
 }
 
 .cardHeader {
@@ -172,8 +78,15 @@
   text-decoration: underline;
 }
 
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .table {
   width: 100%;
+  min-width: 500px;
   border-collapse: collapse;
   font-size: var(--text-caption);
 }
@@ -217,36 +130,30 @@
   color: var(--color-forest);
 }
 
-.statusPill {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  font-size: 0.7rem;
+.actionBtn {
+  background-color: var(--color-forest);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: var(--text-caption);
   font-weight: 600;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color var(--duration-fast);
 }
 
-.pillPending {
-  background-color: #fefcbf;
-  color: #744210;
+.actionBtn:hover {
+  background-color: var(--color-gold);
 }
 
-.pillProcessing {
-  background-color: #e2e8f0;
-  color: #2d3748;
+.actionBtnSecondary {
+  background-color: #ffffff;
+  color: var(--color-forest);
+  border: 1px solid var(--color-gold-soft);
 }
 
-.pillShipped {
-  background-color: #bee3f8;
-  color: #2b6cb0;
-}
-
-.pillDelivered {
-  background-color: #c6f6d5;
-  color: #22543d;
-}
-
-.pillCancelled {
-  background-color: #fed7d7;
-  color: #742a2a;
+.actionBtnSecondary:hover {
+  background-color: var(--color-canvas-alt);
 }

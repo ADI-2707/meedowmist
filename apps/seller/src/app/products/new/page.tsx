@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Upload, ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
 import styles from '../products.module.css';
 
 export default function NewProductPage() {
@@ -127,14 +128,17 @@ export default function NewProductPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/products" style={{ color: 'var(--color-forest)' }}>
-            <ArrowLeft size={20} />
+      <PageHeader
+        eyebrow="Product Catalog"
+        title="Add New Handcrafted Product"
+        subtitle="Publish a new candle or ceramic piece to the store catalog."
+        actions={
+          <Link href="/products" className={styles.editBtn}>
+            <ArrowLeft size={14} />
+            <span>Back to Products</span>
           </Link>
-          <h1 className={styles.title}>Add New Handcrafted Product</h1>
-        </div>
-      </div>
+        }
+      />
 
       <form onSubmit={handleSubmit} className={styles.formCard}>
         <div className={styles.formSection}>

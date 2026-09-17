@@ -112,3 +112,13 @@
   color: var(--color-forest);
   text-decoration: underline;
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .card {
+    padding: var(--space-5);
+  }
+}

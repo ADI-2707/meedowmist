@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Upload, ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
 import styles from '../../products.module.css';
 
 interface Props {
@@ -204,14 +205,17 @@ export default function EditProductPage({ params }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/products" style={{ color: 'var(--color-forest)' }}>
-            <ArrowLeft size={20} />
+      <PageHeader
+        eyebrow="Product Catalog"
+        title={`Edit Product: ${name}`}
+        subtitle="Update pricing, photography, dimensions, and custom scent notes."
+        actions={
+          <Link href="/products" className={styles.editBtn}>
+            <ArrowLeft size={14} />
+            <span>Back to Products</span>
           </Link>
-          <h1 className={styles.title}>Edit Product: {name}</h1>
-        </div>
-      </div>
+        }
+      />
 
       <form onSubmit={handleSubmit} className={styles.formCard}>
         <div className={styles.formSection}>

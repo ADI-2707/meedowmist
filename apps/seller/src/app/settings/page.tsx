@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Save } from 'lucide-react';
-import styles from '../products/products.module.css';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import styles from './settings.module.css';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Meadow Mist');
@@ -74,23 +75,20 @@ export default function AdminSettingsPage() {
   };
 
   if (loading) {
-    return <div>Loading store settings...</div>;
+    return <div className={styles.container}>Loading store settings...</div>;
   }
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Store Settings & Shipping Rules</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Configure delivery fees, free shipping qualifying thresholds, and Cash on Delivery options.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Configuration"
+        title="Store & Shipping Settings"
+        subtitle="Manage merchant contact details, courier flat rates, free shipping rules, and payment gateways."
+      />
 
-      <form onSubmit={handleSave} className={styles.formCard} style={{ maxWidth: '640px' }}>
+      <form onSubmit={handleSave} className={styles.formCard}>
         <div className={styles.formSection}>
-          <h2 className={styles.sectionTitle}>1. Store Profile</h2>
+          <h2 className={styles.sectionTitle}>1. Store Profile & Brand</h2>
           <div className={styles.field}>
             <label className={styles.label}>Brand Name</label>
             <input
@@ -100,8 +98,8 @@ export default function AdminSettingsPage() {
             />
           </div>
 
-          <div className={styles.field} style={{ marginTop: '12px' }}>
-            <label className={styles.label}>Support & Contact Email</label>
+          <div className={styles.field}>
+            <label className={styles.label}>Support & Concierge Email</label>
             <input
               type="email"
               className={styles.input}
@@ -110,7 +108,7 @@ export default function AdminSettingsPage() {
             />
           </div>
 
-          <div className={styles.field} style={{ marginTop: '12px' }}>
+          <div className={styles.field}>
             <label className={styles.label}>Support Phone / WhatsApp</label>
             <input
               className={styles.input}
@@ -121,7 +119,7 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className={styles.formSection}>
-          <h2 className={styles.sectionTitle}>2. Domestic Delivery & Shipping Fees</h2>
+          <h2 className={styles.sectionTitle}>2. Logistics & Delivery Surcharges</h2>
 
           <div className={styles.field}>
             <label className={styles.label}>Standard Shipping Charge (₹)</label>
@@ -133,8 +131,8 @@ export default function AdminSettingsPage() {
             />
           </div>
 
-          <div className={styles.field} style={{ marginTop: '12px' }}>
-            <label className={styles.label}>Free Delivery Threshold (₹)</label>
+          <div className={styles.field}>
+            <label className={styles.label}>Free Delivery Order Threshold (₹)</label>
             <input
               type="number"
               className={styles.input}
@@ -145,21 +143,23 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className={styles.formSection}>
-          <h2 className={styles.sectionTitle}>3. Payment Options</h2>
+          <h2 className={styles.sectionTitle}>3. Payment Modes</h2>
 
-          <div className={styles.field} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+          <div className={styles.checkboxField}>
             <input
               type="checkbox"
               id="codEnabled"
               checked={codEnabled}
               onChange={(e) => setCodEnabled(e.target.checked)}
             />
-            <label htmlFor="codEnabled" style={{ cursor: 'pointer' }}>Enable Cash on Delivery (COD)</label>
+            <label htmlFor="codEnabled" style={{ cursor: 'pointer', fontSize: '0.88rem' }}>
+              Accept Cash on Delivery (COD)
+            </label>
           </div>
 
           {codEnabled && (
-            <div className={styles.field} style={{ marginTop: '12px' }}>
-              <label className={styles.label}>Extra COD Handling Fee (₹, 0 for free COD)</label>
+            <div className={styles.field}>
+              <label className={styles.label}>Extra COD Handling Convenience Fee (₹, 0 for Free COD)</label>
               <input
                 type="number"
                 className={styles.input}
@@ -170,9 +170,9 @@ export default function AdminSettingsPage() {
           )}
         </div>
 
-        <button type="submit" disabled={saving} className={styles.addBtn} style={{ marginTop: '16px' }}>
-          <Save size={14} style={{ display: 'inline', marginRight: '6px' }} />
-          {saving ? 'Saving...' : 'Save Settings'}
+        <button type="submit" disabled={saving} className={styles.submitBtn}>
+          <Save size={15} />
+          <span>{saving ? 'Saving...' : 'Save Settings'}</span>
         </button>
       </form>
     </div>

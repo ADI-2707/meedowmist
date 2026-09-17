@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Mail, Phone, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
 import styles from '../orders/orders.module.css';
 
 interface EnquiryItem {
@@ -74,14 +75,11 @@ export default function AdminEnquiriesPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Customer Enquiries & Messages</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Messages received from the contact page, custom candle requests, and wholesale inquiries.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Support & Messages"
+        title="Customer Enquiries"
+        subtitle="Inbound requests from storefront contact forms, bespoke candle orders, and artisan partnerships."
+      />
 
       <div className={styles.filterBar}>
         <select

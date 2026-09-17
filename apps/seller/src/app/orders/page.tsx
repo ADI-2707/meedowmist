@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Eye } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import { StockBadge, BadgeStatus } from '@/components/StockBadge/StockBadge';
 import styles from './orders.module.css';
 
 interface OrderItem {
@@ -53,16 +55,31 @@ export default function AdminOrdersPage() {
     fetchOrders();
   };
 
+  const mapStatusToBadge = (status: string): BadgeStatus => {
+    switch (status.toUpperCase()) {
+      case 'PENDING':
+        return 'pending';
+      case 'PROCESSING':
+      case 'CONFIRMED':
+        return 'confirmed';
+      case 'SHIPPED':
+        return 'shipped';
+      case 'DELIVERED':
+        return 'delivered';
+      case 'CANCELLED':
+        return 'cancelled';
+      default:
+        return 'pending';
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Orders & Fulfillment</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Process customer orders, assign couriers, generate tracking, and handle returns.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Orders & Fulfillment"
+        eyebrow="Order Lifecycle"
+        subtitle="Process incoming orders, assign couriers, generate tracking numbers, and handle customer returns."
+      />
 
       <div className={styles.filterBar}>
         <form onSubmit={handleSearchSubmit} style={{ display: 'flex', flex: 1, gap: '8px' }}>
@@ -115,17 +132,7 @@ export default function AdminOrdersPage() {
             </thead>
             <tbody>
               {orders.map((o) => {
-                const totalQty = o.items.reduce((sum, i) => sum + i.quantity, 0);
-                const statusClass =
-                  o.status === 'DELIVERED'
-                    ? styles.pillDelivered
-                    : o.status === 'SHIPPED'
-                    ? styles.pillShipped
-                    : o.status === 'PROCESSING'
-                    ? styles.pillProcessing
-                    : o.status === 'CANCELLED'
-                    ? styles.pillCancelled
-                    : styles.pillPending;
+                const totalQty = o.items.reduce((sum, item) => sum + item.quantity, 0);
 
                 return (
                   <tr key={o.id}>
@@ -161,7 +168,7 @@ export default function AdminOrdersPage() {
                       </span>
                     </td>
                     <td>
-                      <span className={`${styles.statusPill} ${statusClass}`}>{o.status}</span>
+                      <StockBadge status={mapStatusToBadge(o.status)} label={o.status} />
                     </td>
                     <td>
                       <Link href={`/orders/${o.id}`} className={styles.viewBtn}>

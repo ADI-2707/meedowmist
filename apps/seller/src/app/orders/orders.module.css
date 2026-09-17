@@ -53,12 +53,14 @@
   background-color: #ffffff;
   border: 1px solid var(--color-gold-soft);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow-sm);
 }
 
 .table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: var(--text-caption);
 }

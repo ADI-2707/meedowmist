@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Flame, Layers, AlertCircle, RefreshCw } from 'lucide-react';
+import { Flame, Layers, AlertCircle, RefreshCw, IndianRupee } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import { StatCard } from '@/components/StatCard/StatCard';
+import { StockBadge } from '@/components/StockBadge/StockBadge';
 import styles from './inventory.module.css';
 
 interface ProductInventory {
@@ -126,52 +129,45 @@ export default function AdminInventoryPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Inventory & Candle Stock</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Real-time batch stock management, candle counters, and inventory audit trail.
-          </p>
-        </div>
-
-        <button onClick={fetchData} className={styles.saveBtn} style={{ padding: '8px 16px' }}>
-          <RefreshCw size={14} style={{ display: 'inline', marginRight: '6px' }} />
-          Refresh Stock
-        </button>
-      </div>
+      <PageHeader
+        eyebrow="Stock & Warehousing"
+        title="Inventory & Candle Stock"
+        subtitle="Real-time batch stock management, candle counters, and inventory audit trail."
+        actions={
+          <button onClick={fetchData} className={styles.refreshBtn}>
+            <RefreshCw size={15} />
+            <span>Refresh Counts</span>
+          </button>
+        }
+      />
 
       {summary && (
         <div className={styles.summaryGrid}>
-          <div className={styles.summaryCard}>
-            <span className={styles.summaryLabel}>Total Candles in Stock</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Flame size={24} color="var(--color-gold)" />
-              <span className={styles.summaryVal}>{summary.totalCandles}</span>
-            </div>
-          </div>
-
-          <div className={styles.summaryCard}>
-            <span className={styles.summaryLabel}>Total Ceramics in Stock</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Layers size={24} color="var(--color-clay)" />
-              <span className={styles.summaryVal}>{summary.totalCeramics}</span>
-            </div>
-          </div>
-
-          <div className={styles.summaryCard}>
-            <span className={styles.summaryLabel}>Inventory Valuation</span>
-            <span className={styles.summaryVal}>₹{summary.totalInventoryValue.toLocaleString('en-IN')}</span>
-          </div>
-
-          <div className={styles.summaryCard}>
-            <span className={styles.summaryLabel}>Low Stock Warnings</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <AlertCircle size={24} color="#dd6b20" />
-              <span className={styles.summaryVal} style={{ color: summary.lowStockCount > 0 ? '#dd6b20' : undefined }}>
-                {summary.lowStockCount}
-              </span>
-            </div>
-          </div>
+          <StatCard
+            label="Candles in Stock"
+            value={`${summary.totalCandles} units`}
+            icon={<Flame size={20} />}
+            subtext="Artisanal hand-poured inventory"
+          />
+          <StatCard
+            label="Ceramics in Stock"
+            value={`${summary.totalCeramics} units`}
+            icon={<Layers size={20} />}
+            subtext="Handmade ceramic pots & vessels"
+          />
+          <StatCard
+            label="Inventory Valuation"
+            value={`₹${summary.totalInventoryValue.toLocaleString('en-IN')}`}
+            icon={<IndianRupee size={20} />}
+            subtext="Total warehoused retail value"
+          />
+          <StatCard
+            label="Low Stock Alerts"
+            value={summary.lowStockCount}
+            icon={<AlertCircle size={20} />}
+            subtext={summary.lowStockCount > 0 ? 'Requires immediate restock' : 'Stock levels healthy'}
+            highlight={summary.lowStockCount > 0}
+          />
         </div>
       )}
 
@@ -210,147 +206,171 @@ export default function AdminInventoryPage() {
 
       <div className={styles.tableCard}>
         {loading ? (
-          <div style={{ padding: '32px', textAlign: 'center' }}>Loading inventory...</div>
+          <div className={styles.emptyState}>Loading inventory items...</div>
+        ) : products.length === 0 ? (
+          <div className={styles.emptyState}>No products found for the selected filter.</div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Category</th>
-                <th>Current Stock</th>
-                <th>Threshold</th>
-                <th>Inline Adjustment</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => {
-                const currentEdit = editingStock[p.id] ?? p.stockQuantity;
-                const isChanged = currentEdit !== p.stockQuantity;
+          <div className={styles.tableResponsive}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Status</th>
+                  <th>Threshold</th>
+                  <th>Batch Adjustment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => {
+                  const currentEdit = editingStock[p.id] ?? p.stockQuantity;
+                  const isChanged = currentEdit !== p.stockQuantity;
+                  const isOut = p.stockQuantity === 0;
+                  const isLow = !isOut && p.stockQuantity <= p.lowStockThreshold;
 
-                return (
-                  <tr key={p.id}>
-                    <td>
-                      <Link href={`/products/${p.id}/edit`} style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>
-                        {p.name}
-                      </Link>
-                    </td>
-                    <td style={{ textTransform: 'capitalize' }}>{p.category}</td>
-                    <td>
-                      <span
-                        style={{
-                          fontWeight: 700,
-                          color: p.stockQuantity === 0 ? '#c53030' : p.stockQuantity <= p.lowStockThreshold ? '#dd6b20' : '#2f855a',
-                        }}
-                      >
-                        {p.stockQuantity} pieces
-                      </span>
-                    </td>
-                    <td>Alert below {p.lowStockThreshold}</td>
-                    <td>
-                      <div className={styles.stockControl}>
-                        <button
-                          type="button"
-                          className={styles.stepperBtn}
-                          onClick={() => handleStockChange(p.id, -5)}
-                          title="-5"
+                  return (
+                    <tr key={p.id}>
+                      <td>
+                        <Link href={`/products/${p.id}/edit`} className={styles.productLink}>
+                          {p.name}
+                        </Link>
+                      </td>
+                      <td style={{ textTransform: 'capitalize' }}>{p.category}</td>
+                      <td>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: isOut ? '#c53030' : isLow ? '#dd6b20' : 'var(--color-forest)',
+                          }}
                         >
-                          -5
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.stepperBtn}
-                          onClick={() => handleStockChange(p.id, -1)}
-                          title="-1"
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          className={styles.stockInput}
-                          value={currentEdit}
-                          onChange={(e) => handleStockInput(p.id, e.target.value)}
+                          {p.stockQuantity} pcs
+                        </span>
+                      </td>
+                      <td>
+                        <StockBadge
+                          status={isOut ? 'out-of-stock' : isLow ? 'low-stock' : 'in-stock'}
                         />
+                      </td>
+                      <td style={{ opacity: 0.8 }}>Alert &lt; {p.lowStockThreshold}</td>
+                      <td>
+                        <div className={styles.stockControl}>
+                          <button
+                            type="button"
+                            className={styles.stepperBtn}
+                            onClick={() => handleStockChange(p.id, -5)}
+                            title="-5 units"
+                          >
+                            -5
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.stepperBtn}
+                            onClick={() => handleStockChange(p.id, -1)}
+                            title="-1 unit"
+                          >
+                            -
+                          </button>
+                          <input
+                            type="number"
+                            className={styles.stockInput}
+                            value={currentEdit}
+                            onChange={(e) => handleStockInput(p.id, e.target.value)}
+                          />
+                          <button
+                            type="button"
+                            className={styles.stepperBtn}
+                            onClick={() => handleStockChange(p.id, 1)}
+                            title="+1 unit"
+                          >
+                            +
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.stepperBtn}
+                            onClick={() => handleStockChange(p.id, 5)}
+                            title="+5 units"
+                          >
+                            +5
+                          </button>
+                        </div>
+                      </td>
+                      <td>
                         <button
-                          type="button"
-                          className={styles.stepperBtn}
-                          onClick={() => handleStockChange(p.id, 1)}
-                          title="+1"
+                          onClick={() => handleSaveStock(p.id)}
+                          disabled={savingId === p.id || !isChanged}
+                          className={styles.saveBtn}
+                          style={{ opacity: !isChanged ? 0.4 : 1 }}
                         >
-                          +
+                          {savingId === p.id ? 'Saving...' : 'Save'}
                         </button>
-                        <button
-                          type="button"
-                          className={styles.stepperBtn}
-                          onClick={() => handleStockChange(p.id, 5)}
-                          title="+5"
-                        >
-                          +5
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => handleSaveStock(p.id)}
-                        disabled={savingId === p.id || !isChanged}
-                        className={styles.saveBtn}
-                        style={{ opacity: !isChanged ? 0.4 : 1 }}
-                      >
-                        {savingId === p.id ? 'Saving...' : 'Save'}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
       <div className={styles.logSection}>
-        <h2 className={styles.sectionTitle}>Recent Stock Adjustment Audit Logs</h2>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Product</th>
-              <th>Change</th>
-              <th>New Level</th>
-              <th>Reason</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.slice(0, 15).map((log) => (
-              <tr key={log.id}>
-                <td>
-                  {new Date(log.createdAt).toLocaleString('en-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </td>
-                <td style={{ fontWeight: 600 }}>{log.product?.name || 'Item'}</td>
-                <td
-                  style={{
-                    fontWeight: 700,
-                    color: log.changeQuantity > 0 ? '#2f855a' : '#c53030',
-                  }}
-                >
-                  {log.changeQuantity > 0 ? `+${log.changeQuantity}` : log.changeQuantity}
-                </td>
-                <td style={{ fontWeight: 600 }}>{log.newQuantity}</td>
-                <td>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gold)' }}>
-                    {log.reason}
-                  </span>
-                </td>
-                <td style={{ opacity: 0.8 }}>{log.note || '—'}</td>
+        <h2 className={styles.sectionTitle}>Stock Adjustment Audit Logs</h2>
+        <div className={styles.tableResponsive}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Product</th>
+                <th>Change</th>
+                <th>New Balance</th>
+                <th>Reason</th>
+                <th>Notes</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {logs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '24px', opacity: 0.7 }}>
+                    No audit records yet.
+                  </td>
+                </tr>
+              ) : (
+                logs.slice(0, 15).map((log) => (
+                  <tr key={log.id}>
+                    <td>
+                      {new Date(log.createdAt).toLocaleString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </td>
+                    <td style={{ fontWeight: 600, color: 'var(--color-forest)' }}>
+                      {log.product?.name || 'Item'}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: 700,
+                        color: log.changeQuantity > 0 ? '#2f855a' : '#c53030',
+                      }}
+                    >
+                      {log.changeQuantity > 0 ? `+${log.changeQuantity}` : log.changeQuantity}
+                    </td>
+                    <td style={{ fontWeight: 600 }}>{log.newQuantity}</td>
+                    <td>
+                      <span className={styles.reasonPill}>
+                        {log.reason.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td style={{ opacity: 0.8 }}>{log.note || '—'}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

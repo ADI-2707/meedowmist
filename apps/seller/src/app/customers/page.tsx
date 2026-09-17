@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Users, Mail, Phone, ShoppingBag, Heart } from 'lucide-react';
-import styles from '../orders/orders.module.css';
+import { Users, Mail, Phone, ShoppingBag, Heart, IndianRupee } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader/PageHeader';
+import { StatCard } from '@/components/StatCard/StatCard';
+import styles from './customers.module.css';
 
 interface CustomerItem {
   id: string;
@@ -46,22 +48,44 @@ export default function AdminCustomersPage() {
       (c.phone && c.phone.includes(searchTerm))
   );
 
+  const totalRegistered = customers.length;
+  const totalOrders = customers.reduce((sum, c) => sum + c.totalOrders, 0);
+  const totalSpend = customers.reduce((sum, c) => sum + c.lifetimeSpend, 0);
+
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Registered Customers</h1>
-          <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Customer profiles, order frequency, lifetime spend, and delivery locations.
-          </p>
-        </div>
+      <PageHeader
+        eyebrow="Clientele"
+        title="Registered Customers"
+        subtitle="Customer directory, order frequency, lifetime revenue, and shipping addresses."
+      />
+
+      <div className={styles.metricsGrid}>
+        <StatCard
+          label="Registered Clients"
+          value={`${totalRegistered} buyers`}
+          icon={<Users size={20} />}
+          subtext="Total unique authenticated accounts"
+        />
+        <StatCard
+          label="Cumulative Orders"
+          value={`${totalOrders} orders`}
+          icon={<ShoppingBag size={20} />}
+          subtext="Total orders placed by clientele"
+        />
+        <StatCard
+          label="Lifetime Spend"
+          value={`₹${totalSpend.toLocaleString('en-IN')}`}
+          icon={<IndianRupee size={20} />}
+          subtext="Total gross customer value"
+        />
       </div>
 
       <div className={styles.filterBar}>
         <input
           type="text"
           className={styles.searchInput}
-          placeholder="Search by customer name, email, or phone number..."
+          placeholder="Search by customer name, email address, or mobile number..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -69,80 +93,84 @@ export default function AdminCustomersPage() {
 
       <div className={styles.tableCard}>
         {loading ? (
-          <div style={{ padding: '32px', textAlign: 'center' }}>Loading customer directory...</div>
+          <div className={styles.emptyState}>Loading customer directory...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center' }}>No customers found.</div>
+          <div className={styles.emptyState}>No registered customers match your search.</div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Contact</th>
-                <th>Primary Location</th>
-                <th>Orders</th>
-                <th>Lifetime Spend</th>
-                <th>Wishlist</th>
-                <th>Registered</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((c) => (
-                <tr key={c.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '50%',
-                          backgroundColor: 'var(--color-gold-soft)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 700,
-                          color: 'var(--color-forest)',
-                        }}
-                      >
-                        {c.name.charAt(0).toUpperCase()}
-                      </div>
-                      <span style={{ fontWeight: 600, color: 'var(--color-forest)' }}>{c.name}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <p style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Mail size={12} /> {c.email}
-                    </p>
-                    {c.phone && (
-                      <p style={{ fontSize: '0.75rem', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Phone size={12} /> {c.phone}
-                      </p>
-                    )}
-                  </td>
-                  <td>{c.primaryAddress}</td>
-                  <td>
-                    <span style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <ShoppingBag size={12} /> {c.totalOrders}
-                    </span>
-                  </td>
-                  <td style={{ fontWeight: 700, color: 'var(--color-forest)' }}>
-                    ₹{c.lifetimeSpend.toLocaleString('en-IN')}
-                  </td>
-                  <td>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.8 }}>
-                      <Heart size={12} /> {c.wishlistCount}
-                    </span>
-                  </td>
-                  <td>
-                    {new Date(c.createdAt).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </td>
+          <div className={styles.tableResponsive}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Customer Profile</th>
+                  <th>Contact Details</th>
+                  <th>Primary Address</th>
+                  <th>Total Orders</th>
+                  <th>Lifetime Spend</th>
+                  <th>Saved Wishlist</th>
+                  <th>Join Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((c) => (
+                  <tr key={c.id}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className={styles.avatar}>
+                          {c.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <span className={styles.customerName}>{c.name}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className={styles.contactLine}>
+                        <Mail size={13} />
+                        <span>{c.email}</span>
+                      </div>
+                      {c.phone && (
+                        <div className={styles.contactLineSecondary}>
+                          <Phone size={12} />
+                          <span>{c.phone}</span>
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--color-ink)' }}>
+                        {c.primaryAddress}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.orderCount}>
+                        <ShoppingBag size={13} />
+                        <span>{c.totalOrders}</span>
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.spendAmount}>
+                        ₹{c.lifetimeSpend.toLocaleString('en-IN')}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.wishlistCount}>
+                        <Heart size={13} color="var(--color-gold)" />
+                        <span>{c.wishlistCount}</span>
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.78rem', opacity: 0.8 }}>
+                        {new Date(c.createdAt).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
