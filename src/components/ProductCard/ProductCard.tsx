@@ -36,9 +36,9 @@ export default function ProductCard({ product }: Props) {
     const rect = cardRef.current.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);   // -1 to +1
-    const dy = (e.clientY - cy) / (rect.height / 2);  // -1 to +1
-    const rx = dy * -6;   // max 6° tilt
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    const rx = dy * -6;
     const ry = dx * 6;
     innerRef.current.style.setProperty('--card-rx', `${rx}deg`);
     innerRef.current.style.setProperty('--card-ry', `${ry}deg`);
@@ -59,6 +59,7 @@ export default function ProductCard({ product }: Props) {
       name: product.name,
       price: product.salePrice ?? product.price,
       image: product.images[0],
+      category: product.category,
     });
   };
 
@@ -76,17 +77,14 @@ export default function ProductCard({ product }: Props) {
       onPointerLeave={resetTilt}
     >
       <div className={styles.inner} ref={innerRef}>
-        {/* Sheen overlay — simulates glaze light */}
         <div className={styles.sheen} aria-hidden="true" />
 
-        {/* Badge */}
         {product.badge && (
           <span className={`${styles.badge} ${styles[`badge-${product.badge}`]}`}>
             {product.badge === 'bestseller' ? 'Bestseller' : product.badge === 'new' ? 'New' : 'Limited'}
           </span>
         )}
 
-        {/* Wishlist button */}
         <button
           type="button"
           className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
@@ -99,7 +97,6 @@ export default function ProductCard({ product }: Props) {
           </svg>
         </button>
 
-        {/* Product image — clickable link */}
         <Link
           href={`/product/${product.slug}`}
           className={styles.imageLink}
@@ -117,7 +114,6 @@ export default function ProductCard({ product }: Props) {
           </div>
         </Link>
 
-        {/* Card body — stays grounded while image lifts */}
         <div className={styles.body}>
           <div className={styles.meta}>
             {product.scentFamily && (
