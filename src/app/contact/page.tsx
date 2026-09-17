@@ -23,9 +23,19 @@ export default function ContactPage() {
   } = useForm<ContactForm>({ resolver: zodResolver(contactSchema) });
 
   const onSubmit = async (data: ContactForm) => {
-    await new Promise((r) => setTimeout(r, 1000));
-    console.log('Contact form:', data);
-    reset();
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        throw new Error('Submission failed');
+      }
+      reset();
+    } catch {
+      alert('Failed to send enquiry. Please try again.');
+    }
   };
 
   return (
@@ -36,7 +46,7 @@ export default function ContactPage() {
             <p className={styles.eyebrow}>Get in Touch</p>
             <h1 className={styles.title}>Contact Us</h1>
             <p className={styles.subtitle}>
-              Questions about an order, wholesale inquiries, or just want to say hello —
+              Questions about an order, wholesale inquiries, or custom candles —
               we read every message and reply within 2 business days.
             </p>
           </div>
@@ -48,7 +58,7 @@ export default function ContactPage() {
               <div className={styles.success}>
                 <p className={styles.successEmoji}>✦</p>
                 <h2 className={styles.successTitle}>Message sent.</h2>
-                <p className={styles.successBody}>We&apos;ll be in touch within 2 business days.</p>
+                <p className={styles.successBody}>We will be in touch within 2 business days.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className={styles.form} noValidate>
@@ -64,7 +74,7 @@ export default function ContactPage() {
                 </div>
                 <div className={styles.field}>
                   <label htmlFor="contact-message" className={styles.label}>Message</label>
-                  <textarea id="contact-message" className={`${styles.textarea} ${errors.message ? styles.inputError : ''}`} placeholder="Tell us what's on your mind…" rows={6} {...register('message')} />
+                  <textarea id="contact-message" className={`${styles.textarea} ${errors.message ? styles.inputError : ''}`} placeholder="Tell us what is on your mind…" rows={6} {...register('message')} />
                   {errors.message && <p className={styles.error} role="alert">{errors.message.message}</p>}
                 </div>
                 <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
