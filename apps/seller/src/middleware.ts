@@ -5,7 +5,12 @@ import { verifyToken, ADMIN_COOKIE_NAME } from '@meadowmist/shared';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/_next') || pathname.startsWith('/images') || pathname.startsWith('/favicon.ico')) {
+  if (
+    pathname.startsWith('/api/auth/login') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/images') ||
+    pathname.startsWith('/favicon.ico')
+  ) {
     return NextResponse.next();
   }
 
@@ -22,11 +27,17 @@ export async function middleware(request: NextRequest) {
 
   const adminToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
   if (!adminToken) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   const payload = await verifyToken(adminToken);
   if (!payload || payload.role !== 'ADMIN') {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
