@@ -18,7 +18,8 @@
     "db:studio": "npm run db:studio --workspace=@meadowmist/database",
     "db:generate": "npm run db:generate --workspace=@meadowmist/database",
     "typecheck": "tsc --noEmit --project apps/storefront/tsconfig.json && tsc --noEmit --project apps/seller/tsconfig.json && tsc --noEmit --project packages/database/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint --workspaces",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -36,6 +37,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@testing-library/react": "16.3.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -43,8 +45,10 @@
     "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
+    "jsdom": "26.0.0",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "3.2.7"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
