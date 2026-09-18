@@ -14,23 +14,33 @@
 }
 
 .sidebarCollapsed {
-  width: 76px;
+  width: 72px;
 }
 
 .brand {
-  padding: var(--space-5) var(--space-4);
+  height: 64px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  overflow: hidden;
-  height: 72px;
+  justify-content: space-between;
+  padding: 0 14px;
+  position: relative;
   box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  min-width: 0;
 }
 
 .brandLogo {
   border-radius: 50%;
   flex-shrink: 0;
+  display: block;
 }
 
 .brandText {
@@ -38,12 +48,11 @@
   flex-direction: column;
   white-space: nowrap;
   overflow: hidden;
-  transition: opacity 0.2s ease, width 0.2s ease;
 }
 
 .brandName {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   letter-spacing: 0.04em;
   color: #ffffff;
   line-height: 1.2;
@@ -56,10 +65,71 @@
   color: var(--color-gold);
 }
 
+.topCollapseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  flex-shrink: 0;
+}
+
+.topCollapseBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--color-gold);
+}
+
+.sidebarCollapsed .brand {
+  padding: 0;
+  justify-content: center;
+}
+
+.sidebarCollapsed .brandLink {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.sidebarCollapsed .brandLogo {
+  margin: 0 auto;
+}
+
+.sidebarCollapsed .topCollapseBtn {
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid var(--color-gold-soft);
+  color: var(--color-forest);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 60;
+  padding: 0;
+}
+
+.sidebarCollapsed .topCollapseBtn:hover {
+  background: var(--color-canvas-alt);
+  border-color: var(--color-gold);
+  color: var(--color-forest-deep);
+  transform: translateY(-50%) scale(1.08);
+}
+
 .nav {
   display: flex;
   flex-direction: column;
-  padding: var(--space-4) var(--space-2);
+  padding: var(--space-3) var(--space-2);
   gap: 6px;
   flex: 1;
   overflow-y: auto;
@@ -69,6 +139,7 @@
 .nav::-webkit-scrollbar {
   width: 4px;
 }
+
 .nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
@@ -110,6 +181,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
 .navLabel {
@@ -117,12 +190,34 @@
   transition: opacity 0.2s ease;
 }
 
+.sidebarCollapsed .nav {
+  padding: var(--space-3) 0;
+  align-items: center;
+}
+
+.sidebarCollapsed .navLink {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.sidebarCollapsed .navIcon {
+  margin: 0 auto;
+}
+
 .sidebarFooter {
-  padding: var(--space-3) var(--space-2);
+  padding: 12px 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.sidebarCollapsed .sidebarFooter {
+  padding: 12px 0;
+  align-items: center;
 }
 
 .viewStoreBtn {
@@ -147,25 +242,12 @@
   color: var(--color-forest-deep);
 }
 
-.collapseToggleBtn {
-  display: flex;
-  align-items: center;
+.sidebarCollapsed .viewStoreBtn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0 auto;
   justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: var(--text-caption);
-  transition: all var(--duration-fast);
-}
-
-.collapseToggleBtn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .backdrop {
@@ -201,6 +283,10 @@
     justify-content: space-between;
   }
 
+  .topCollapseBtn {
+    display: none;
+  }
+
   .mobileCloseBtn {
     display: flex;
     align-items: center;
@@ -216,10 +302,6 @@
   .mobileCloseBtn:hover {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.1);
-  }
-
-  .collapseToggleBtn {
-    display: none;
   }
 
   .backdrop {

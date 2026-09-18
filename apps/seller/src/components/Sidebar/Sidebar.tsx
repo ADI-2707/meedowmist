@@ -73,13 +73,14 @@ export function Sidebar({
           <Link
             href="/"
             onClick={onCloseMobile}
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}
+            className={styles.brandLink}
+            title={collapsed && !mobileOpen ? 'Meadow Mist Seller Portal' : undefined}
           >
             <Image
               src="/images/logo.jpg"
               alt="Meadow Mist"
-              width={36}
-              height={36}
+              width={34}
+              height={34}
               className={styles.brandLogo}
             />
             {(!collapsed || mobileOpen) && (
@@ -89,6 +90,16 @@ export function Sidebar({
               </div>
             )}
           </Link>
+
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className={styles.topCollapseBtn}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={16} />}
+          </button>
 
           <button
             type="button"
@@ -137,16 +148,6 @@ export function Sidebar({
             <ExternalLink size={14} />
             {(!collapsed || mobileOpen) && <span>View Storefront</span>}
           </a>
-
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className={styles.collapseToggleBtn}
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-            {!collapsed && <span>Collapse Sidebar</span>}
-          </button>
         </div>
       </aside>
     </>
