@@ -68,6 +68,7 @@ describe('Seller Portal Middleware', () => {
     vi.mocked(shared.verifyToken).mockResolvedValue({
       userId: 'u1',
       email: 'user@test.com',
+      name: 'User',
       role: 'CUSTOMER',
     });
 
@@ -86,6 +87,7 @@ describe('Seller Portal Middleware', () => {
     vi.mocked(shared.verifyToken).mockResolvedValue({
       userId: 'admin_1',
       email: 'admin@meadowmist.in',
+      name: 'Admin',
       role: 'ADMIN',
     });
 

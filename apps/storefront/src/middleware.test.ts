@@ -76,6 +76,7 @@ describe('Storefront Middleware', () => {
     vi.mocked(shared.verifyToken).mockResolvedValue({
       userId: 'user_123',
       email: 'buyer@example.com',
+      name: 'Buyer',
       role: 'CUSTOMER',
     });
 

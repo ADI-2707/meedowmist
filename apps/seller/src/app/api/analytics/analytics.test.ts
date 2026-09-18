@@ -44,32 +44,33 @@ describe('Seller Analytics API Route', () => {
     vi.mocked(getAdminSessionUser).mockResolvedValue({
       userId: 'admin_1',
       email: 'artisan@meadowmist.in',
+      name: 'Artisan',
       role: 'ADMIN',
     });
 
-    vi.mocked(prisma.order.aggregate).mockResolvedValue({
+    (prisma.order.aggregate as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue({
       _sum: { totalAmount: 48500 },
-    } as unknown as ReturnType<typeof prisma.order.aggregate>);
+    });
 
-    vi.mocked(prisma.order.count)
+    (prisma.order.count as unknown as { mockResolvedValueOnce: (v: unknown) => { mockResolvedValueOnce: (v: unknown) => void } })
       .mockResolvedValueOnce(35)
       .mockResolvedValueOnce(2);
 
-    vi.mocked(prisma.order.groupBy).mockResolvedValue([
+    (prisma.order.groupBy as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([
       { status: 'PENDING', _count: { status: 5 } },
       { status: 'PROCESSING', _count: { status: 10 } },
       { status: 'DELIVERED', _count: { status: 18 } },
-    ] as unknown as ReturnType<typeof prisma.order.groupBy>);
+    ]);
 
-    vi.mocked(prisma.product.count)
+    (prisma.product.count as unknown as { mockResolvedValueOnce: (v: unknown) => { mockResolvedValueOnce: (v: unknown) => void } })
       .mockResolvedValueOnce(24)
       .mockResolvedValueOnce(1);
 
-    vi.mocked(prisma.product.aggregate)
-      .mockResolvedValueOnce({ _sum: { stockQuantity: 120 } } as unknown as ReturnType<typeof prisma.product.aggregate>)
-      .mockResolvedValueOnce({ _sum: { stockQuantity: 45 } } as unknown as ReturnType<typeof prisma.product.aggregate>);
+    (prisma.product.aggregate as unknown as { mockResolvedValueOnce: (v: unknown) => { mockResolvedValueOnce: (v: unknown) => void } })
+      .mockResolvedValueOnce({ _sum: { stockQuantity: 120 } })
+      .mockResolvedValueOnce({ _sum: { stockQuantity: 45 } });
 
-    vi.mocked(prisma.product.findMany)
+    (prisma.product.findMany as unknown as { mockResolvedValueOnce: (v: unknown) => { mockResolvedValueOnce: (v: unknown) => void } })
       .mockResolvedValueOnce([
         {
           id: 'p_low',
@@ -78,7 +79,7 @@ describe('Seller Analytics API Route', () => {
           stockQuantity: 3,
           lowStockThreshold: 5,
         },
-      ] as unknown as ReturnType<typeof prisma.product.findMany>)
+      ])
       .mockResolvedValueOnce([
         {
           id: 'p_top',
@@ -87,16 +88,16 @@ describe('Seller Analytics API Route', () => {
           category: 'candle',
           stockQuantity: 15,
         },
-      ] as unknown as ReturnType<typeof prisma.product.findMany>);
+      ]);
 
-    vi.mocked(prisma.orderItem.groupBy).mockResolvedValue([
+    (prisma.orderItem.groupBy as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([
       {
         productId: 'p_top',
         _sum: { quantity: 18, lineTotal: 16182 },
       },
-    ] as unknown as ReturnType<typeof prisma.orderItem.groupBy>);
+    ]);
 
-    vi.mocked(prisma.order.findMany).mockResolvedValue([
+    (prisma.order.findMany as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([
       {
         id: 'o_1',
         orderNumber: 'MM-2026-1001',
@@ -108,7 +109,7 @@ describe('Seller Analytics API Route', () => {
         items: [{ quantity: 2 }],
         user: { name: 'Pooja', email: 'pooja@test.com' },
       },
-    ] as unknown as ReturnType<typeof prisma.order.findMany>);
+    ]);
 
     const res = await GET();
     expect(res.status).toBe(200);

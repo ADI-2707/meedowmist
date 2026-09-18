@@ -44,6 +44,7 @@ describe('Place Order API Route', () => {
     vi.mocked(getSessionUser).mockResolvedValue({
       userId: 'user_1',
       email: 'ananya@example.com',
+      name: 'Ananya',
       role: 'CUSTOMER',
     });
 
@@ -63,6 +64,7 @@ describe('Place Order API Route', () => {
     vi.mocked(getSessionUser).mockResolvedValue({
       userId: 'user_1',
       email: 'ananya@example.com',
+      name: 'Ananya',
       role: 'CUSTOMER',
     });
 
@@ -85,6 +87,7 @@ describe('Place Order API Route', () => {
     vi.mocked(getSessionUser).mockResolvedValue({
       userId: 'user_1',
       email: 'ananya@example.com',
+      name: 'Ananya',
       role: 'CUSTOMER',
     });
 
@@ -124,6 +127,7 @@ describe('Place Order API Route', () => {
     vi.mocked(getSessionUser).mockResolvedValue({
       userId: 'user_1',
       email: 'ananya@example.com',
+      name: 'Ananya',
       role: 'CUSTOMER',
     });
 

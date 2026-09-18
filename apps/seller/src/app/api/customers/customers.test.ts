@@ -39,6 +39,7 @@ describe('Seller Customers API Route', () => {
     vi.mocked(getAdminSessionUser).mockResolvedValue({
       userId: 'admin_1',
       email: 'artisan@meadowmist.in',
+      name: 'Artisan',
       role: 'ADMIN',
     });
 
@@ -54,14 +55,13 @@ describe('Seller Customers API Route', () => {
       _count: { orders: 3, wishlistItems: 4 },
     };
 
-    vi.mocked(prisma.user.findMany).mockResolvedValue([mockCustomer] as unknown as ReturnType<typeof prisma.user.findMany>);
-
-    vi.mocked(prisma.order.groupBy).mockResolvedValue([
+    (prisma.user.findMany as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([mockCustomer]);
+    (prisma.order.groupBy as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([
       {
         userId: 'cust_1',
         _sum: { totalAmount: 4500 },
       },
-    ] as unknown as ReturnType<typeof prisma.order.groupBy>);
+    ]);
 
     const req = new Request('http://localhost:3001/api/customers?page=1&limit=20');
     const res = await GET(req);
@@ -89,12 +89,13 @@ describe('Seller Customers API Route', () => {
     vi.mocked(getAdminSessionUser).mockResolvedValue({
       userId: 'admin_1',
       email: 'artisan@meadowmist.in',
+      name: 'Artisan',
       role: 'ADMIN',
     });
 
     vi.mocked(prisma.user.count).mockResolvedValue(1);
-    vi.mocked(prisma.user.findMany).mockResolvedValue([]);
-    vi.mocked(prisma.order.groupBy).mockResolvedValue([]);
+    (prisma.user.findMany as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([]);
+    (prisma.order.groupBy as unknown as { mockResolvedValue: (v: unknown) => void }).mockResolvedValue([]);
 
     const req = new Request('http://localhost:3001/api/customers?search=Rhea');
     await GET(req);
