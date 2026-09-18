@@ -3,6 +3,19 @@ import { prisma } from '@/lib/prisma';
 import { comparePassword } from '@/lib/password';
 import { signToken } from '@/lib/auth';
 import { setSessionCookie } from '@/lib/session';
+import {
+  checkLoginAttempt,
+  recordFailedAttempt,
+  resetFailedAttempts,
+} from '@meadowmist/shared';
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return request.headers.get('x-real-ip') || '127.0.0.1';
+}
 
 export async function POST(request: Request) {
   try {
@@ -16,12 +29,45 @@ export async function POST(request: Request) {
       );
     }
 
+    const ip = getClientIp(request);
     const normalizedEmail = String(email).trim().toLowerCase();
+
+    const check = checkLoginAttempt(ip, normalizedEmail);
+    if (!check.allowed) {
+      return NextResponse.json(
+        {
+          error: `Account temporarily locked due to repeated failed login attempts. Please try again in ${check.remainingSeconds} seconds.`,
+          remainingSeconds: check.remainingSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(check.remainingSeconds),
+          },
+        }
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
 
     if (!user || !user.isActive) {
+      const failure = recordFailedAttempt(ip, normalizedEmail);
+      if (!failure.allowed) {
+        return NextResponse.json(
+          {
+            error: `Account temporarily locked due to repeated failed login attempts. Please try again in ${failure.remainingSeconds} seconds.`,
+            remainingSeconds: failure.remainingSeconds,
+          },
+          {
+            status: 429,
+            headers: {
+              'Retry-After': String(failure.remainingSeconds),
+            },
+          }
+        );
+      }
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -30,11 +76,28 @@ export async function POST(request: Request) {
 
     const isValid = await comparePassword(password, user.passwordHash);
     if (!isValid) {
+      const failure = recordFailedAttempt(ip, normalizedEmail);
+      if (!failure.allowed) {
+        return NextResponse.json(
+          {
+            error: `Account temporarily locked due to repeated failed login attempts. Please try again in ${failure.remainingSeconds} seconds.`,
+            remainingSeconds: failure.remainingSeconds,
+          },
+          {
+            status: 429,
+            headers: {
+              'Retry-After': String(failure.remainingSeconds),
+            },
+          }
+        );
+      }
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
+
+    resetFailedAttempts(ip, normalizedEmail);
 
     const token = await signToken({
       userId: user.id,
