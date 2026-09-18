@@ -50,29 +50,29 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (item) => {
         const existing = get().items.find((i) => i.productId === item.productId);
+        let updatedItems: CartItem[];
         if (existing) {
-          set((state) => ({
-            items: state.items.map((i) =>
-              i.productId === item.productId
-                ? {
-                    ...i,
-                    qty: i.qty + 1,
-                    selectedFragrance: item.selectedFragrance ?? i.selectedFragrance,
-                    selectedColor: item.selectedColor ?? i.selectedColor,
-                    selectedSize: item.selectedSize ?? i.selectedSize,
-                    customNotes: item.customNotes ?? i.customNotes,
-                  }
-                : i
-            ),
-          }));
+          updatedItems = get().items.map((i) =>
+            i.productId === item.productId
+              ? {
+                  ...i,
+                  qty: i.qty + 1,
+                  selectedFragrance: item.selectedFragrance ?? i.selectedFragrance,
+                  selectedColor: item.selectedColor ?? i.selectedColor,
+                  selectedSize: item.selectedSize ?? i.selectedSize,
+                  customNotes: item.customNotes ?? i.customNotes,
+                }
+              : i
+          );
         } else {
-          set((state) => ({
-            items: [...state.items, { ...item, qty: 1 }],
-          }));
+          updatedItems = [...get().items, { ...item, qty: 1 }];
         }
 
         const showViewBag = !get().isDrawerOpen;
         set({
+          items: updatedItems,
+          itemCount: updatedItems.reduce((sum, i) => sum + i.qty, 0),
+          total: updatedItems.reduce((sum, i) => sum + i.price * i.qty, 0),
           toast: {
             name: item.name,
             price: item.price,
@@ -86,7 +86,12 @@ export const useCartStore = create<CartStore>()(
 
       removeItem: (productId) => {
         const existing = get().items.find((i) => i.productId === productId);
-        set((state) => ({ items: state.items.filter((i) => i.productId !== productId) }));
+        const updatedItems = get().items.filter((i) => i.productId !== productId);
+        set({
+          items: updatedItems,
+          itemCount: updatedItems.reduce((sum, i) => sum + i.qty, 0),
+          total: updatedItems.reduce((sum, i) => sum + i.price * i.qty, 0),
+        });
 
         if (existing) {
           const showViewBag = !get().isDrawerOpen;
@@ -113,9 +118,12 @@ export const useCartStore = create<CartStore>()(
         }
 
         const isIncrease = qty > existing.qty;
-        set((state) => ({
-          items: state.items.map((i) => (i.productId === productId ? { ...i, qty } : i)),
-        }));
+        const updatedItems = get().items.map((i) => (i.productId === productId ? { ...i, qty } : i));
+        set({
+          items: updatedItems,
+          itemCount: updatedItems.reduce((sum, i) => sum + i.qty, 0),
+          total: updatedItems.reduce((sum, i) => sum + i.price * i.qty, 0),
+        });
 
         const showViewBag = !get().isDrawerOpen;
         set({
@@ -130,19 +138,14 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], itemCount: 0, total: 0 }),
       clearToast: () => set({ toast: null }),
 
       openDrawer: () => set({ isDrawerOpen: true }),
       closeDrawer: () => set({ isDrawerOpen: false, toast: null }),
 
-      get itemCount() {
-        return get().items.reduce((sum, i) => sum + i.qty, 0);
-      },
-
-      get total() {
-        return get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-      },
+      itemCount: 0,
+      total: 0,
     }),
     {
       name: 'meadow-mist-cart',
