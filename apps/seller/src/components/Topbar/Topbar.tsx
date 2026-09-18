@@ -18,7 +18,7 @@ interface TopbarProps {
   onLogout: () => void;
 }
 
-const PAGE_TITLES: Record<string, string> = {
+export const PAGE_TITLES: Record<string, string> = {
   '/': 'Overview & Analytics',
   '/products': 'Product Catalog',
   '/products/new': 'Add New Product',
@@ -31,6 +31,13 @@ const PAGE_TITLES: Record<string, string> = {
   '/settings': 'Store Settings',
 };
 
+export function getSellerPageTitle(pathname: string): string {
+  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
+  if (pathname.startsWith('/products/') && pathname.endsWith('/edit')) return 'Edit Product';
+  if (pathname.startsWith('/orders/')) return 'Order Details';
+  return 'Seller Management';
+}
+
 export function Topbar({
   collapsed,
   onToggleCollapse,
@@ -39,13 +46,6 @@ export function Topbar({
 }: TopbarProps) {
   const pathname = usePathname();
   const storefrontUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000';
-
-  const getTitle = () => {
-    if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
-    if (pathname.startsWith('/products/') && pathname.endsWith('/edit')) return 'Edit Product';
-    if (pathname.startsWith('/orders/')) return 'Order Details';
-    return 'Seller Management';
-  };
 
   return (
     <header className={styles.topbar}>
@@ -69,7 +69,7 @@ export function Topbar({
           {collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
         </button>
 
-        <h1 className={styles.pageTitle}>{getTitle()}</h1>
+        <h1 className={styles.pageTitle}>{getSellerPageTitle(pathname)}</h1>
 
         <div className={styles.statusIndicator}>
           <span className={styles.statusDot} />

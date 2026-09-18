@@ -21,14 +21,14 @@ import {
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
-interface NavItem {
+export interface NavItem {
   href: string;
   label: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   exact?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
+export const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/products', label: 'Products', icon: Package },
   { href: '/inventory', label: 'Inventory Stock', icon: Boxes },
@@ -39,6 +39,10 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/promotions', label: 'Promo Discounts', icon: Tag },
   { href: '/settings', label: 'Store Settings', icon: Settings },
 ];
+
+export function isSidebarItemActive(item: NavItem, pathname: string): boolean {
+  return item.exact ? pathname === item.href : pathname.startsWith(item.href);
+}
 
 interface SidebarProps {
   collapsed: boolean;
@@ -114,9 +118,7 @@ export function Sidebar({
         <nav className={styles.nav}>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
+            const isActive = isSidebarItemActive(item, pathname);
 
             return (
               <Link
