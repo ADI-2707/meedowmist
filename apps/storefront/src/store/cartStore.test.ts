@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCartStore, CartItem } from './cartStore';
 
 describe('Storefront Cart Store', () => {
@@ -120,4 +120,37 @@ describe('Storefront Cart Store', () => {
     expect(state.items).toEqual([]);
     expect(state.toast).toBeNull();
   });
+
+  it('tracks in-flight item IDs correctly', () => {
+    const store = useCartStore.getState();
+    expect(store.isItemInFlight('prod_candle_1')).toBe(false);
+
+    useCartStore.getState().setInFlight('prod_candle_1', true);
+    expect(useCartStore.getState().isItemInFlight('prod_candle_1')).toBe(true);
+
+    useCartStore.getState().setInFlight('prod_candle_1', false);
+    expect(useCartStore.getState().isItemInFlight('prod_candle_1')).toBe(false);
+  });
+
+  it('debounces toast notifications on rapid quantity updates', () => {
+    vi.useFakeTimers();
+    useCartStore.getState().addItem(mockItem);
+    useCartStore.getState().clearToast();
+
+    useCartStore.getState().updateQty('prod_candle_1', 2);
+    useCartStore.getState().updateQty('prod_candle_1', 3);
+    useCartStore.getState().updateQty('prod_candle_1', 4);
+
+    expect(useCartStore.getState().toast).toBeNull();
+
+    vi.advanceTimersByTime(150);
+
+    const state = useCartStore.getState();
+    expect(state.toast).not.toBeNull();
+    expect(state.toast?.name).toBe('Amber & Moss Candle');
+    expect(state.items[0].qty).toBe(4);
+
+    vi.useRealTimers();
+  });
 });
+
