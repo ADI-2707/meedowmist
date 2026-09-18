@@ -28,6 +28,7 @@ export interface ToastInfo {
 
 interface CartStore {
   items: CartItem[];
+  inFlightItemIds: string[];
   isDrawerOpen: boolean;
   toast: ToastInfo | null;
   addItem: (item: Omit<CartItem, 'qty'>) => void;
@@ -37,14 +38,19 @@ interface CartStore {
   clearToast: () => void;
   openDrawer: () => void;
   closeDrawer: () => void;
+  isItemInFlight: (productId: string) => boolean;
+  setInFlight: (productId: string, inFlight: boolean) => void;
   itemCount: number;
   total: number;
 }
+
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      inFlightItemIds: [],
       isDrawerOpen: false,
       toast: null,
 
@@ -125,17 +131,23 @@ export const useCartStore = create<CartStore>()(
           total: updatedItems.reduce((sum, i) => sum + i.price * i.qty, 0),
         });
 
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+
         const showViewBag = !get().isDrawerOpen;
-        set({
-          toast: {
-            name: existing.name,
-            price: existing.price,
-            image: existing.image,
-            action: isIncrease ? 'added' : 'updated',
-            showViewBag,
-            id: Date.now(),
-          },
-        });
+        toastTimer = setTimeout(() => {
+          set({
+            toast: {
+              name: existing.name,
+              price: existing.price,
+              image: existing.image,
+              action: isIncrease ? 'added' : 'updated',
+              showViewBag,
+              id: Date.now(),
+            },
+          });
+        }, 150);
       },
 
       clearCart: () => set({ items: [], itemCount: 0, total: 0 }),
@@ -143,6 +155,17 @@ export const useCartStore = create<CartStore>()(
 
       openDrawer: () => set({ isDrawerOpen: true }),
       closeDrawer: () => set({ isDrawerOpen: false, toast: null }),
+
+      isItemInFlight: (productId: string) => (get().inFlightItemIds || []).includes(productId),
+
+      setInFlight: (productId: string, inFlight: boolean) => {
+        const current = get().inFlightItemIds || [];
+        set({
+          inFlightItemIds: inFlight
+            ? [...new Set([...current, productId])]
+            : current.filter((id) => id !== productId),
+        });
+      },
 
       itemCount: 0,
       total: 0,

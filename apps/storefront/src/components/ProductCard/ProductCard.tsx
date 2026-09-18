@@ -50,9 +50,17 @@ export default function ProductCard({ product }: Props) {
     innerRef.current.style.setProperty('--card-ry', '0deg');
   }, []);
 
+  const isAddingRef = useRef(false);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isAddingRef.current) return;
+    isAddingRef.current = true;
+    setTimeout(() => {
+      isAddingRef.current = false;
+    }, 250);
+
     addItem({
       productId: product.id,
       slug: product.slug,

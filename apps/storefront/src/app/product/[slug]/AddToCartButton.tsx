@@ -23,6 +23,7 @@ export default function AddToCartButton({ product }: Props) {
   const [selectedColor, setSelectedColor] = useState<string>(waxTones[0] || '');
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || '');
   const [customNotes, setCustomNotes] = useState<string>('');
+  const [isClickLocked, setIsClickLocked] = useState(false);
 
   const cartItem = items.find((i) => i.productId === product.id);
   const qty = cartItem?.qty ?? 0;
@@ -30,7 +31,12 @@ export default function AddToCartButton({ product }: Props) {
   const isLowStock = product.stockQuantity !== undefined && product.stockQuantity > 0 && product.stockQuantity <= (product.lowStockThreshold || 5);
 
   const handleAdd = () => {
-    if (isOutOfStock) return;
+    if (isOutOfStock || isClickLocked) return;
+    setIsClickLocked(true);
+    setTimeout(() => {
+      setIsClickLocked(false);
+    }, 250);
+
     addItem({
       productId: product.id,
       slug: product.slug,
