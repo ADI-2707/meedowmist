@@ -16,7 +16,8 @@ describe('Payment Providers', () => {
         orderNumber: 'MM-ORD-1001',
         amount: 1499,
         currency: 'INR',
-        customer: { email: 'buyer@example.com', name: 'Artisan Buyer' },
+        customerName: 'Artisan Buyer',
+        customerEmail: 'buyer@example.com',
       });
 
       expect(res.provider).toBe('MOCK_COD');
@@ -40,6 +41,7 @@ describe('Payment Providers', () => {
 
     it('processes refund successfully', async () => {
       const res = await provider.processRefund({
+        orderId: 'order_123',
         paymentRef: 'MOCK-PAY-12345',
         amount: 500,
         reason: 'Customer cancelled before shipping',
@@ -60,7 +62,8 @@ describe('Payment Providers', () => {
         orderNumber: 'MM-ORD-2002',
         amount: 2500,
         currency: 'INR',
-        customer: { email: 'customer@meadowmist.com', name: 'Jane Doe' },
+        customerName: 'Jane Doe',
+        customerEmail: 'customer@meadowmist.com',
       });
 
       expect(res.provider).toBe('RAZORPAY');
@@ -90,6 +93,7 @@ describe('Payment Providers', () => {
     it('processes razorpay refund', async () => {
       const provider = new RazorpayProvider();
       const res = await provider.processRefund({
+        orderId: 'order_456',
         paymentRef: 'pay_987654321',
         amount: 1000,
         reason: 'Defective item return',
