@@ -6,6 +6,7 @@ import { Flame, Layers, AlertCircle, RefreshCw, IndianRupee } from 'lucide-react
 import { PageHeader } from '@/components/PageHeader/PageHeader';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { StockBadge } from '@/components/StockBadge/StockBadge';
+import { Pagination } from '@/components/Pagination/Pagination';
 import styles from './inventory.module.css';
 
 interface ProductInventory {
@@ -49,12 +50,16 @@ export default function AdminInventoryPage() {
   const [loading, setLoading] = useState(true);
   const [editingStock, setEditingStock] = useState<Record<string, number>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchData = async () => {
+  const fetchData = async (currentPage = page, currentLimit = limit) => {
     setLoading(true);
     try {
       const [invRes, logsRes] = await Promise.all([
-        fetch(`/api/inventory?filter=${filter}`),
+        fetch(`/api/inventory?filter=${filter}&page=${currentPage}&limit=${currentLimit}`),
         fetch('/api/inventory/logs'),
       ]);
 
@@ -62,6 +67,10 @@ export default function AdminInventoryPage() {
         const data = await invRes.json();
         setProducts(data.products || []);
         setSummary(data.summary);
+        if (data.pagination) {
+          setTotal(data.pagination.total);
+          setTotalPages(data.pagination.totalPages);
+        }
 
         const stockMap: Record<string, number> = {};
         for (const p of data.products || []) {
@@ -82,8 +91,13 @@ export default function AdminInventoryPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    setPage(1);
+    fetchData(1, limit);
   }, [filter]);
+
+  useEffect(() => {
+    fetchData(page, limit);
+  }, [page, limit]);
 
   const handleStockChange = (id: string, delta: number) => {
     setEditingStock((prev) => ({
@@ -134,7 +148,7 @@ export default function AdminInventoryPage() {
         title="Inventory & Candle Stock"
         subtitle="Real-time batch stock management, candle counters, and inventory audit trail."
         actions={
-          <button onClick={fetchData} className={styles.refreshBtn}>
+          <button onClick={() => fetchData(page, limit)} className={styles.refreshBtn}>
             <RefreshCw size={15} />
             <span>Refresh Counts</span>
           </button>
@@ -313,6 +327,17 @@ export default function AdminInventoryPage() {
             </table>
           </div>
         )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          totalItems={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(newLimit) => {
+            setLimit(newLimit);
+            setPage(1);
+          }}
+        />
       </div>
 
       <div className={styles.logSection}>

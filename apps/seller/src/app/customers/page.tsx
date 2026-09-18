@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Users, Mail, Phone, ShoppingBag, Heart, IndianRupee } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader/PageHeader';
 import { StatCard } from '@/components/StatCard/StatCard';
+import { Pagination } from '@/components/Pagination/Pagination';
+import { useDebounce } from '@/hooks/useDebounce';
 import styles from './customers.module.css';
 
 interface CustomerItem {
@@ -22,33 +24,47 @@ export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<CustomerItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const debouncedSearch = useDebounce(searchTerm, 350);
+
+  const fetchCustomers = async (currentPage = page, currentLimit = limit) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (debouncedSearch.trim()) params.set('search', debouncedSearch.trim());
+      params.set('page', String(currentPage));
+      params.set('limit', String(currentLimit));
+
+      const res = await fetch(`/api/customers?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCustomers(data.customers || []);
+        if (data.pagination) {
+          setTotal(data.pagination.total);
+          setTotalPages(data.pagination.totalPages);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const res = await fetch('/api/customers');
-        if (res.ok) {
-          const data = await res.json();
-          setCustomers(data.customers || []);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setPage(1);
+    fetchCustomers(1, limit);
+  }, [debouncedSearch]);
 
-    fetchCustomers();
-  }, []);
+  useEffect(() => {
+    fetchCustomers(page, limit);
+  }, [page, limit]);
 
-  const filtered = customers.filter(
-    (c) =>
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (c.phone && c.phone.includes(searchTerm))
-  );
-
-  const totalRegistered = customers.length;
+  const totalRegistered = total || customers.length;
   const totalOrders = customers.reduce((sum, c) => sum + c.totalOrders, 0);
   const totalSpend = customers.reduce((sum, c) => sum + c.lifetimeSpend, 0);
 
@@ -93,30 +109,33 @@ export default function AdminCustomersPage() {
 
       <div className={styles.tableCard}>
         {loading ? (
-          <div className={styles.emptyState}>Loading customer directory...</div>
-        ) : filtered.length === 0 ? (
-          <div className={styles.emptyState}>No registered customers match your search.</div>
+          <div className={styles.loadingState}>Loading customer records...</div>
+        ) : customers.length === 0 ? (
+          <div className={styles.emptyState}>
+            <Users size={32} opacity={0.5} />
+            <p>No customer profiles found.</p>
+          </div>
         ) : (
           <div className={styles.tableResponsive}>
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Customer Profile</th>
-                  <th>Contact Details</th>
-                  <th>Primary Address</th>
-                  <th>Total Orders</th>
-                  <th>Lifetime Spend</th>
-                  <th>Saved Wishlist</th>
-                  <th>Join Date</th>
+                  <th>Client</th>
+                  <th>Contact Info</th>
+                  <th>Primary Shipping Destination</th>
+                  <th>Orders</th>
+                  <th>Total Spend</th>
+                  <th>Wishlist</th>
+                  <th>Registered</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((c) => (
+                {customers.map((c) => (
                   <tr key={c.id}>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div className={styles.avatar}>
-                          {c.name.charAt(0).toUpperCase()}
+                      <div className={styles.customerAvatarCell}>
+                        <div className={styles.avatarCircle}>
+                          {c.name.slice(0, 1).toUpperCase()}
                         </div>
                         <div>
                           <span className={styles.customerName}>{c.name}</span>
@@ -172,6 +191,17 @@ export default function AdminCustomersPage() {
             </table>
           </div>
         )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          totalItems={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(newLimit) => {
+            setLimit(newLimit);
+            setPage(1);
+          }}
+        />
       </div>
     </div>
   );

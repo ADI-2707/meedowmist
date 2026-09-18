@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { PlusCircle, Search, Trash2, Edit } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader/PageHeader';
 import { StockBadge } from '@/components/StockBadge/StockBadge';
+import { Pagination } from '@/components/Pagination/Pagination';
+import { useDebounce } from '@/hooks/useDebounce';
 import styles from './products.module.css';
 
 interface ProductItem {
@@ -30,19 +32,31 @@ export default function AdminProductsPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchProducts = async () => {
+  const debouncedSearch = useDebounce(searchTerm, 350);
+
+  const fetchProducts = async (currentPage = page, currentLimit = limit) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (categoryFilter !== 'ALL') params.set('category', categoryFilter);
       if (statusFilter !== 'ALL') params.set('status', statusFilter);
-      if (searchTerm) params.set('search', searchTerm);
+      if (debouncedSearch.trim()) params.set('search', debouncedSearch.trim());
+      params.set('page', String(currentPage));
+      params.set('limit', String(currentLimit));
 
       const res = await fetch(`/api/products?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setProducts(data.products || []);
+        if (data.pagination) {
+          setTotal(data.pagination.total);
+          setTotalPages(data.pagination.totalPages);
+        }
       }
     } catch (err) {
       console.error('Products load error:', err);
@@ -52,12 +66,16 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [categoryFilter, statusFilter]);
+    setPage(1);
+    fetchProducts(1, limit);
+  }, [categoryFilter, statusFilter, debouncedSearch]);
+
+  useEffect(() => {
+    fetchProducts(page, limit);
+  }, [page, limit]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchProducts();
   };
 
   const handleDelete = async (id: string, name: string) => {
@@ -227,6 +245,17 @@ export default function AdminProductsPage() {
             </table>
           </div>
         )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          totalItems={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(newLimit) => {
+            setLimit(newLimit);
+            setPage(1);
+          }}
+        />
       </div>
     </div>
   );

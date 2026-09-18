@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Search, Eye } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader/PageHeader';
 import { StockBadge, BadgeStatus } from '@/components/StockBadge/StockBadge';
+import { Pagination } from '@/components/Pagination/Pagination';
+import { useDebounce } from '@/hooks/useDebounce';
 import styles from './orders.module.css';
 
 interface OrderItem {
@@ -26,18 +28,30 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchOrders = async () => {
+  const debouncedSearch = useDebounce(searchTerm, 350);
+
+  const fetchOrders = async (currentPage = page, currentLimit = limit) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (statusFilter !== 'ALL') params.set('status', statusFilter);
-      if (searchTerm.trim()) params.set('search', searchTerm.trim());
+      if (debouncedSearch.trim()) params.set('search', debouncedSearch.trim());
+      params.set('page', String(currentPage));
+      params.set('limit', String(currentLimit));
 
       const res = await fetch(`/api/orders?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setOrders(data.orders || []);
+        if (data.pagination) {
+          setTotal(data.pagination.total);
+          setTotalPages(data.pagination.totalPages);
+        }
       }
     } catch (err) {
       console.error('Orders load error:', err);
@@ -47,12 +61,16 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, [statusFilter]);
+    setPage(1);
+    fetchOrders(1, limit);
+  }, [statusFilter, debouncedSearch]);
+
+  useEffect(() => {
+    fetchOrders(page, limit);
+  }, [page, limit]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchOrders();
   };
 
   const mapStatusToBadge = (status: string): BadgeStatus => {
@@ -182,6 +200,17 @@ export default function AdminOrdersPage() {
             </tbody>
           </table>
         )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          totalItems={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(newLimit) => {
+            setLimit(newLimit);
+            setPage(1);
+          }}
+        />
       </div>
     </div>
   );
