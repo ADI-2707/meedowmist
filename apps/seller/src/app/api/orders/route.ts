@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdminSessionUser } from '@/lib/session';
+import { parsePaginationParams } from '@meadowmist/shared';
 
 export async function GET(request: Request) {
   try {
@@ -31,23 +32,40 @@ export async function GET(request: Request) {
       ];
     }
 
-    const orders = await prisma.order.findMany({
-      where: whereClause,
-      include: {
-        items: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
+    const pageParam = url.searchParams.get('page');
+    const limitParam = url.searchParams.get('limit');
+    const isPaginated = pageParam !== null || limitParam !== null;
+    const { page, limit, skip } = parsePaginationParams(url, 20, 100);
+
+    const [total, orders] = await Promise.all([
+      prisma.order.count({ where: whereClause }),
+      prisma.order.findMany({
+        where: whereClause,
+        include: {
+          items: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+        orderBy: { createdAt: 'desc' },
+        ...(isPaginated ? { skip, take: limit } : {}),
+      }),
+    ]);
 
-    return NextResponse.json({ orders });
+    return NextResponse.json({
+      orders,
+      pagination: {
+        page: isPaginated ? page : 1,
+        limit: isPaginated ? limit : total,
+        total,
+        totalPages: isPaginated ? Math.ceil(total / limit) : 1,
+      },
+    });
   } catch (error) {
     console.error('Orders GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
