@@ -55,20 +55,35 @@ export async function POST(request: Request) {
           throw new Error(`Product ${product?.name || reqItem.productId} is no longer available`);
         }
 
-        if (product.stockQuantity < qty) {
+        const updateResult = await tx.product.updateMany({
+          where: {
+            id: product.id,
+            isActive: true,
+            stockQuantity: { gte: qty },
+          },
+          data: {
+            stockQuantity: { decrement: qty },
+          },
+        });
+
+        if (updateResult.count === 0) {
           throw new Error(
             `Insufficient stock for "${product.name}". Only ${product.stockQuantity} piece${product.stockQuantity === 1 ? '' : 's'} remaining.`
           );
         }
 
-        const newStock = product.stockQuantity - qty;
-        await tx.product.update({
+        const updatedProduct = await tx.product.findUnique({
           where: { id: product.id },
-          data: {
-            stockQuantity: newStock,
-            inStock: newStock > 0,
-          },
+          select: { stockQuantity: true },
         });
+        const newStock = updatedProduct?.stockQuantity ?? 0;
+
+        if (newStock === 0) {
+          await tx.product.update({
+            where: { id: product.id },
+            data: { inStock: false },
+          });
+        }
 
         await tx.inventoryLog.create({
           data: {
