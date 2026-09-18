@@ -51,4 +51,26 @@ describe('Storefront Wishlist Store', () => {
       body: JSON.stringify({ productId: 'prod_candle_1' }),
     }));
   });
+
+  it('prevents concurrent toggle requests for the same product while in flight', async () => {
+    let resolveFirst: (val: unknown) => void = () => {};
+    const deferredFetch = new Promise((resolve) => {
+      resolveFirst = resolve;
+    });
+
+    global.fetch = vi.fn().mockReturnValue(deferredFetch);
+
+    const firstToggle = useWishlistStore.getState().toggle('prod_spam_1');
+    expect(useWishlistStore.getState().isInFlight('prod_spam_1')).toBe(true);
+
+    const secondToggle = useWishlistStore.getState().toggle('prod_spam_1');
+    await secondToggle;
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    resolveFirst({ ok: true, json: () => Promise.resolve({ success: true }) });
+    await firstToggle;
+
+    expect(useWishlistStore.getState().isInFlight('prod_spam_1')).toBe(false);
+  });
 });
