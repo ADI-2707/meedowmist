@@ -39,6 +39,8 @@ model Address {
   isDefault     Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Product {
@@ -69,6 +71,10 @@ model Product {
   wishlistItems     WishlistItem[]
   cartItems         CartItem[]
   inventoryLogs     InventoryLog[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([createdAt])
 }
 
 model InventoryLog {
@@ -80,6 +86,9 @@ model InventoryLog {
   reason         String
   note           String?
   createdAt      DateTime @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
 }
 
 model Order {
@@ -112,6 +121,11 @@ model Order {
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
   items              OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([trackingNumber])
 }
 
 model OrderItem {
@@ -129,6 +143,9 @@ model OrderItem {
   selectedSize      String?
   customNotes       String?
   lineTotal         Float
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model WishlistItem {
@@ -171,6 +188,9 @@ model Enquiry {
   adminReply String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Banner {
