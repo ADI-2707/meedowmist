@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma';
 import type { Product, CustomOptions } from '@/types/product';
-import localProductsData from '@/data/products.json';
 
 function formatDbProduct(p: {
   id: string;
@@ -90,16 +89,11 @@ export async function getProducts(category?: 'candle' | 'ceramic'): Promise<Prod
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     });
 
-    if (items.length > 0) {
-      return items.map(formatDbProduct);
-    }
+    return items.map(formatDbProduct);
   } catch (err) {
-    console.error('Failed to query products from DB, falling back to static:', err);
+    console.error('Failed to query products from DB:', err);
+    return [];
   }
-
-  const staticItems = localProductsData as unknown as Product[];
-  if (!category) return staticItems;
-  return staticItems.filter((p) => p.category === category);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
@@ -110,12 +104,11 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     if (item && item.isActive) {
       return formatDbProduct(item);
     }
+    return null;
   } catch (err) {
     console.error('Failed to query product by slug from DB:', err);
+    return null;
   }
-
-  const staticItems = localProductsData as unknown as Product[];
-  return staticItems.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getRelatedProducts(
@@ -134,17 +127,11 @@ export async function getRelatedProducts(
       orderBy: { isFeatured: 'desc' },
     });
 
-    if (items.length > 0) {
-      return items.map(formatDbProduct);
-    }
+    return items.map(formatDbProduct);
   } catch (err) {
     console.error('Failed to query related products from DB:', err);
+    return [];
   }
-
-  const staticItems = localProductsData as unknown as Product[];
-  return staticItems
-    .filter((p) => p.slug !== currentSlug && p.category === category)
-    .slice(0, limit);
 }
 
 export async function getAllSlugs(): Promise<string[]> {
@@ -153,15 +140,11 @@ export async function getAllSlugs(): Promise<string[]> {
       where: { isActive: true },
       select: { slug: true },
     });
-    if (items.length > 0) {
-      return items.map((i) => i.slug);
-    }
+    return items.map((i) => i.slug);
   } catch (err) {
     console.error('Failed to query slugs from DB:', err);
+    return [];
   }
-
-  const staticItems = localProductsData as unknown as Product[];
-  return staticItems.map((p) => p.slug);
 }
 
 export async function getFeaturedProducts(
@@ -178,14 +161,9 @@ export async function getFeaturedProducts(
       orderBy: [{ isFeatured: 'desc' }, { badge: 'desc' }],
     });
 
-    if (items.length > 0) {
-      return items.map(formatDbProduct);
-    }
+    return items.map(formatDbProduct);
   } catch (err) {
     console.error('Failed to query featured products from DB:', err);
+    return [];
   }
-
-  const staticItems = localProductsData as unknown as Product[];
-  const filtered = category ? staticItems.filter((p) => p.category === category) : staticItems;
-  return filtered.slice(0, limit);
 }

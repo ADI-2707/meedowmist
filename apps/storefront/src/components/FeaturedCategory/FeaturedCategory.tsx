@@ -23,13 +23,19 @@ export default function FeaturedCategory({ title, eyebrow, description, href, pr
         </div>
       </SectionReveal>
 
-      <div className={styles.grid}>
-        {products.map((product, i) => (
-          <SectionReveal key={product.id} delay={i * 0.1}>
-            <ProductCard product={product} />
-          </SectionReveal>
-        ))}
-      </div>
+      {products.length > 0 ? (
+        <div className={styles.grid}>
+          {products.map((product, i) => (
+            <SectionReveal key={product.id} delay={i * 0.1}>
+              <ProductCard product={product} />
+            </SectionReveal>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.empty}>
+          <p>No handcrafted items in this collection currently.</p>
+        </div>
+      )}
 
       <SectionReveal delay={0.3}>
         <div className={styles.cta}>

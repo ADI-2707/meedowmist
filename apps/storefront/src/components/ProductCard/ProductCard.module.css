@@ -216,6 +216,32 @@
   transform: scale(0.97);
 }
 
+.addBtnDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #cbd5e0;
+  color: #a0aec0;
+}
+
+.addBtnDisabled:hover {
+  background: none;
+  color: #a0aec0;
+}
+
+.stockTag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.stockOut {
+  color: #c53030;
+}
+
+.stockLow {
+  color: #c05621;
+}
+
 .qtyControl {
   display: inline-flex;
   align-items: center;

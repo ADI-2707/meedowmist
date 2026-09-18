@@ -26,6 +26,8 @@ export default function ProductCard({ product }: Props) {
 
   const cartItem = items.find((i) => i.productId === product.id);
   const qty = cartItem?.qty ?? 0;
+  const isOutOfStock = !product.inStock || (product.stockQuantity !== undefined && product.stockQuantity <= 0);
+  const isLowStock = !isOutOfStock && product.stockQuantity !== undefined && product.stockQuantity > 0 && product.stockQuantity <= (product.lowStockThreshold || 5);
 
   useEffect(() => {
     prefersReduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -55,7 +57,7 @@ export default function ProductCard({ product }: Props) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isAddingRef.current) return;
+    if (isOutOfStock || isAddingRef.current) return;
     isAddingRef.current = true;
     setTimeout(() => {
       isAddingRef.current = false;
@@ -140,8 +142,25 @@ export default function ProductCard({ product }: Props) {
           <p className={styles.story}>{product.story.slice(0, 72)}…</p>
 
           <div className={styles.footer}>
-            <PriceTag price={product.price} salePrice={product.salePrice} />
-            {qty > 0 ? (
+            <div>
+              <PriceTag price={product.price} salePrice={product.salePrice} />
+              {isOutOfStock ? (
+                <div className={`${styles.stockTag} ${styles.stockOut}`}>Out of Stock</div>
+              ) : isLowStock ? (
+                <div className={`${styles.stockTag} ${styles.stockLow}`}>Only {product.stockQuantity} left</div>
+              ) : null}
+            </div>
+            {isOutOfStock ? (
+              <button
+                type="button"
+                className={`${styles.addBtn} ${styles.addBtnDisabled}`}
+                disabled
+                aria-disabled="true"
+                aria-label={`${product.name} is out of stock`}
+              >
+                Sold Out
+              </button>
+            ) : qty > 0 ? (
               <div
                 className={styles.qtyControl}
                 onClick={(e) => {
@@ -165,10 +184,13 @@ export default function ProductCard({ product }: Props) {
                 <button
                   type="button"
                   className={styles.qtyPlusBtn}
+                  disabled={product.stockQuantity !== undefined && qty >= product.stockQuantity}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    updateQty(product.id, qty + 1);
+                    if (product.stockQuantity === undefined || qty < product.stockQuantity) {
+                      updateQty(product.id, qty + 1);
+                    }
                   }}
                   aria-label={`Increase quantity of ${product.name}`}
                 >

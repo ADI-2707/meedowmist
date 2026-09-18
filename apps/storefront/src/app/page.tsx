@@ -69,20 +69,6 @@ export default async function HomePage() {
           products={featuredCeramics}
         />
       </div>
-
-      <SectionReveal>
-        <section className={styles.testimonial}>
-          <div className="container">
-            <div className={styles.testimonialInner}>
-              <p className={styles.quote}>
-                &ldquo;The black lotus tealight holder is the most beautiful thing
-                I have bought this year. It looks like jewellery.&rdquo;
-              </p>
-              <p className={styles.quoteAuthor}>— Priya M., Mumbai</p>
-            </div>
-          </div>
-        </section>
-      </SectionReveal>
     </>
   );
 }
