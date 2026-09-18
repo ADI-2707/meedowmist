@@ -30,6 +30,7 @@ function getPrismaClient(): PrismaClient {
     });
   }
   return new PrismaClient({
+    datasourceUrl: dbUrl,
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 }
