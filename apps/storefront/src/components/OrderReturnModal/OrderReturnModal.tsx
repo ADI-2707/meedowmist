@@ -157,9 +157,8 @@ export function OrderReturnModal({
             <div className={styles.field}>
               <label className={styles.label}>Preferred Resolution</label>
               <div className={styles.preferenceGrid}>
-                <div
+                <label
                   className={`${styles.preferenceCard} ${resolutionPreference === 'REFUND' ? styles.preferenceCardActive : ''}`}
-                  onClick={() => setResolutionPreference('REFUND')}
                 >
                   <input
                     type="radio"
@@ -173,11 +172,10 @@ export function OrderReturnModal({
                       Amount credited back to original payment source
                     </div>
                   </div>
-                </div>
+                </label>
 
-                <div
+                <label
                   className={`${styles.preferenceCard} ${resolutionPreference === 'REPLACEMENT' ? styles.preferenceCardActive : ''}`}
-                  onClick={() => setResolutionPreference('REPLACEMENT')}
                 >
                   <input
                     type="radio"
@@ -191,7 +189,7 @@ export function OrderReturnModal({
                       We hand-pack and dispatch a fresh replacement piece
                     </div>
                   </div>
-                </div>
+                </label>
               </div>
             </div>
 
