@@ -6,7 +6,9 @@ import PriceTag from '@/components/PriceTag/PriceTag';
 import ScentBadge from '@/components/ScentBadge/ScentBadge';
 import FeaturedCategory from '@/components/FeaturedCategory/FeaturedCategory';
 import BrushDivider from '@/components/BrushDivider/BrushDivider';
+import StarRating from '@/components/StarRating/StarRating';
 import AddToCartButton from './AddToCartButton';
+import ProductReviewsSection from './ProductReviewsSection';
 import styles from './page.module.css';
 
 interface Props {
@@ -73,6 +75,15 @@ export default async function ProductPage({ params }: Props) {
 
             <h1 className={styles.name}>{product.name}</h1>
 
+            {product.averageRating !== undefined && product.reviewCount !== undefined && product.reviewCount > 0 && (
+              <div className={styles.ratingHeaderRow}>
+                <StarRating rating={product.averageRating} />
+                <span className={styles.ratingHeaderText}>
+                  {product.averageRating.toFixed(1)} ({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+            )}
+
             <PriceTag price={product.price} salePrice={product.salePrice} />
 
             <p className={styles.story}>{product.story}</p>
@@ -114,6 +125,8 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
         </div>
+
+        <ProductReviewsSection productId={product.id} productSlug={product.slug} />
 
         {related.length > 0 && (
           <>

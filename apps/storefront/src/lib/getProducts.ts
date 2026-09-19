@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import type { Product, CustomOptions } from '@/types/product';
 
-function formatDbProduct(p: {
+interface DbProductPayload {
   id: string;
   slug: string;
   name: string;
@@ -23,7 +23,10 @@ function formatDbProduct(p: {
   inStock: boolean;
   isFeatured: boolean;
   isActive: boolean;
-}): Product {
+  reviews?: Array<{ rating: number }>;
+}
+
+function formatDbProduct(p: DbProductPayload): Product {
   let images: string[] = [];
   try {
     images = JSON.parse(p.images);
@@ -52,6 +55,11 @@ function formatDbProduct(p: {
     customOptions = null;
   }
 
+  const reviewList = p.reviews || [];
+  const reviewCount = reviewList.length;
+  const ratingSum = reviewList.reduce((acc, r) => acc + r.rating, 0);
+  const averageRating = reviewCount > 0 ? Number((ratingSum / reviewCount).toFixed(1)) : 5;
+
   return {
     id: p.id,
     slug: p.slug,
@@ -74,6 +82,8 @@ function formatDbProduct(p: {
     isFeatured: p.isFeatured,
     isActive: p.isActive,
     customOptions,
+    averageRating,
+    reviewCount,
   };
 }
 
@@ -86,6 +96,12 @@ export async function getProducts(category?: 'candle' | 'ceramic'): Promise<Prod
 
     const items = await prisma.product.findMany({
       where: whereClause,
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     });
 
@@ -100,6 +116,12 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
     const item = await prisma.product.findUnique({
       where: { slug },
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
     });
     if (item && item.isActive) {
       return formatDbProduct(item);
@@ -122,6 +144,12 @@ export async function getRelatedProducts(
         category,
         slug: { not: currentSlug },
         isActive: true,
+      },
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
       },
       take: limit,
       orderBy: { isFeatured: 'desc' },
@@ -157,6 +185,12 @@ export async function getFeaturedProducts(
 
     const items = await prisma.product.findMany({
       where: whereClause,
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
       take: limit,
       orderBy: [{ isFeatured: 'desc' }, { badge: 'desc' }],
     });

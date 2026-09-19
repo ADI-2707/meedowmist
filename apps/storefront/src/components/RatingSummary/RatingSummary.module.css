@@ -1,0 +1,89 @@
+.summaryBox {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: center;
+  background: var(--color-surface, #FDFBF7);
+  border: 1px solid var(--color-parchment-deep, #e6ded3);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.scoreColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-right: 1px solid var(--color-parchment-deep, #e6ded3);
+  padding-right: 24px;
+}
+
+.bigScore {
+  font-family: var(--font-display, serif);
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-ink, #2C2825);
+  margin-bottom: 8px;
+}
+
+.totalLabel {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted, #7A7265);
+  margin-top: 6px;
+}
+
+.barsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.starLabel {
+  width: 50px;
+  color: var(--color-ink-muted, #7A7265);
+}
+
+.barTrack {
+  flex: 1;
+  height: 8px;
+  background: var(--color-parchment-deep, #e8dfd3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--color-gold, #B4903F);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.countLabel {
+  width: 28px;
+  text-align: right;
+  color: var(--color-ink-muted, #7A7265);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .summaryBox {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .scoreColumn {
+    border-right: none;
+    border-bottom: 1px solid var(--color-parchment-deep, #e6ded3);
+    padding-right: 0;
+    padding-bottom: 20px;
+  }
+}

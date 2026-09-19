@@ -14,6 +14,7 @@ import {
   FileText,
   Tag,
   Settings,
+  Star,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
@@ -34,6 +35,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/inventory', label: 'Inventory Stock', icon: Boxes },
   { href: '/orders', label: 'Orders & Shipments', icon: ShoppingBag },
   { href: '/customers', label: 'Customers', icon: Users },
+  { href: '/reviews', label: 'Customer Reviews', icon: Star },
   { href: '/enquiries', label: 'Contact Enquiries', icon: MessageSquare },
   { href: '/content', label: 'Store Content CMS', icon: FileText },
   { href: '/promotions', label: 'Promo Discounts', icon: Tag },
@@ -83,8 +85,8 @@ export function Sidebar({
             <Image
               src="/images/logo.jpg"
               alt="Meadow Mist"
-              width={34}
-              height={34}
+              width={30}
+              height={30}
               className={styles.brandLogo}
             />
             {(!collapsed || mobileOpen) && (

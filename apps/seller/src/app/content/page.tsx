@@ -23,8 +23,18 @@ interface FAQItem {
   category: string;
 }
 
+interface JournalCMSItem {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  readTime: string;
+  isPublished: boolean;
+  publishedAt: string;
+}
+
 export default function AdminContentPage() {
-  const [tab, setTab] = useState<'banners' | 'faqs' | 'about'>('banners');
+  const [tab, setTab] = useState<'banners' | 'faqs' | 'about' | 'journal'>('banners');
 
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [newBanner, setNewBanner] = useState({
@@ -47,14 +57,21 @@ export default function AdminContentPage() {
   const [aboutStory, setAboutStory] = useState('');
   const [aboutArtisanNote, setAboutArtisanNote] = useState('');
   const [savingAbout, setSavingAbout] = useState(false);
+  const [articles, setArticles] = useState<JournalCMSItem[]>([]);
 
   const fetchData = async () => {
     try {
-      const [banRes, faqRes, setRes] = await Promise.all([
+      const [banRes, faqRes, setRes, jourRes] = await Promise.all([
         fetch('/api/content/banners'),
         fetch('/api/content/faqs'),
         fetch('/api/settings'),
+        fetch('/api/content/journal'),
       ]);
+
+      if (jourRes.ok) {
+        const d = await jourRes.json();
+        setArticles(d.articles || []);
+      }
 
       if (banRes.ok) {
         const d = await banRes.json();
@@ -224,6 +241,12 @@ export default function AdminContentPage() {
           onClick={() => setTab('about')}
         >
           About Us & Brand Story
+        </button>
+        <button
+          className={`${styles.tabBtn} ${tab === 'journal' ? styles.tabBtnActive : ''}`}
+          onClick={() => setTab('journal')}
+        >
+          Journal & Care Guides
         </button>
       </div>
 
@@ -429,6 +452,85 @@ export default function AdminContentPage() {
             <span>{savingAbout ? 'Saving...' : 'Save Story Content'}</span>
           </button>
         </form>
+      )}
+
+      {tab === 'journal' && (
+        <div className={styles.card}>
+          <h2 className={styles.sectionTitle}>Studio Journal & Care Guide Articles</h2>
+          <div style={{ overflowX: 'auto', marginTop: 16 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f7fafc' }}>
+                  <th style={{ padding: '12px 16px', fontSize: '0.8rem', color: '#4a5568' }}>Article Title</th>
+                  <th style={{ padding: '12px 16px', fontSize: '0.8rem', color: '#4a5568' }}>Category</th>
+                  <th style={{ padding: '12px 16px', fontSize: '0.8rem', color: '#4a5568' }}>Read Time</th>
+                  <th style={{ padding: '12px 16px', fontSize: '0.8rem', color: '#4a5568' }}>Status</th>
+                  <th style={{ padding: '12px 16px', fontSize: '0.8rem', color: '#4a5568' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {articles.map((art) => (
+                  <tr key={art.id} style={{ borderBottom: '1px solid #edf2f7' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 500, color: '#2d3748' }}>
+                      {art.title}
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: '#718096' }}>
+                      {art.category}
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: '#718096' }}>
+                      {art.readTime}
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span
+                        style={{
+                          padding: '2px 8px',
+                          borderRadius: 4,
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          background: art.isPublished ? '#c6f6d5' : '#fed7d7',
+                          color: art.isPublished ? '#22543d' : '#742a2a',
+                        }}
+                      >
+                        {art.isPublished ? 'Published' : 'Draft'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch('/api/content/journal', {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ id: art.id, isPublished: !art.isPublished }),
+                            });
+                            if (res.ok) {
+                              setArticles((prev) =>
+                                prev.map((a) => (a.id === art.id ? { ...a, isPublished: !art.isPublished } : a))
+                              );
+                            }
+                          } catch {
+                            alert('Failed to update status');
+                          }
+                        }}
+                        style={{
+                          background: 'none',
+                          border: '1px solid #e2e8f0',
+                          padding: '4px 10px',
+                          borderRadius: 4,
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {art.isPublished ? 'Unpublish' : 'Publish'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   );

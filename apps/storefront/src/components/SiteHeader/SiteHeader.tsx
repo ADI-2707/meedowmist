@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
 import CartDrawer from '@/components/CartDrawer/CartDrawer';
+import ProductSearchModal from '@/components/ProductSearchModal/ProductSearchModal';
 import styles from './SiteHeader.module.css';
 
 const NAV_LINKS = [
@@ -19,6 +20,7 @@ const NAV_LINKS = [
 export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const items = useCartStore((s) => s.items);
   const isDrawerOpen = useCartStore((s) => s.isDrawerOpen);
   const openDrawer = useCartStore((s) => s.openDrawer);
@@ -76,6 +78,20 @@ export default function SiteHeader() {
           </nav>
 
           <div className={styles.actions}>
+            <button
+              id="search-trigger-btn"
+              type="button"
+              className={styles.cartButton}
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search handcrafted catalog (Cmd+K)"
+              title="Search (Cmd+K)"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" width="20" height="20">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+
             <Link
               href="/account"
               className={styles.cartButton}
@@ -134,6 +150,7 @@ export default function SiteHeader() {
       </header>
 
       <CartDrawer open={isDrawerOpen} onClose={closeDrawer} />
+      <ProductSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

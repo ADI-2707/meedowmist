@@ -220,6 +220,138 @@ async function main() {
       isActive: true,
     },
   });
+
+  const demoCustomerPassword = await bcrypt.hash('MeadowCustomer2026!', 12);
+  const customer1 = await prisma.user.upsert({
+    where: { email: 'aditi.verma@example.com' },
+    update: {},
+    create: {
+      name: 'Aditi Verma',
+      email: 'aditi.verma@example.com',
+      passwordHash: demoCustomerPassword,
+      phone: '+91 98111 22334',
+      role: 'CUSTOMER',
+      isActive: true,
+    },
+  });
+
+  const customer2 = await prisma.user.upsert({
+    where: { email: 'kavya.sharma@example.com' },
+    update: {},
+    create: {
+      name: 'Kavya Sharma',
+      email: 'kavya.sharma@example.com',
+      passwordHash: demoCustomerPassword,
+      phone: '+91 98222 33445',
+      role: 'CUSTOMER',
+      isActive: true,
+    },
+  });
+
+  const allDbProducts = await prisma.product.findMany({ take: 6 });
+  if (allDbProducts.length > 0) {
+    const existingReviews = await prisma.review.count();
+    if (existingReviews === 0) {
+      const p1 = allDbProducts[0];
+      const p2 = allDbProducts[1] || allDbProducts[0];
+      const p3 = allDbProducts[2] || allDbProducts[0];
+
+      await prisma.review.createMany({
+        data: [
+          {
+            productId: p1.id,
+            userId: customer1.id,
+            rating: 5,
+            title: 'Subtle fragrance, burns evenly for hours',
+            comment: 'The scent throw is gentle and natural without being overpowering. The soy wax melted completely flat with zero tunneling. Truly magnificent craftsmanship.',
+            isVerifiedPurchase: true,
+            isApproved: true,
+          },
+          {
+            productId: p1.id,
+            userId: customer2.id,
+            rating: 5,
+            title: 'Exquisite aesthetic on my coffee table',
+            comment: 'The ceramic glaze feels earthy and smooth. Guests consistently ask where I found this piece.',
+            isVerifiedPurchase: true,
+            isApproved: true,
+          },
+          {
+            productId: p2.id,
+            userId: customer1.id,
+            rating: 4,
+            title: 'Warm and comforting',
+            comment: 'Arrived beautifully packaged in plastic-free wrap. The flame is warm and flicker-free after trimming the wick.',
+            isVerifiedPurchase: true,
+            isApproved: true,
+          },
+          {
+            productId: p3.id,
+            userId: customer2.id,
+            rating: 5,
+            title: 'A true heirloom ceramic',
+            comment: 'The mineral pigments in the glaze give it depth in changing daylight. You can feel the wheel marks in the clay.',
+            isVerifiedPurchase: true,
+            isApproved: true,
+          },
+        ],
+      });
+    }
+  }
+
+  const articles = [
+    {
+      slug: 'candle-care-guide-first-burn-wick-trimming',
+      title: 'The Art of Candle Care: Memory Rings & Wick Trimming',
+      excerpt: 'Why the first burn defines the life of your soy candle, and how simple wick care produces a smokeless, clean ambiance.',
+      category: 'Candle Care',
+      readTime: '4 min read',
+      coverImage: '/images/products/sunflower-wax-cluster-yellow.jpg',
+      tags: JSON.stringify(['Soy Wax', 'Candle Care', 'Artisan Rituals']),
+      relatedProductSlugs: JSON.stringify(['sunflower-wax-cluster-yellow', 'ribbed-pillar-candle-blush']),
+      content: 'Wax possesses memory. When you light an artisanal soy candle for the first time, allow the melt pool to reach all edges of the vessel before extinguishing. This initial burn creates an even liquefaction path that prevents tunneling.\n\nTrim your natural cotton wick to approximately 5 millimeters prior to every lighting. A short wick ensures an even, controlled flame, preventing carbon mushrooming and soot.\n\nKeep the burning vessel away from open drafts and ceiling fans. A steady, unperturbed flame burns cleaner and extends your candle life by over twenty percent.',
+    },
+    {
+      slug: 'wheel-thrown-ceramics-earth-to-kiln',
+      title: 'From Earth to Fire: The Wheel-Thrown Ceramic Journey',
+      excerpt: 'A behind-the-scenes look into our small-batch wheel-throwing, mineral glaze formulation, and the patience of high-fire ceramics.',
+      category: 'Ceramics',
+      readTime: '5 min read',
+      coverImage: '/images/products/black-gold-lotus-tealight.jpg',
+      tags: JSON.stringify(['Ceramics', 'Studio Notes', 'Handcrafted']),
+      relatedProductSlugs: JSON.stringify(['black-gold-lotus-tealight', 'lotus-bowl-blush']),
+      content: 'Wheel throwing is a practice of surrender and centering. Stoneware clay must be wedged thoroughly to remove air pockets before meeting the wheel head.\n\nEach vessel is pulled upward in deliberate motions, trimmed once leather-hard, and left to dry slowly for seven days. Rapid moisture loss causes warpage; slow drying yields strength.\n\nAfter bisque firing at 950 degrees Celsius, natural mineral glazes formulated with ash and copper are applied by hand. The final high fire at 1220 degrees vitrifies the clay into durable stoneware.',
+    },
+    {
+      slug: 'ritual-of-fragrance-calming-spaces',
+      title: 'The Architecture of Scent: Creating Calming Sanctuaries at Home',
+      excerpt: 'How notes of amber, wild lavender, and warm sandalwood shift emotional resonance and ground your living spaces.',
+      category: 'Rituals',
+      readTime: '3 min read',
+      coverImage: '/images/products/moss-green-bubble-candle.jpg',
+      tags: JSON.stringify(['Scent Design', 'Home Decor', 'Aromatherapy']),
+      relatedProductSlugs: JSON.stringify(['moss-green-bubble-candle', 'terracotta-fluted-vessel']),
+      content: 'Olfactory memory is the most direct pathway to calm. When selecting botanical scents for living spaces, consider the movement of your day.\n\nMorning spaces thrive on crisp citrus, wild cedar, and dew-drenched herbs that awaken clarity without agitation. In the evening, grounding notes of golden amber, smoked sandalwood, and quiet vanilla slow the breath.\n\nDiffuse gentle fragrance in rooms with steady airflow to allow botanicals to unfold naturally.',
+    },
+    {
+      slug: 'mindful-gifting-handcrafted-pairs',
+      title: 'Gifting With Intention: Meaningful Artisan Pairs for Life Milestones',
+      excerpt: 'Moving away from mass-produced presents. Thoughtful pairings of wheel-thrown ceramic dishes with artisanal botanical wax.',
+      category: 'Gifting',
+      readTime: '4 min read',
+      coverImage: '/images/products/daisy-trinket-box-blue.jpg',
+      tags: JSON.stringify(['Gifting Guide', 'Curated Sets', 'Celebrations']),
+      relatedProductSlugs: JSON.stringify(['daisy-trinket-box-blue', 'sunflower-wax-cluster-yellow']),
+      content: 'A gift made by human hands carries an unmistakable weight of care. When choosing an object for someone you cherish, look for items that invite daily pause.\n\nA hand-carved trinket dish paired with a sculptured pillar candle transforms an ordinary dresser into an intentional altar for jewelry, keys, or contemplation.\n\nEach piece arrives cushioned in biodegradable recycled pulp, accompanied by an artisan care card detailing the materials and batch number.',
+    },
+  ];
+
+  for (const a of articles) {
+    const existing = await prisma.journalArticle.findUnique({ where: { slug: a.slug } });
+    if (!existing) {
+      await prisma.journalArticle.create({ data: a });
+    }
+  }
 }
 
 main()

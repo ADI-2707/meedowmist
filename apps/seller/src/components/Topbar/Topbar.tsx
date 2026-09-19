@@ -4,16 +4,12 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import {
   Menu,
-  PanelLeftClose,
-  PanelLeft,
   ExternalLink,
   LogOut,
 } from 'lucide-react';
 import styles from './Topbar.module.css';
 
 interface TopbarProps {
-  collapsed: boolean;
-  onToggleCollapse: () => void;
   onOpenMobile: () => void;
   onLogout: () => void;
 }
@@ -39,8 +35,6 @@ export function getSellerPageTitle(pathname: string): string {
 }
 
 export function Topbar({
-  collapsed,
-  onToggleCollapse,
   onOpenMobile,
   onLogout,
 }: TopbarProps) {
@@ -57,16 +51,6 @@ export function Topbar({
           aria-label="Open menu"
         >
           <Menu size={20} />
-        </button>
-
-        <button
-          type="button"
-          onClick={onToggleCollapse}
-          className={styles.collapseBtn}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
         </button>
 
         <h1 className={styles.pageTitle}>{getSellerPageTitle(pathname)}</h1>

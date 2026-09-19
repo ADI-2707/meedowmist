@@ -11,16 +11,29 @@ export async function GET(request: Request) {
 
     const whereClause: {
       category?: string;
-      name?: { contains: string };
       isActive?: boolean;
+      OR?: Array<{
+        name?: { contains: string };
+        description?: { contains: string };
+        materials?: { contains: string };
+        subCategory?: { contains: string };
+        colorFamily?: { contains: string };
+      }>;
     } = {};
 
     if (category && category !== 'ALL') {
       whereClause.category = category;
     }
 
-    if (search) {
-      whereClause.name = { contains: search };
+    if (search && search.trim()) {
+      const q = search.trim();
+      whereClause.OR = [
+        { name: { contains: q } },
+        { description: { contains: q } },
+        { materials: { contains: q } },
+        { subCategory: { contains: q } },
+        { colorFamily: { contains: q } },
+      ];
     }
 
     if (status === 'ACTIVE') {
@@ -31,10 +44,28 @@ export async function GET(request: Request) {
 
     const products = await prisma.product.findMany({
       where: whereClause,
-      orderBy: { createdAt: 'desc' },
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
+      orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     });
 
-    return NextResponse.json({ products });
+    const formatted = products.map((p) => {
+      const revs = p.reviews || [];
+      const reviewCount = revs.length;
+      const ratingSum = revs.reduce((sum, r) => sum + r.rating, 0);
+      const averageRating = reviewCount > 0 ? Number((ratingSum / reviewCount).toFixed(1)) : 5;
+      return {
+        ...p,
+        averageRating,
+        reviewCount,
+      };
+    });
+
+    return NextResponse.json({ products: formatted });
   } catch (error) {
     console.error('Products GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });

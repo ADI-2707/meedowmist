@@ -314,3 +314,15 @@
     transform: none;
   }
 }
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ratingCount {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+}

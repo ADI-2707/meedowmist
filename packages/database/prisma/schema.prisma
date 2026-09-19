@@ -22,6 +22,7 @@ model User {
   wishlistItems WishlistItem[]
   cartItems     CartItem[]
   enquiries     Enquiry[]
+  reviews       Review[]
 }
 
 model Address {
@@ -71,6 +72,7 @@ model Product {
   wishlistItems     WishlistItem[]
   cartItems         CartItem[]
   inventoryLogs     InventoryLog[]
+  reviews           Review[]
 
   @@index([category])
   @@index([isActive])
@@ -247,4 +249,44 @@ model StoreSettings {
   aboutStory            String?
   aboutArtisanNote      String?
   updatedAt             DateTime @updatedAt
+}
+
+model Review {
+  id                 String   @id @default(cuid())
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating             Int
+  title              String?
+  comment            String
+  isVerifiedPurchase Boolean  @default(false)
+  isApproved         Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model JournalArticle {
+  id                  String   @id @default(cuid())
+  slug                String   @unique
+  title               String
+  excerpt             String
+  content             String
+  category            String
+  readTime            String   @default("4 min read")
+  coverImage          String
+  isPublished         Boolean  @default(true)
+  publishedAt         DateTime @default(now())
+  tags                String?
+  relatedProductSlugs String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([isPublished])
 }

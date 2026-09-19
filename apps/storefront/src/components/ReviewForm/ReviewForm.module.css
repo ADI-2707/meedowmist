@@ -1,0 +1,126 @@
+.formContainer {
+  background: var(--color-surface, #FDFBF7);
+  border: 1px solid var(--color-parchment-deep, #e6ded3);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.title {
+  font-family: var(--font-display, serif);
+  font-size: 1.25rem;
+  color: var(--color-ink, #2C2825);
+  margin-bottom: 16px;
+}
+
+.ratingSelectGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-muted, #7A7265);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-parchment-deep, #e6ded3);
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: var(--font-body, inherit);
+  font-size: 0.95rem;
+  color: var(--color-ink, #2C2825);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: var(--color-gold, #B4903F);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-parchment-deep, #e6ded3);
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: var(--font-body, inherit);
+  font-size: 0.95rem;
+  color: var(--color-ink, #2C2825);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  border-color: var(--color-gold, #B4903F);
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  background: var(--color-forest, #33422A);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorMsg {
+  color: #c53030;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.successMsg {
+  color: #2f855a;
+  font-size: 0.9rem;
+  background: #f0fff4;
+  border: 1px solid #c6f6d5;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+.loginPrompt {
+  padding: 16px;
+  background: var(--color-parchment, #F7F2E7);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-ink-muted, #7A7265);
+}
+
+.loginLink {
+  color: var(--color-forest, #33422A);
+  font-weight: 600;
+  text-decoration: underline;
+}
