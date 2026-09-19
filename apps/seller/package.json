@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "prisma generate --schema=../../packages/database/prisma/schema.prisma && next build",
+    "build": "prisma db push --schema=../../packages/database/prisma/schema.prisma --accept-data-loss && next build",
     "start": "next start -p 3001",
     "lint": "eslint"
   },

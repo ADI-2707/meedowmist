@@ -23,27 +23,37 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = await prisma.journalArticle.findUnique({
-    where: { slug },
-  });
-  if (!article) return { title: 'Article Not Found' };
+  try {
+    const article = await prisma.journalArticle.findUnique({
+      where: { slug },
+    });
+    if (!article) return { title: 'Article Not Found' };
 
-  return {
-    title: `${article.title} | Meadow Mist Journal`,
-    description: article.excerpt,
-    openGraph: {
-      title: article.title,
+    return {
+      title: `${article.title} | Meadow Mist Journal`,
       description: article.excerpt,
-      images: [{ url: article.coverImage }],
-    },
-  };
+      openGraph: {
+        title: article.title,
+        description: article.excerpt,
+        images: [{ url: article.coverImage }],
+      },
+    };
+  } catch {
+    return { title: 'Journal & Care Guides | Meadow Mist' };
+  }
 }
 
 export default async function JournalArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = await prisma.journalArticle.findUnique({
-    where: { slug },
-  });
+  let article = null;
+
+  try {
+    article = await prisma.journalArticle.findUnique({
+      where: { slug },
+    });
+  } catch (err) {
+    console.error('Failed to query journal article by slug from DB:', err);
+  }
 
   if (!article || !article.isPublished) {
     notFound();
@@ -85,19 +95,23 @@ export default async function JournalArticlePage({ params }: Props) {
   }
 
   if (relatedProducts.length === 0) {
-    relatedProducts = await prisma.product.findMany({
-      where: { isActive: true },
-      take: 2,
-      select: {
-        id: true,
-        slug: true,
-        name: true,
-        price: true,
-        salePrice: true,
-        images: true,
-        category: true,
-      },
-    });
+    try {
+      relatedProducts = await prisma.product.findMany({
+        where: { isActive: true },
+        take: 2,
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          price: true,
+          salePrice: true,
+          images: true,
+          category: true,
+        },
+      });
+    } catch {
+      relatedProducts = [];
+    }
   }
 
   const paragraphs = article.content.split('\n\n');

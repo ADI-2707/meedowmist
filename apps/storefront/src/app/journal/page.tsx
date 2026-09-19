@@ -8,10 +8,28 @@ export const metadata: Metadata = {
 };
 
 export default async function JournalPage() {
-  const articles = await prisma.journalArticle.findMany({
-    where: { isPublished: true },
-    orderBy: { publishedAt: 'desc' },
-  });
+  let articles: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+    readTime: string;
+    coverImage: string;
+    isPublished: boolean;
+    publishedAt: Date;
+  }> = [];
+
+  try {
+    articles = await prisma.journalArticle.findMany({
+      where: { isPublished: true },
+      orderBy: { publishedAt: 'desc' },
+    });
+  } catch (err) {
+    console.error('Failed to query journal articles from DB:', err);
+    articles = [];
+  }
 
   const formatted = articles.map((a) => ({
     id: a.id,
@@ -23,7 +41,7 @@ export default async function JournalPage() {
     readTime: a.readTime,
     coverImage: a.coverImage,
     isPublished: a.isPublished,
-    publishedAt: a.publishedAt.toISOString(),
+    publishedAt: typeof a.publishedAt === 'string' ? a.publishedAt : a.publishedAt.toISOString(),
   }));
 
   return <JournalClient articles={formatted} />;
