@@ -7,8 +7,8 @@
   "scripts": {
     "build": "echo database ready",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:push": "node scripts/db-push.js",
+    "db:seed": "node scripts/db-seed.js",
     "db:clean": "tsx prisma/clean.ts",
     "db:studio": "prisma studio"
   },
