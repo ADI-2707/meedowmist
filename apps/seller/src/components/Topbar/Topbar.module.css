@@ -31,25 +31,6 @@
   cursor: pointer;
 }
 
-.collapseBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-gold-soft);
-  color: var(--color-forest);
-  cursor: pointer;
-  transition: all var(--duration-fast);
-}
-
-.collapseBtn:hover {
-  background-color: var(--color-canvas-alt);
-  border-color: var(--color-gold);
-}
-
 .pageTitle {
   font-family: var(--font-display);
   font-size: 1.15rem;
@@ -154,9 +135,6 @@
 @media (max-width: 1024px) {
   .menuBtn {
     display: flex;
-  }
-  .collapseBtn {
-    display: none;
   }
   .topbar {
     padding: 0 var(--space-4);

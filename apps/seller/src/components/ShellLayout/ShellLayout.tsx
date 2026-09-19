@@ -56,8 +56,6 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
 
       <div className={styles.contentWrapper}>
         <Topbar
-          collapsed={collapsed}
-          onToggleCollapse={handleToggleCollapse}
           onOpenMobile={() => setMobileOpen(true)}
           onLogout={handleLogout}
         />
