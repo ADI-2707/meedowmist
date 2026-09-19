@@ -28,4 +28,58 @@ export interface Product {
   isFeatured?: boolean;
   isActive?: boolean;
   customOptions?: CustomOptions | null;
+  averageRating?: number;
+  reviewCount?: number;
+}
+
+export interface Review {
+  id: string;
+  productId: string;
+  userId: string;
+  rating: number;
+  title?: string | null;
+  comment: string;
+  isVerifiedPurchase: boolean;
+  isApproved: boolean;
+  createdAt: string;
+  user?: {
+    name: string;
+  };
+  product?: {
+    name: string;
+    slug: string;
+  };
+}
+
+export interface ReviewInput {
+  rating: number;
+  title?: string;
+  comment: string;
+}
+
+export interface RatingDistribution {
+  average: number;
+  total: number;
+  counts: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+}
+
+export interface JournalArticle {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  readTime: string;
+  coverImage: string;
+  isPublished: boolean;
+  publishedAt: string;
+  tags?: string[];
+  relatedProductSlugs?: string[];
 }
