@@ -1,0 +1,164 @@
+.timelineContainer {
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid var(--color-canvas-alt, #E6DEC8);
+  border-radius: 10px;
+}
+
+.cancelledNotice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+  color: #c53030;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  padding: 8px 0;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+}
+
+.stepConnector {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.connectorProgress {
+  height: 100%;
+  background: var(--color-gold, #B4903F);
+  transition: width 0.3s ease;
+}
+
+.node {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #cbd5e0;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.nodeActive {
+  border-color: var(--color-gold, #B4903F);
+  background: var(--color-canvas, #F7F2E7);
+  color: var(--color-gold, #B4903F);
+  box-shadow: 0 0 0 4px rgba(180, 144, 63, 0.18);
+}
+
+.nodeCompleted {
+  border-color: var(--color-forest, #33422A);
+  background: var(--color-forest, #33422A);
+  color: #ffffff;
+}
+
+.stepLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  white-space: nowrap;
+}
+
+.stepLabelActive {
+  color: var(--color-forest, #33422A);
+  font-weight: 700;
+}
+
+.trackingCard {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-canvas-alt, #E6DEC8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.trackingInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-forest, #33422A);
+}
+
+.partnerBadge {
+  font-weight: 700;
+  color: var(--color-forest, #33422A);
+  background: var(--color-canvas, #F7F2E7);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-canvas-alt, #E6DEC8);
+}
+
+.trackingCode {
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--color-terracotta, #C97B5B);
+}
+
+.courierNote {
+  color: #718096;
+  font-size: 0.78rem;
+}
+
+.trackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-gold, #B4903F);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  border: 1px solid var(--color-gold, #B4903F);
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.trackLink:hover {
+  background: var(--color-gold, #B4903F);
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .stepLabel {
+    font-size: 0.7rem;
+    white-space: normal;
+  }
+  .node {
+    width: 28px;
+    height: 28px;
+  }
+}

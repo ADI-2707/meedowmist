@@ -111,6 +111,24 @@ export default function AdminOrderDetailPage({ params }: Props) {
     }
   };
 
+  const handleUpdateReturnStatus = async (newStatus: string) => {
+    try {
+      const res = await fetch(`/api/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ returnStatus: newStatus }),
+      });
+      if (res.ok) {
+        alert(`Return status updated to ${newStatus}`);
+        fetchOrder();
+      } else {
+        alert('Failed to update return status');
+      }
+    } catch {
+      alert('Error updating return status');
+    }
+  };
+
   const handleUpdateCourier = async () => {
     try {
       const res = await fetch(`/api/orders/${id}/courier`, {
@@ -351,12 +369,31 @@ export default function AdminOrderDetailPage({ params }: Props) {
               )}
 
               {order.returnReason && (
-                <div style={{ marginBottom: '16px' }}>
-                  <p style={{ fontWeight: 600, fontSize: '0.8rem' }}>Return Request Reason:</p>
-                  <p style={{ fontSize: '0.85rem' }}>{order.returnReason}</p>
-                  <p style={{ fontSize: '0.8rem', color: '#c53030', fontWeight: 600 }}>
-                    Status: {order.returnStatus}
+                <div style={{ marginBottom: '16px', background: '#fffaf0', padding: '12px', borderRadius: '6px', border: '1px solid #feebc8' }}>
+                  <p style={{ fontWeight: 600, fontSize: '0.8rem', color: '#7b341e' }}>Customer Return Request:</p>
+                  <p style={{ fontSize: '0.85rem', margin: '4px 0 8px', color: '#2d3748' }}>{order.returnReason}</p>
+                  <p style={{ fontSize: '0.8rem', fontWeight: 600, color: order.returnStatus === 'APPROVED' ? '#2b6cb0' : order.returnStatus === 'REJECTED' ? '#c53030' : '#d69e2e' }}>
+                    Current Return Status: {order.returnStatus}
                   </p>
+
+                  {order.returnStatus === 'REQUESTED' && (
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                      <button
+                        onClick={() => handleUpdateReturnStatus('APPROVED')}
+                        className={styles.saveBtn}
+                        style={{ backgroundColor: '#2b6cb0', padding: '6px 12px', fontSize: '0.8rem' }}
+                      >
+                        Approve Return
+                      </button>
+                      <button
+                        onClick={() => handleUpdateReturnStatus('REJECTED')}
+                        className={styles.saveBtn}
+                        style={{ backgroundColor: '#718096', padding: '6px 12px', fontSize: '0.8rem' }}
+                      >
+                        Decline Return
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

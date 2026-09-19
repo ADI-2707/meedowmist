@@ -1,0 +1,282 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 36, 22, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 92vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.actionBar {
+  padding: 14px 24px;
+  background: var(--color-canvas, #F7F2E7);
+  border-bottom: 1px solid var(--color-canvas-alt, #E6DEC8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invoicePill {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-forest, #33422A);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.actionBtns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.printBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-forest, #33422A);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.printBtn:hover {
+  background: #25311f;
+}
+
+.closeBtn {
+  background: transparent;
+  border: 1px solid var(--color-canvas-alt, #E6DEC8);
+  color: var(--color-forest, #33422A);
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.closeBtn:hover {
+  background: var(--color-canvas-alt, #E6DEC8);
+}
+
+.printableArea {
+  padding: 36px 40px;
+  overflow-y: auto;
+  color: #1a202c;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #ffffff;
+}
+
+.invoiceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+}
+
+.brandName {
+  font-family: var(--font-fraunces, serif);
+  font-size: 1.6rem;
+  color: var(--color-forest, #33422A);
+  margin: 0 0 4px 0;
+}
+
+.brandTagline {
+  font-size: 0.82rem;
+  color: #718096;
+  margin: 0 0 8px 0;
+}
+
+.brandDetails {
+  font-size: 0.8rem;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.invoiceMeta {
+  text-align: right;
+}
+
+.invoiceTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px 0;
+}
+
+.metaRow {
+  font-size: 0.82rem;
+  color: #4a5568;
+  margin-bottom: 4px;
+}
+
+.metaRow strong {
+  color: #1a202c;
+}
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+  font-size: 0.82rem;
+}
+
+.addressCard {
+  background: #f7fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.addressHeading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #718096;
+  margin-bottom: 8px;
+}
+
+.addressName {
+  font-weight: 700;
+  color: #2d3748;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.addressLine {
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 0.82rem;
+}
+
+.itemsTable th {
+  background: #f7fafc;
+  color: #4a5568;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.itemsTable td {
+  padding: 12px;
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+}
+
+.summaryContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 28px;
+}
+
+.summaryTable {
+  width: 320px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.summaryTable td {
+  padding: 6px 12px;
+}
+
+.summaryTotal {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-forest, #33422A);
+  border-top: 2px solid #e2e8f0;
+  padding-top: 10px !important;
+}
+
+.notesSection {
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  color: #718096;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .backdrop {
+    position: static;
+    background: transparent;
+    padding: 0;
+  }
+  .modal {
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+  }
+  .printableArea, .printableArea * {
+    visibility: visible;
+  }
+  .printableArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .actionBar {
+    display: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
