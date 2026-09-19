@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Check, Clock, PackageCheck, Truck, Home, AlertOctagon, ExternalLink } from 'lucide-react';
 import styles from './OrderTimeline.module.css';
 
