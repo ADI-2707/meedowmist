@@ -10,14 +10,15 @@
     "dev": "concurrently -n \"storefront,seller\" -c \"cyan,magenta\" \"npm run dev:storefront\" \"npm run dev:seller\"",
     "dev:storefront": "npm run dev --workspace=@meadowmist/storefront",
     "dev:seller": "npm run dev --workspace=@meadowmist/seller",
-    "build": "npm run build:storefront && npm run build:seller",
-    "build:storefront": "npm run build --workspace=@meadowmist/storefront",
-    "build:seller": "npm run build --workspace=@meadowmist/seller",
+    "build": "npm run db:generate && npm run build:storefront && npm run build:seller",
+    "build:storefront": "npm run db:generate && npm run build --workspace=@meadowmist/storefront",
+    "build:seller": "npm run db:generate && npm run build --workspace=@meadowmist/seller",
     "db:push": "npm run db:push --workspace=@meadowmist/database",
     "db:seed": "npm run db:seed --workspace=@meadowmist/database",
     "db:clean": "npm run db:clean --workspace=@meadowmist/database",
     "db:studio": "npm run db:studio --workspace=@meadowmist/database",
     "db:generate": "npm run db:generate --workspace=@meadowmist/database",
+    "postinstall": "npm run db:generate",
     "typecheck": "tsc --noEmit --project apps/storefront/tsconfig.json && tsc --noEmit --project apps/seller/tsconfig.json && tsc --noEmit --project packages/database/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
     "lint": "eslint apps/storefront/src apps/seller/src packages/shared/src packages/database/src",
     "test": "vitest run"
@@ -38,6 +39,8 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@testing-library/react": "16.3.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

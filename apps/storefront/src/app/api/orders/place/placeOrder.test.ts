@@ -91,7 +91,7 @@ describe('Place Order API Route', () => {
       role: 'CUSTOMER',
     });
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (callback) => {
+    vi.mocked(prisma.$transaction).mockImplementation(async (callback: any) => {
       const mockTx = {
         product: {
           findUnique: vi.fn().mockResolvedValue({
@@ -105,7 +105,7 @@ describe('Place Order API Route', () => {
           updateMany: vi.fn().mockResolvedValue({ count: 0 }),
         },
       };
-      return callback(mockTx as unknown as Parameters<Parameters<typeof prisma.$transaction>[0]>[0]);
+      return callback(mockTx as any);
     });
 
     const req = new Request('http://localhost:3000/api/orders/place', {
@@ -139,7 +139,7 @@ describe('Place Order API Route', () => {
       status: 'PENDING',
     };
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (callback) => {
+    vi.mocked(prisma.$transaction).mockImplementation(async (callback: any) => {
       const mockTx = {
         product: {
           findUnique: vi.fn()
@@ -167,7 +167,7 @@ describe('Place Order API Route', () => {
           deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
         },
       };
-      return callback(mockTx as unknown as Parameters<Parameters<typeof prisma.$transaction>[0]>[0]);
+      return callback(mockTx as any);
     });
 
     const req = new Request('http://localhost:3000/api/orders/place', {

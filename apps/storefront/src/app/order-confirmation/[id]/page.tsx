@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { prisma, OrderItem } from '@/lib/prisma';
 import styles from './page.module.css';
 
 interface Props {
@@ -83,7 +83,7 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
           <div className={styles.itemsSection}>
             <h2 className={styles.sectionHeading}>Items Ordered</h2>
-            {order.items.map((item) => (
+            {order.items.map((item: OrderItem) => (
               <div key={item.id} className={styles.itemRow}>
                 <div className={styles.itemThumb}>
                   <Image

@@ -140,7 +140,7 @@ export async function getAllSlugs(): Promise<string[]> {
       where: { isActive: true },
       select: { slug: true },
     });
-    return items.map((i) => i.slug);
+    return items.map((i: { slug: string }) => i.slug);
   } catch (err) {
     console.error('Failed to query slugs from DB:', err);
     return [];

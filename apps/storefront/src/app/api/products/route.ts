@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, Prisma } from '@/lib/prisma';
 import { getAdminSessionUser } from '@/lib/session';
 
 export async function GET(request: Request) {
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
 
     const initialStock = Number(stockQuantity) || 0;
 
-    const product = await prisma.$transaction(async (tx) => {
+    const product = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const created = await tx.product.create({
         data: {
           name: String(name).trim(),

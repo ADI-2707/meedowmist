@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, Prisma } from '@/lib/prisma';
 import { getSessionUser, getAdminSessionUser } from '@/lib/session';
 
 interface RouteContext {
@@ -39,7 +39,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const updatedOrder = await prisma.$transaction(async (tx) => {
+    const updatedOrder = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       for (const item of order.items) {
         const product = await tx.product.findUnique({
           where: { id: item.productId },

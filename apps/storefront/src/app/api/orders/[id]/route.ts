@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, Prisma } from '@/lib/prisma';
 import { getAdminSessionUser } from '@/lib/session';
 
 interface RouteContext {
@@ -91,7 +91,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
 
     if (status === 'CANCELLED' && existing.status !== 'CANCELLED') {
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         for (const item of existing.items) {
           const prod = await tx.product.findUnique({ where: { id: item.productId } });
           if (prod) {
