@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { NAV_ITEMS, isSidebarItemActive } from './Sidebar';
 
 describe('Seller Sidebar Navigation', () => {
-  it('contains all 9 required seller navigation items', () => {
-    expect(NAV_ITEMS.length).toBe(9);
+  it('contains all 10 required seller navigation items', () => {
+    expect(NAV_ITEMS.length).toBe(10);
 
     const labels = NAV_ITEMS.map((i) => i.label);
     expect(labels).toContain('Dashboard');
@@ -11,6 +11,7 @@ describe('Seller Sidebar Navigation', () => {
     expect(labels).toContain('Inventory Stock');
     expect(labels).toContain('Orders & Shipments');
     expect(labels).toContain('Customers');
+    expect(labels).toContain('Customer Reviews');
     expect(labels).toContain('Contact Enquiries');
     expect(labels).toContain('Store Content CMS');
     expect(labels).toContain('Promo Discounts');
