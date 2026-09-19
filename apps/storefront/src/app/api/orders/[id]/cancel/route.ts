@@ -32,6 +32,14 @@ export async function POST(request: Request, context: RouteContext) {
       return NextResponse.json({ error: 'Unauthorized to cancel this order' }, { status: 403 });
     }
 
+    // Strict rule: Order can only be cancelled before shipping confirmation
+    if (order.trackingNumber || order.status === 'SHIPPED' || order.status === 'DELIVERED') {
+      return NextResponse.json(
+        { error: 'Cannot cancel an order after shipping has been confirmed. You can request a return after delivery.' },
+        { status: 400 }
+      );
+    }
+
     if (order.status !== 'PENDING' && order.status !== 'PROCESSING') {
       return NextResponse.json(
         { error: `Cannot cancel an order that is already ${order.status.toLowerCase()}` },
