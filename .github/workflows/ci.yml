@@ -46,6 +46,11 @@ jobs:
       - name: Generate Prisma Client
         run: npm run db:generate
 
+      - name: Setup Database
+        run: |
+          npm run db:push
+          npm run db:seed
+
       - name: Run ESLint
         run: npm run lint
 
