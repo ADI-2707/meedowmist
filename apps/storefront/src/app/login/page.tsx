@@ -43,10 +43,10 @@ function LoginForm() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setError(data.error || 'Failed to sign in');
+        setError(data?.error || `Failed to sign in (${res.status})`);
         setLoading(false);
         return;
       }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
-import { middleware } from './middleware';
+import { proxy } from './proxy';
 import { SESSION_COOKIE_NAME } from '@meadowmist/shared';
 import * as shared from '@meadowmist/shared';
 
@@ -26,7 +26,7 @@ describe('Storefront Middleware', () => {
 
     for (const url of publicUrls) {
       const req = new NextRequest(url);
-      const res = await middleware(req);
+      const res = await proxy(req);
       expect(res.status).toBe(200);
       expect(res.headers.get('location')).toBeNull();
     }
@@ -34,7 +34,7 @@ describe('Storefront Middleware', () => {
 
   it('returns 401 JSON for unauthenticated /api/account routes', async () => {
     const req = new NextRequest('http://localhost:3000/api/account/profile');
-    const res = await middleware(req);
+    const res = await proxy(req);
 
     expect(res.status).toBe(401);
     const body = await res.json();
@@ -43,7 +43,7 @@ describe('Storefront Middleware', () => {
 
   it('redirects unauthenticated /account to /login with redirect parameter', async () => {
     const req = new NextRequest('http://localhost:3000/account');
-    const res = await middleware(req);
+    const res = await proxy(req);
 
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost:3000/login?redirect=%2Faccount');
@@ -51,7 +51,7 @@ describe('Storefront Middleware', () => {
 
   it('redirects unauthenticated /checkout to /login with redirect parameter', async () => {
     const req = new NextRequest('http://localhost:3000/checkout');
-    const res = await middleware(req);
+    const res = await proxy(req);
 
     expect(res.status).toBe(307);
     expect(res.headers.get('location')).toBe('http://localhost:3000/login?redirect=%2Fcheckout');
@@ -66,7 +66,7 @@ describe('Storefront Middleware', () => {
       },
     });
 
-    const res = await middleware(req);
+    const res = await proxy(req);
     expect(res.status).toBe(401);
     const body = await res.json();
     expect(body).toEqual({ error: 'Unauthorized' });
@@ -86,7 +86,7 @@ describe('Storefront Middleware', () => {
       },
     });
 
-    const res = await middleware(req);
+    const res = await proxy(req);
     expect(res.status).toBe(200);
   });
 });

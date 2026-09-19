@@ -22,10 +22,10 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setError(data.error || 'Invalid credentials or not an admin account');
+        setError(data?.error || `Login failed (${res.status}). Please check credentials or server logs.`);
         setLoading(false);
         return;
       }
