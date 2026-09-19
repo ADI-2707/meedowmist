@@ -18,7 +18,7 @@
 }
 
 .brand {
-  height: 64px;
+  height: 50px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
 .brandLink {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   min-width: 0;
 }
@@ -52,16 +52,16 @@
 
 .brandName {
   font-family: var(--font-display);
-  font-size: 1.12rem;
-  letter-spacing: 0.04em;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
   color: #ffffff;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .brandBadge {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--color-gold);
 }
 
@@ -69,8 +69,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -105,11 +105,11 @@
 
 .sidebarCollapsed .topCollapseBtn {
   position: absolute;
-  right: -12px;
+  right: -11px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #ffffff;
   border: 1px solid var(--color-gold-soft);

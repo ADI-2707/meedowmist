@@ -85,8 +85,8 @@ export function Sidebar({
             <Image
               src="/images/logo.jpg"
               alt="Meadow Mist"
-              width={34}
-              height={34}
+              width={30}
+              height={30}
               className={styles.brandLogo}
             />
             {(!collapsed || mobileOpen) && (
