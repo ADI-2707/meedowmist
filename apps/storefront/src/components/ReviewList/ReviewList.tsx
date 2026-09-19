@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import StarRating from '@/components/StarRating/StarRating';
 import type { Review } from '@meadowmist/shared';
 import styles from './ReviewList.module.css';
