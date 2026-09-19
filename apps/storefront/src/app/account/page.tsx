@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
+import { OrderCancelModal } from '@/components/OrderCancelModal/OrderCancelModal';
+import { OrderReturnModal } from '@/components/OrderReturnModal/OrderReturnModal';
+import { OrderInvoiceModal } from '@/components/OrderInvoiceModal/OrderInvoiceModal';
+import { OrderTimeline } from '@/components/OrderTimeline/OrderTimeline';
+import { FileText, RotateCcw, ShoppingBag, AlertCircle } from 'lucide-react';
 import styles from './page.module.css';
 
 interface OrderItem {
@@ -24,12 +29,25 @@ interface Order {
   id: string;
   orderNumber: string;
   status: string;
+  subtotal: number;
+  shippingCharges: number;
+  discountAmount: number;
   totalAmount: number;
+  promoCode?: string | null;
   paymentMethod: string;
   paymentStatus: string;
+  paymentRef?: string | null;
+  refundedAmount?: number;
+  refundReason?: string | null;
+  cancellationReason?: string | null;
+  cancelledAt?: string | null;
+  returnReason?: string | null;
+  returnStatus?: string | null;
+  returnRequestedAt?: string | null;
   trackingNumber?: string | null;
   courierPartner?: string | null;
   courierStatus?: string | null;
+  shippingAddress: string;
   createdAt: string;
   items: OrderItem[];
 }
@@ -143,18 +161,20 @@ export default function AccountPage() {
     router.refresh();
   };
 
-  const handleCancelOrder = async (orderId: string) => {
-    const reason = window.prompt('Please provide a reason for cancellation:');
-    if (reason === null) return;
+  const [cancellingOrder, setCancellingOrder] = useState<Order | null>(null);
+  const [returningOrder, setReturningOrder] = useState<Order | null>(null);
+  const [invoicingOrder, setInvoicingOrder] = useState<Order | null>(null);
 
+  const handleConfirmCancel = async (reason: string) => {
+    if (!cancellingOrder) return;
     try {
-      const res = await fetch(`/api/orders/${orderId}/cancel`, {
+      const res = await fetch(`/api/orders/${cancellingOrder.id}/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reason }),
       });
       if (res.ok) {
-        alert('Order has been cancelled.');
+        setCancellingOrder(null);
         fetchData();
       } else {
         const d = await res.json();
@@ -165,18 +185,21 @@ export default function AccountPage() {
     }
   };
 
-  const handleReturnOrder = async (orderId: string) => {
-    const reason = window.prompt('Please provide a reason for requesting a return:');
-    if (!reason) return;
-
+  const handleConfirmReturn = async (data: {
+    reason: string;
+    resolutionPreference: 'REFUND' | 'REPLACEMENT';
+    notes: string;
+    selectedItems: string[];
+  }) => {
+    if (!returningOrder) return;
     try {
-      const res = await fetch(`/api/orders/${orderId}/return`, {
+      const res = await fetch(`/api/orders/${returningOrder.id}/return`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason }),
+        body: JSON.stringify(data),
       });
       if (res.ok) {
-        alert('Return request submitted. Our team will contact you within 24 hours.');
+        setReturningOrder(null);
         fetchData();
       } else {
         const d = await res.json();
@@ -185,6 +208,26 @@ export default function AccountPage() {
     } catch {
       alert('Error submitting return request');
     }
+  };
+
+  const handleReorder = (order: Order) => {
+    for (const item of order.items) {
+      let firstImage = item.productImage;
+      if (!firstImage) {
+        firstImage = '/images/products/sunflower-wax-cluster-yellow.jpg';
+      }
+      addItem({
+        productId: item.id,
+        slug: item.product?.slug || 'sunflower-wax-cluster-candle',
+        name: item.productName,
+        price: item.unitPrice,
+        image: firstImage,
+        category: (item.product?.category as 'candle' | 'ceramic') || 'candle',
+        selectedFragrance: item.selectedFragrance || undefined,
+        selectedColor: item.selectedColor || undefined,
+      });
+    }
+    openDrawer();
   };
 
   const handleSaveAddress = async (e: React.FormEvent) => {
@@ -378,8 +421,45 @@ export default function AccountPage() {
                           <span className={`${styles.statusPill} ${statusClass}`}>
                             {order.status}
                           </span>
+                          {order.returnStatus && order.returnStatus !== 'NONE' && (
+                            <span
+                              className={`${styles.statusPill} ${
+                                order.returnStatus === 'REQUESTED'
+                                  ? styles.statusReturnRequested
+                                  : order.returnStatus === 'APPROVED'
+                                  ? styles.statusReturnApproved
+                                  : order.returnStatus === 'COMPLETED'
+                                  ? styles.statusReturnCompleted
+                                  : styles.statusReturnRejected
+                              }`}
+                              style={{ marginLeft: '8px' }}
+                            >
+                              Return: {order.returnStatus}
+                            </span>
+                          )}
                         </div>
                       </div>
+
+                      {order.cancellationReason && (
+                        <div className={styles.reasonNotice} style={{ background: '#fff5f5', borderColor: '#fed7d7', color: '#c53030' }}>
+                          <AlertCircle size={14} />
+                          <span><strong>Cancelled:</strong> {order.cancellationReason}</span>
+                        </div>
+                      )}
+
+                      {order.returnReason && (
+                        <div className={styles.reasonNotice} style={{ background: '#feebc8', borderColor: '#fbd38d', color: '#7b341e' }}>
+                          <RotateCcw size={14} />
+                          <span><strong>Return Request:</strong> {order.returnReason}</span>
+                        </div>
+                      )}
+
+                      <OrderTimeline
+                        status={order.status}
+                        trackingNumber={order.trackingNumber}
+                        courierPartner={order.courierPartner}
+                        courierStatus={order.courierStatus}
+                      />
 
                       <div className={styles.orderItems}>
                         {order.items.map((item) => (
@@ -424,19 +504,39 @@ export default function AccountPage() {
                           )}
                         </div>
                         <div className={styles.actionBtns}>
-                          {(order.status === 'PENDING' || order.status === 'PROCESSING') && (
+                          <button
+                            onClick={() => setInvoicingOrder(order)}
+                            className={styles.actionBtn}
+                            title="View / Print Tax Invoice"
+                          >
+                            <FileText size={13} style={{ display: 'inline', marginRight: '4px' }} />
+                            Invoice
+                          </button>
+
+                          <button
+                            onClick={() => handleReorder(order)}
+                            className={styles.actionBtn}
+                            title="Add items back to bag"
+                          >
+                            <ShoppingBag size={13} style={{ display: 'inline', marginRight: '4px' }} />
+                            Buy Again
+                          </button>
+
+                          {(order.status === 'PENDING' || order.status === 'PROCESSING') && !order.trackingNumber && (
                             <button
-                              onClick={() => handleCancelOrder(order.id)}
+                              onClick={() => setCancellingOrder(order)}
                               className={`${styles.actionBtn} ${styles.cancelBtn}`}
                             >
                               Cancel Order
                             </button>
                           )}
-                          {order.status === 'DELIVERED' && (
+
+                          {order.status === 'DELIVERED' && (!order.returnStatus || order.returnStatus === 'NONE') && (
                             <button
-                              onClick={() => handleReturnOrder(order.id)}
+                              onClick={() => setReturningOrder(order)}
                               className={styles.actionBtn}
                             >
+                              <RotateCcw size={13} style={{ display: 'inline', marginRight: '4px' }} />
                               Request Return
                             </button>
                           )}
@@ -686,6 +786,31 @@ export default function AccountPage() {
             </div>
           )}
         </div>
+        {/* Customer Self-Service Modals */}
+        <OrderCancelModal
+          isOpen={!!cancellingOrder}
+          orderNumber={cancellingOrder?.orderNumber || ''}
+          paymentMethod={cancellingOrder?.paymentMethod || 'COD'}
+          totalAmount={cancellingOrder?.totalAmount || 0}
+          onClose={() => setCancellingOrder(null)}
+          onConfirm={handleConfirmCancel}
+        />
+
+        <OrderReturnModal
+          isOpen={!!returningOrder}
+          orderNumber={returningOrder?.orderNumber || ''}
+          items={returningOrder?.items || []}
+          onClose={() => setReturningOrder(null)}
+          onConfirm={handleConfirmReturn}
+        />
+
+        <OrderInvoiceModal
+          isOpen={!!invoicingOrder}
+          order={invoicingOrder}
+          customerName={user?.name}
+          customerEmail={user?.email}
+          onClose={() => setInvoicingOrder(null)}
+        />
       </div>
     </div>
   );
