@@ -8,6 +8,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import PriceTag from '@/components/PriceTag/PriceTag';
 import ScentBadge from '@/components/ScentBadge/ScentBadge';
+import StarRating from '@/components/StarRating/StarRating';
 import styles from './ProductCard.module.css';
 
 interface Props {
@@ -139,6 +140,12 @@ export default function ProductCard({ product }: Props) {
               {product.name}
             </Link>
           </h3>
+          {product.averageRating !== undefined && product.reviewCount !== undefined && product.reviewCount > 0 && (
+            <div className={styles.ratingRow}>
+              <StarRating rating={product.averageRating} />
+              <span className={styles.ratingCount}>({product.reviewCount})</span>
+            </div>
+          )}
           <p className={styles.story}>{product.story.slice(0, 72)}…</p>
 
           <div className={styles.footer}>

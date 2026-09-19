@@ -166,3 +166,15 @@
     position: static;
   }
 }
+
+.ratingHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.ratingHeaderText {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted, #7A7265);
+}
