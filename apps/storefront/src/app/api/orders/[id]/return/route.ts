@@ -10,7 +10,11 @@ export async function POST(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { reason = 'Defective or damaged item' } = body;
+    const {
+      reason = 'Defective or damaged item',
+      resolutionPreference = 'REFUND',
+      notes = '',
+    } = body;
 
     const session = await getSessionUser();
     const admin = await getAdminSessionUser();
@@ -38,11 +42,20 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
+    if (order.returnStatus && order.returnStatus !== 'NONE') {
+      return NextResponse.json(
+        { error: `Return request already ${order.returnStatus.toLowerCase()} for this order` },
+        { status: 400 }
+      );
+    }
+
+    const formattedReason = `${String(reason).trim()} [Preference: ${resolutionPreference}]${notes ? ` - ${String(notes).trim()}` : ''}`;
+
     const updated = await prisma.order.update({
       where: { id },
       data: {
         returnStatus: 'REQUESTED',
-        returnReason: String(reason).trim(),
+        returnReason: formattedReason,
         returnRequestedAt: new Date(),
       },
     });
