@@ -33,7 +33,7 @@ describe('OrderReturnModal Component', () => {
       />
     );
 
-    expect(screen.getByText(/Request Return \/ Replacement/i)).toBeDefined();
+    expect(screen.getByText(/Request Return #MM-ORD-1001/i)).toBeDefined();
     expect(screen.getByText(/7-Day Handcrafted Guarantee/i)).toBeDefined();
     expect(screen.getByText(/Botanical Amber Soy Candle \(Qty: 2\)/i)).toBeDefined();
     expect(screen.getByText(/Fluted Ceramic Saucer \(Qty: 1\)/i)).toBeDefined();

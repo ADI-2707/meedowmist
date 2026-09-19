@@ -40,15 +40,9 @@ export function OrderReturnModal({
 }: OrderReturnModalProps) {
   const [selectedReason, setSelectedReason] = useState(RETURN_REASONS[0]);
   const [resolutionPreference, setResolutionPreference] = useState<'REFUND' | 'REPLACEMENT'>('REFUND');
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>(() => items.map((i) => i.id));
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (items.length > 0) {
-      setSelectedItemIds(items.map((i) => i.id));
-    }
-  }, [items]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -95,7 +89,7 @@ export function OrderReturnModal({
         <div className={styles.header}>
           <div className={styles.titleGroup}>
             <span className={styles.eyebrow}>Artisan Guarantee</span>
-            <h2 className={styles.title}>Request Return / Replacement</h2>
+            <h2 className={styles.title}>Request Return #{orderNumber}</h2>
           </div>
           <button
             onClick={onClose}
