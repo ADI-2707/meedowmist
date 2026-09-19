@@ -40,6 +40,14 @@ describe('Storefront getProducts Database-Driven Service', () => {
     inStock: true,
     isFeatured: true,
     isActive: true,
+    reviews: [{ rating: 5 }],
+  };
+
+  const reviewInclude = {
+    reviews: {
+      where: { isApproved: true },
+      select: { rating: true },
+    },
   };
 
   beforeEach(() => {
@@ -52,12 +60,14 @@ describe('Storefront getProducts Database-Driven Service', () => {
     const result = await getProducts();
     expect(prisma.product.findMany).toHaveBeenCalledWith({
       where: { isActive: true },
+      include: reviewInclude,
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     });
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('Blush Lotus Bowl');
     expect(result[0].stockQuantity).toBe(12);
     expect(result[0].inStock).toBe(true);
+    expect(result[0].averageRating).toBe(5);
   });
 
   it('filters by category when specified', async () => {
@@ -66,6 +76,7 @@ describe('Storefront getProducts Database-Driven Service', () => {
     await getProducts('ceramic');
     expect(prisma.product.findMany).toHaveBeenCalledWith({
       where: { isActive: true, category: 'ceramic' },
+      include: reviewInclude,
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     });
   });
@@ -91,6 +102,7 @@ describe('Storefront getProducts Database-Driven Service', () => {
     expect(result).not.toBeNull();
     expect(result?.slug).toBe('lotus-bowl-blush');
     expect(result?.stockQuantity).toBe(12);
+    expect(result?.averageRating).toBe(5);
   });
 
   it('fetches related products excluding current slug', async () => {
@@ -103,6 +115,7 @@ describe('Storefront getProducts Database-Driven Service', () => {
         slug: { not: 'other-slug' },
         isActive: true,
       },
+      include: reviewInclude,
       take: 3,
       orderBy: { isFeatured: 'desc' },
     });
@@ -125,6 +138,7 @@ describe('Storefront getProducts Database-Driven Service', () => {
     const featured = await getFeaturedProducts(3, 'ceramic');
     expect(prisma.product.findMany).toHaveBeenCalledWith({
       where: { isActive: true, category: 'ceramic' },
+      include: reviewInclude,
       take: 3,
       orderBy: [{ isFeatured: 'desc' }, { badge: 'desc' }],
     });
