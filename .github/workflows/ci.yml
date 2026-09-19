@@ -1,0 +1,59 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: "file:./dev.db"
+      JWT_SECRET: "meadow-mist-ci-secure-jwt-secret-key-2026"
+      ADMIN_EMAIL: "admin@meadowmist.in"
+      ADMIN_PASSWORD: "AdminMeadowMist2026!"
+      ADMIN_NAME: "Meadow Mist Admin"
+      STORAGE_PROVIDER: "local"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+      NEXT_PUBLIC_STOREFRONT_URL: "http://localhost:3000"
+      NEXT_PUBLIC_SELLER_URL: "http://localhost:3001"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run db:generate
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Strict TypeScript Typecheck
+        run: npm run typecheck
+
+      - name: Run Vitest Test Suite
+        run: npm test
+
+      - name: Build Next.js Storefront & Seller Apps
+        run: npm run build

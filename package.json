@@ -19,7 +19,7 @@
     "db:studio": "npm run db:studio --workspace=@meadowmist/database",
     "db:generate": "npm run db:generate --workspace=@meadowmist/database",
     "typecheck": "tsc --noEmit --project apps/storefront/tsconfig.json && tsc --noEmit --project apps/seller/tsconfig.json && tsc --noEmit --project packages/database/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
-    "lint": "npm run lint --workspaces",
+    "lint": "eslint apps/storefront/src apps/seller/src packages/shared/src packages/database/src",
     "test": "vitest run"
   },
   "dependencies": {
