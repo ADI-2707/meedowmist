@@ -1,0 +1,29 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #33422A 0%, #B4903F 60%, #E8D5A3 100%);
+  box-shadow: 0 0 10px rgba(180, 144, 63, 0.8), 0 0 4px rgba(51, 66, 42, 0.4);
+  transition: width 0.22s ease, opacity 0.25s ease;
+  position: relative;
+  will-change: width, opacity;
+}
+
+.glow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 12px #B4903F, 0 0 6px #B4903F;
+  opacity: 1;
+  transform: rotate(3deg) translate(0px, -2px);
+}

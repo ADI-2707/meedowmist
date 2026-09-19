@@ -1,0 +1,79 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.inStock {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+.inStock .dot {
+  background-color: #22c55e;
+}
+
+.lowStock {
+  background-color: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.lowStock .dot {
+  background-color: #f59e0b;
+}
+
+.outOfStock {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+.outOfStock .dot {
+  background-color: #ef4444;
+}
+
+.pending {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+.pending .dot {
+  background-color: #3b82f6;
+}
+
+.shipped {
+  background-color: #f5f3ff;
+  color: #5b21b6;
+  border: 1px solid #ddd6fe;
+}
+.shipped .dot {
+  background-color: #8b5cf6;
+}
+
+.delivered {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.delivered .dot {
+  background-color: #10b981;
+}
+
+.cancelled {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+.cancelled .dot {
+  background-color: #9ca3af;
+}

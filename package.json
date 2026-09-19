@@ -2,16 +2,36 @@
   "name": "meedow_mist",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "concurrently -n \"storefront,seller\" -c \"cyan,magenta\" \"npm run dev:storefront\" \"npm run dev:seller\"",
+    "dev:storefront": "npm run dev --workspace=@meadowmist/storefront",
+    "dev:seller": "npm run dev --workspace=@meadowmist/seller",
+    "build": "npm run db:generate && npm run build:storefront && npm run build:seller",
+    "build:storefront": "npm run db:generate && npm run build --workspace=@meadowmist/storefront",
+    "build:seller": "npm run db:generate && npm run build --workspace=@meadowmist/seller",
+    "db:push": "npm run db:push --workspace=@meadowmist/database",
+    "db:seed": "npm run db:seed --workspace=@meadowmist/database",
+    "db:clean": "npm run db:clean --workspace=@meadowmist/database",
+    "db:studio": "npm run db:studio --workspace=@meadowmist/database",
+    "db:generate": "npm run db:generate --workspace=@meadowmist/database",
+    "postinstall": "npm run db:generate",
+    "typecheck": "tsc --noEmit --project apps/storefront/tsconfig.json && tsc --noEmit --project apps/seller/tsconfig.json && tsc --noEmit --project packages/database/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
+    "lint": "eslint apps/storefront/src apps/seller/src packages/shared/src packages/database/src",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^2.4.3",
     "framer-motion": "^13.1.1",
+    "jose": "^5.10.0",
+    "lucide-react": "^1.47.0",
     "next": "16.3.3",
+    "prisma": "^6.19.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.86.0",
@@ -19,11 +39,22 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
+    "@testing-library/react": "16.3.3",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
-    "typescript": "^5"
+    "jsdom": "26.0.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5",
+    "vitest": "3.2.7"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   }
 }

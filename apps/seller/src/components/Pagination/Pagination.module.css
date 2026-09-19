@@ -1,0 +1,116 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--surface, #ffffff);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.infoText {
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+}
+
+.limitSelectWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background-color: var(--surface, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.select:focus {
+  border-color: var(--primary-accent, #3b82f6);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background-color: var(--surface, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.navButton:hover:not(:disabled) {
+  background-color: var(--surface-hover, #f9fafb);
+  border-color: var(--border-hover, #d1d5db);
+}
+
+.navButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pagesList {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pageButton {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-primary, #111827);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pageButton:hover:not(.activePage) {
+  background-color: var(--surface-hover, #f3f4f6);
+}
+
+.activePage {
+  background-color: var(--primary-accent, #233d32);
+  color: #ffffff;
+  border-color: var(--primary-accent, #233d32);
+}
+
+.ellipsis {
+  padding: 0 0.25rem;
+  color: var(--text-secondary, #9ca3af);
+  user-select: none;
+}
