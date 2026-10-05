@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { HERO_SLIDES, type HeroSlide } from '@/data/heroData';
 import styles from './HeroCarousel.module.css';
 
@@ -14,7 +13,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({
   slides = HERO_SLIDES,
-  autoPlayInterval = 5500,
+  autoPlayInterval = 5000,
 }: HeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -151,41 +150,22 @@ export function HeroCarousel({
         </div>
 
         {totalSlides > 1 && (
-          <>
-            <button
-              type="button"
-              className={`${styles.arrowBtn} ${styles.arrowLeft}`}
-              onClick={prevSlide}
-              aria-label="Previous slide"
-            >
-              <ChevronLeft size={22} />
-            </button>
-            <button
-              type="button"
-              className={`${styles.arrowBtn} ${styles.arrowRight}`}
-              onClick={nextSlide}
-              aria-label="Next slide"
-            >
-              <ChevronRight size={22} />
-            </button>
-
-            <div className={styles.dots} role="tablist" aria-label="Slide navigation">
-              {slides.map((slide, index) => {
-                const isActive = index === currentIndex;
-                return (
-                  <button
-                    key={slide.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-label={`Go to slide ${index + 1}`}
-                    className={`${styles.dot} ${isActive ? styles.dotActive : ''}`}
-                    onClick={() => goToSlide(index)}
-                  />
-                );
-              })}
-            </div>
-          </>
+          <div className={styles.dots} role="tablist" aria-label="Slide navigation">
+            {slides.map((slide, index) => {
+              const isActive = index === currentIndex;
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Go to slide ${index + 1}`}
+                  className={`${styles.dot} ${isActive ? styles.dotActive : ''}`}
+                  onClick={() => goToSlide(index)}
+                />
+              );
+            })}
+          </div>
         )}
       </section>
     </div>

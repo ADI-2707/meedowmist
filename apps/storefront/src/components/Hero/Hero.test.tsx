@@ -39,17 +39,29 @@ describe('HeroCarousel Component', () => {
     expect(screen.getByText(HERO_SLIDES[0].primaryCta.label)).toBeDefined();
   });
 
-  it('navigates to next and previous slides via arrow buttons', () => {
-    render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
+  it('automatically advances slides based on autoPlayInterval', () => {
+    vi.useFakeTimers();
+    render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={5000} />);
 
-    const nextBtn = screen.getByRole('button', { name: /next slide/i });
-    const prevBtn = screen.getByRole('button', { name: /previous slide/i });
+    expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
 
-    fireEvent.click(nextBtn);
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
     expect(screen.getByText(HERO_SLIDES[1].badge)).toBeDefined();
 
-    fireEvent.click(prevBtn);
-    expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    expect(screen.getByText(HERO_SLIDES[2].badge)).toBeDefined();
+
+    vi.useRealTimers();
+  });
+
+  it('does not render manual chevron arrow buttons', () => {
+    render(<HeroCarousel slides={HERO_SLIDES} />);
+    expect(screen.queryByRole('button', { name: /next slide/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /previous slide/i })).toBeNull();
   });
 
   it('navigates to a specific slide when dot button is clicked', () => {
