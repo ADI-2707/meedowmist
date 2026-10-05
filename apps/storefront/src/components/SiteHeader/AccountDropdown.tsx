@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -19,22 +19,47 @@ export default function AccountDropdown() {
   const router = useRouter();
   const { user, isAuthenticated, checkAuth, logout } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+  const closeDropdown = useCallback(() => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    setIsClosing(true);
+    closeTimerRef.current = setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 180);
+  }, []);
+
+  const toggleDropdown = () => {
+    if (isOpen && !isClosing) {
+      closeDropdown();
+    } else {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      setIsClosing(false);
+      setIsOpen(true);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
+        if (isOpen && !isClosing) {
+          closeDropdown();
+        }
       }
     };
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setIsOpen(false);
+        if (isOpen && !isClosing) {
+          closeDropdown();
+        }
       }
     };
 
@@ -43,11 +68,12 @@ export default function AccountDropdown() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     };
-  }, []);
+  }, [isOpen, isClosing, closeDropdown]);
 
   const handleLogout = async () => {
-    setIsOpen(false);
+    closeDropdown();
     await logout();
   };
 
@@ -57,9 +83,9 @@ export default function AccountDropdown() {
     <div ref={containerRef} className={styles.wrapper}>
       <button
         type="button"
-        className={`${styles.triggerBtn} ${isOpen ? styles.triggerBtnOpen : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
+        className={`${styles.triggerBtn} ${isOpen && !isClosing ? styles.triggerBtnOpen : ''}`}
+        onClick={toggleDropdown}
+        aria-expanded={isOpen && !isClosing}
         aria-haspopup="true"
         aria-label="Account menu"
       >
@@ -76,12 +102,15 @@ export default function AccountDropdown() {
         </span>
         <ChevronDown
           size={14}
-          className={`${styles.chevron} ${isOpen ? styles.chevronRotated : ''}`}
+          className={`${styles.chevron} ${isOpen && !isClosing ? styles.chevronRotated : ''}`}
         />
       </button>
 
-      {isOpen && (
-        <div className={styles.dropdownCard} role="menu">
+      {(isOpen || isClosing) && (
+        <div
+          className={`${styles.dropdownCard} ${isClosing ? styles.dropdownCardClosing : ''}`}
+          role="menu"
+        >
           {isAuthenticated && user ? (
             <>
               <div className={styles.cardHeader}>
@@ -93,7 +122,7 @@ export default function AccountDropdown() {
                 <Link
                   href="/account?tab=orders"
                   className={styles.menuItem}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeDropdown}
                 >
                   <span className={styles.menuIcon}>
                     <Package size={15} />
@@ -104,7 +133,7 @@ export default function AccountDropdown() {
                 <Link
                   href="/account?tab=addresses"
                   className={styles.menuItem}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeDropdown}
                 >
                   <span className={styles.menuIcon}>
                     <MapPin size={15} />
@@ -115,7 +144,7 @@ export default function AccountDropdown() {
                 <Link
                   href="/account?tab=profile"
                   className={styles.menuItem}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeDropdown}
                 >
                   <span className={styles.menuIcon}>
                     <KeyRound size={15} />
@@ -126,7 +155,7 @@ export default function AccountDropdown() {
                 <Link
                   href="/account?tab=wishlist"
                   className={styles.menuItem}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeDropdown}
                 >
                   <span className={styles.menuIcon}>
                     <Heart size={15} />
@@ -157,7 +186,7 @@ export default function AccountDropdown() {
               <Link
                 href="/login?redirect=/account"
                 className={styles.signInBtn}
-                onClick={() => setIsOpen(false)}
+                onClick={closeDropdown}
               >
                 Sign In
               </Link>
@@ -166,7 +195,7 @@ export default function AccountDropdown() {
                 <Link
                   href="/signup"
                   className={styles.signupLink}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeDropdown}
                 >
                   Start here
                 </Link>
@@ -175,7 +204,7 @@ export default function AccountDropdown() {
               <Link
                 href="/account?tab=orders"
                 className={styles.menuItem}
-                onClick={() => setIsOpen(false)}
+                onClick={closeDropdown}
               >
                 <span className={styles.menuIcon}>
                   <Package size={15} />
