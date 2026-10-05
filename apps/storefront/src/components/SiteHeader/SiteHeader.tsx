@@ -45,15 +45,6 @@ export default function SiteHeader() {
                 <span className={styles.logoMist}>Mist</span>
               </span>
             </Link>
-
-            <nav className={styles.categoryPills} aria-label="Quick category navigation">
-              <Link href="/candles" className={styles.categoryPill}>
-                Candles
-              </Link>
-              <Link href="/ceramics" className={styles.categoryPill}>
-                Ceramics
-              </Link>
-            </nav>
           </div>
 
           <div className={styles.searchSection}>
