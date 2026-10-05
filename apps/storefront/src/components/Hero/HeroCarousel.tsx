@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HERO_SLIDES, type HeroSlide } from '@/data/heroData';
@@ -15,37 +15,74 @@ export function HeroCarousel({
   slides = HERO_SLIDES,
   autoPlayInterval = 5000,
 }: HeroCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalSlides = slides.length;
+  const isInfinite = totalSlides > 1;
+
+  const [currentIndex, setCurrentIndex] = useState(isInfinite ? 1 : 0);
+  const [isTransitionEnabled, setIsTransitionEnabled] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartXRef = useRef<number | null>(null);
   const touchEndXRef = useRef<number | null>(null);
 
-  const totalSlides = slides.length;
-
-  const goToSlide = useCallback(
-    (index: number) => {
-      setCurrentIndex((index + totalSlides) % totalSlides);
-    },
-    [totalSlides]
-  );
+  const extendedSlides = useMemo(() => {
+    if (!isInfinite) {
+      return slides.map((s) => ({ ...s, uniqueKey: s.id, isClone: false }));
+    }
+    return [
+      { ...slides[totalSlides - 1], uniqueKey: 'clone-start', isClone: true },
+      ...slides.map((s) => ({ ...s, uniqueKey: s.id, isClone: false })),
+      { ...slides[0], uniqueKey: 'clone-end', isClone: true },
+    ];
+  }, [slides, isInfinite, totalSlides]);
 
   const nextSlide = useCallback(() => {
-    goToSlide(currentIndex + 1);
-  }, [currentIndex, goToSlide]);
+    setIsTransitionEnabled(true);
+    setCurrentIndex((prev) => prev + 1);
+  }, []);
 
   const prevSlide = useCallback(() => {
-    goToSlide(currentIndex - 1);
-  }, [currentIndex, goToSlide]);
+    setIsTransitionEnabled(true);
+    setCurrentIndex((prev) => prev - 1);
+  }, []);
+
+  const goToDot = useCallback(
+    (dotIndex: number) => {
+      setIsTransitionEnabled(true);
+      setCurrentIndex(isInfinite ? dotIndex + 1 : dotIndex);
+    },
+    [isInfinite]
+  );
+
+  const handleTransitionEnd = useCallback(() => {
+    if (!isInfinite) return;
+
+    if (currentIndex >= totalSlides + 1) {
+      setIsTransitionEnabled(false);
+      setCurrentIndex(1);
+    } else if (currentIndex <= 0) {
+      setIsTransitionEnabled(false);
+      setCurrentIndex(totalSlides);
+    }
+  }, [currentIndex, isInfinite, totalSlides]);
+
+  useEffect(() => {
+    if (!isTransitionEnabled) {
+      const raf = requestAnimationFrame(() => {
+        setIsTransitionEnabled(true);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitionEnabled]);
 
   useEffect(() => {
     if (isPaused || totalSlides <= 1) return;
 
     const timer = setInterval(() => {
-      goToSlide(currentIndex + 1);
+      nextSlide();
     }, autoPlayInterval);
 
     return () => clearInterval(timer);
-  }, [currentIndex, isPaused, totalSlides, autoPlayInterval, goToSlide]);
+  }, [isPaused, totalSlides, autoPlayInterval, nextSlide]);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartXRef.current = e.touches[0].clientX;
@@ -79,6 +116,10 @@ export function HeroCarousel({
     }
   };
 
+  const activeDot = isInfinite
+    ? (currentIndex - 1 + totalSlides) % totalSlides
+    : currentIndex;
+
   return (
     <div className={styles.wrapper}>
       <section
@@ -97,24 +138,30 @@ export function HeroCarousel({
       >
         <div
           className={styles.slideTrack}
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          style={{
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: isTransitionEnabled
+              ? 'transform 700ms cubic-bezier(0.25, 1, 0.35, 1)'
+              : 'none',
+          }}
+          onTransitionEnd={handleTransitionEnd}
         >
-          {slides.map((slide, index) => {
-            const isActive = index === currentIndex;
+          {extendedSlides.map((slide, index) => {
+            const isSlideActive = index === currentIndex;
             return (
               <div
-                key={slide.id}
-                className={`${styles.slide} ${isActive ? styles.slideActive : ''}`}
-                aria-hidden={!isActive}
+                key={slide.uniqueKey}
+                className={`${styles.slide} ${isSlideActive ? styles.slideActive : ''}`}
+                aria-hidden={!isSlideActive}
                 role="group"
                 aria-roledescription="slide"
-                aria-label={`Slide ${index + 1} of ${totalSlides}: ${slide.headlinePre}`}
+                aria-label={`Slide ${index + 1} of ${extendedSlides.length}: ${slide.headlinePre}`}
               >
                 <Image
                   src={slide.image}
                   alt={slide.alt}
                   fill
-                  priority={index === 0}
+                  priority={index === 1 || (!isInfinite && index === 0)}
                   sizes="(max-width: 768px) 100vw, (max-width: 1440px) 92vw, 1380px"
                   className={styles.slideImage}
                 />
@@ -132,7 +179,7 @@ export function HeroCarousel({
                     <Link
                       href={slide.primaryCta.href}
                       className={styles.primaryCta}
-                      tabIndex={isActive ? 0 : -1}
+                      tabIndex={isSlideActive ? 0 : -1}
                     >
                       {slide.primaryCta.label}
                     </Link>
@@ -140,7 +187,7 @@ export function HeroCarousel({
                       <Link
                         href={slide.secondaryCta.href}
                         className={styles.secondaryCta}
-                        tabIndex={isActive ? 0 : -1}
+                        tabIndex={isSlideActive ? 0 : -1}
                       >
                         {slide.secondaryCta.label}
                       </Link>
@@ -155,7 +202,7 @@ export function HeroCarousel({
         {totalSlides > 1 && (
           <div className={styles.dots} role="tablist" aria-label="Slide navigation">
             {slides.map((slide, index) => {
-              const isActive = index === currentIndex;
+              const isActive = index === activeDot;
               return (
                 <button
                   key={slide.id}
@@ -164,7 +211,7 @@ export function HeroCarousel({
                   aria-selected={isActive}
                   aria-label={`Go to slide ${index + 1}`}
                   className={`${styles.dot} ${isActive ? styles.dotActive : ''}`}
-                  onClick={() => goToSlide(index)}
+                  onClick={() => goToDot(index)}
                 />
               );
             })}

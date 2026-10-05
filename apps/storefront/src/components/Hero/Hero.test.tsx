@@ -30,30 +30,43 @@ describe('CategoryStoryBubbles Component', () => {
 
 describe('HeroCarousel Component', () => {
   it('renders the first slide initially', () => {
-    render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
+    const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
+    const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
+    expect(track.style.transform).toBe('translateX(-100%)');
 
-    expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
-    expect(screen.getByText(/Things made/i)).toBeDefined();
-    expect(screen.getByText(HERO_SLIDES[0].headlineScript)).toBeDefined();
-    expect(screen.getByText(HERO_SLIDES[0].subtext)).toBeDefined();
-    expect(screen.getByText(HERO_SLIDES[0].primaryCta.label)).toBeDefined();
+    expect(screen.getAllByText(HERO_SLIDES[0].badge).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Things made/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(HERO_SLIDES[0].headlineScript).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(HERO_SLIDES[0].subtext).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(HERO_SLIDES[0].primaryCta.label).length).toBeGreaterThan(0);
   });
 
-  it('automatically advances slides with horizontal right-to-left slide transforms', () => {
+  it('automatically advances slides with horizontal right-to-left slide transforms and infinite loop', () => {
     vi.useFakeTimers();
     const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={5000} />);
     const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
-    expect(track.style.transform).toBe('translateX(-0%)');
-
-    act(() => {
-      vi.advanceTimersByTime(5000);
-    });
     expect(track.style.transform).toBe('translateX(-100%)');
 
     act(() => {
       vi.advanceTimersByTime(5000);
     });
     expect(track.style.transform).toBe('translateX(-200%)');
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    expect(track.style.transform).toBe('translateX(-300%)');
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    expect(track.style.transform).toBe('translateX(-400%)');
+
+    act(() => {
+      fireEvent.transitionEnd(track);
+    });
+    expect(track.style.transform).toBe('translateX(-100%)');
+    expect(track.style.transition).toBe('none');
 
     vi.useRealTimers();
   });
@@ -65,17 +78,19 @@ describe('HeroCarousel Component', () => {
   });
 
   it('navigates to a specific slide when dot button is clicked', () => {
-    render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
+    const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
+    const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
 
     const slide3Dot = screen.getByRole('tab', { name: /go to slide 3/i });
     fireEvent.click(slide3Dot);
 
-    expect(screen.getByText(HERO_SLIDES[2].badge)).toBeDefined();
+    expect(track.style.transform).toBe('translateX(-300%)');
   });
 
   it('supports touch swipe gestures to navigate slides', () => {
     const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
     const carouselSection = container.querySelector('[aria-roledescription="carousel"]');
+    const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
     expect(carouselSection).not.toBeNull();
 
     if (carouselSection) {
@@ -83,27 +98,28 @@ describe('HeroCarousel Component', () => {
       fireEvent.touchMove(carouselSection, { touches: [{ clientX: 120 }] });
       fireEvent.touchEnd(carouselSection);
 
-      expect(screen.getByText(HERO_SLIDES[1].badge)).toBeDefined();
+      expect(track.style.transform).toBe('translateX(-200%)');
 
       fireEvent.touchStart(carouselSection, { touches: [{ clientX: 100 }] });
       fireEvent.touchMove(carouselSection, { touches: [{ clientX: 180 }] });
       fireEvent.touchEnd(carouselSection);
 
-      expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
+      expect(track.style.transform).toBe('translateX(-100%)');
     }
   });
 
   it('navigates with keyboard arrow keys', () => {
     const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={10000} />);
     const carouselSection = container.querySelector('[aria-roledescription="carousel"]');
+    const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
     expect(carouselSection).not.toBeNull();
 
     if (carouselSection) {
       fireEvent.keyDown(carouselSection, { key: 'ArrowRight' });
-      expect(screen.getByText(HERO_SLIDES[1].badge)).toBeDefined();
+      expect(track.style.transform).toBe('translateX(-200%)');
 
       fireEvent.keyDown(carouselSection, { key: 'ArrowLeft' });
-      expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
+      expect(track.style.transform).toBe('translateX(-100%)');
     }
   });
 });
