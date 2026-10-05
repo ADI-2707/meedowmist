@@ -1,0 +1,213 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.triggerBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--color-forest);
+  background: none;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-smooth),
+    border-color var(--duration-fast) var(--ease-smooth),
+    background-color var(--duration-fast) var(--ease-smooth);
+}
+
+.triggerBtn:hover,
+.triggerBtnOpen {
+  color: var(--color-gold);
+  border-color: var(--color-gold-soft);
+  background-color: rgba(180, 144, 63, 0.08);
+}
+
+.userIconWrap {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.userLabel {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.userGreeting {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.userName {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-forest);
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--duration-fast) var(--ease-expo-out);
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+.dropdownCard {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-gold-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  padding: var(--space-3);
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cardHeader {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-canvas-alt);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--color-forest);
+  margin-bottom: 2px;
+}
+
+.cardEmail {
+  font-size: 0.72rem;
+  color: rgba(36, 31, 26, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guestPrompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-canvas-alt);
+}
+
+.guestPromptText {
+  font-size: 0.75rem;
+  color: var(--color-ink);
+  line-height: 1.3;
+}
+
+.signInBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-gold);
+  color: var(--color-canvas);
+  border-radius: var(--radius-full);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+}
+
+.signInBtn:hover {
+  background-color: var(--color-forest);
+}
+
+.signupPrompt {
+  font-size: 0.7rem;
+  text-align: center;
+  color: var(--color-ink);
+}
+
+.signupLink {
+  color: var(--color-gold);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--color-forest);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.menuItem:hover {
+  background-color: var(--color-canvas);
+  color: var(--color-gold);
+}
+
+.menuIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-canvas-alt);
+  margin-block: var(--space-1);
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--color-clay);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+  text-align: left;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(201, 123, 91, 0.08);
+}
