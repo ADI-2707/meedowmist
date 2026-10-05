@@ -190,6 +190,6 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 768px) {
   #main-content {
-    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + var(--space-4));
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + var(--space-8));
   }
 }
