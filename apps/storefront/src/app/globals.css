@@ -70,6 +70,7 @@
   --container-max:  1280px;
   --container-pad:  clamp(1rem, 4vw, 3rem);
   --nav-height:     clamp(60px, 7vh, 72px);
+  --bottom-nav-height: 64px;
 }
 
 
@@ -185,4 +186,10 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
+}
+
+@media (max-width: 768px) {
+  #main-content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + var(--space-4));
+  }
 }
