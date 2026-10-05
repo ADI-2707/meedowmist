@@ -7,6 +7,7 @@ import Footer from '@/components/Footer/Footer';
 import IntroLoader from '@/components/IntroLoader/IntroLoader';
 import ScrollProgressBar from '@/components/ScrollProgressBar/ScrollProgressBar';
 import CartToast from '@/components/CartToast/CartToast';
+import MobileBottomNav from '@/components/MobileBottomNav/MobileBottomNav';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <MobileBottomNav />
       </body>
     </html>
   );

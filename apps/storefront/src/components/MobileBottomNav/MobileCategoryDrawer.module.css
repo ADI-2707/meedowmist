@@ -1,0 +1,121 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(33, 43, 27, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 105;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
+.backdropOpen {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  border-top: 1px solid var(--color-gold-soft);
+  box-shadow: 0 -8px 32px rgba(51, 66, 42, 0.18);
+  padding: var(--space-4) var(--container-pad) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  z-index: 110;
+  transform: translateY(100%);
+  transition: transform var(--duration-slow) var(--ease-expo-out);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.drawerOpen {
+  transform: translateY(0);
+}
+
+.handle {
+  width: 36px;
+  height: 4px;
+  background-color: var(--color-canvas-alt);
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-canvas-alt);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-forest);
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-canvas-alt);
+  color: var(--color-forest);
+  padding: 0;
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.categoryCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-canvas-alt);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.categoryCard:hover,
+.categoryCard:active {
+  background-color: rgba(180, 144, 63, 0.1);
+  border-color: var(--color-gold-soft);
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-forest);
+}
+
+.cardSubtitle {
+  font-size: var(--text-caption);
+  color: rgba(36, 31, 26, 0.65);
+}
+
+.cardArrow {
+  color: var(--color-gold);
+}
