@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import { OrderCancelModal } from '@/components/OrderCancelModal/OrderCancelModal';
 import { OrderReturnModal } from '@/components/OrderReturnModal/OrderReturnModal';
@@ -87,8 +87,10 @@ interface UserProfile {
   phone?: string | null;
 }
 
-export default function AccountPage() {
+function AccountContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get('tab');
   const addItem = useCartStore((s) => s.addItem);
   const openDrawer = useCartStore((s) => s.openDrawer);
 
@@ -98,6 +100,17 @@ export default function AccountPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (tabQuery && ['orders', 'addresses', 'wishlist', 'profile'].includes(tabQuery)) {
+      setActiveTab(tabQuery as 'orders' | 'addresses' | 'wishlist' | 'profile');
+    }
+  }, [tabQuery]);
+
+  const handleTabChange = (tab: 'orders' | 'addresses' | 'wishlist' | 'profile') => {
+    setActiveTab(tab);
+    router.replace(`/account?tab=${tab}`, { scroll: false });
+  };
 
   const [profileName, setProfileName] = useState('');
   const [profilePhone, setProfilePhone] = useState('');
@@ -354,25 +367,25 @@ export default function AccountPage() {
         <div className={styles.tabs} role="tablist">
           <button
             className={`${styles.tabBtn} ${activeTab === 'orders' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('orders')}
+            onClick={() => handleTabChange('orders')}
           >
             My Orders ({orders.length})
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'addresses' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('addresses')}
+            onClick={() => handleTabChange('addresses')}
           >
             Saved Addresses ({addresses.length})
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'wishlist' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('wishlist')}
+            onClick={() => handleTabChange('wishlist')}
           >
             Wishlist ({wishlist.length})
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'profile' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabChange('profile')}
           >
             Profile Settings
           </button>
@@ -786,7 +799,6 @@ export default function AccountPage() {
             </div>
           )}
         </div>
-        {/* Customer Self-Service Modals */}
         <OrderCancelModal
           isOpen={!!cancellingOrder}
           orderNumber={cancellingOrder?.orderNumber || ''}
@@ -813,5 +825,21 @@ export default function AccountPage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.page}>
+          <div className="container">
+            <p>Loading your account details...</p>
+          </div>
+        </div>
+      }
+    >
+      <AccountContent />
+    </Suspense>
   );
 }
