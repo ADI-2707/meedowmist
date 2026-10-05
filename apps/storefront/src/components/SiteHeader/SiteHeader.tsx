@@ -3,17 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import CartDrawer from '@/components/CartDrawer/CartDrawer';
-import ProductSearchModal from '@/components/ProductSearchModal/ProductSearchModal';
 import HeaderSearchBar from './HeaderSearchBar';
 import AccountDropdown from './AccountDropdown';
 import styles from './SiteHeader.module.css';
 
 export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const items = useCartStore((s) => s.items);
   const isDrawerOpen = useCartStore((s) => s.isDrawerOpen);
   const openDrawer = useCartStore((s) => s.openDrawer);
@@ -52,23 +49,12 @@ export default function SiteHeader() {
           </div>
 
           <div className={styles.actions}>
-            <button
-              id="search-trigger-btn"
-              type="button"
-              className={`${styles.cartButton} ${styles.mobileSearchBtn}`}
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search handcrafted catalog"
-              title="Search"
-            >
-              <Search size={20} />
-            </button>
-
             <AccountDropdown />
 
             <button
               id="cart-button"
               type="button"
-              className={styles.cartButton}
+              className={`${styles.cartButton} ${styles.bagButton}`}
               onClick={openDrawer}
               aria-label={`Open cart — ${itemCount} item${itemCount !== 1 ? 's' : ''}`}
             >
@@ -98,7 +84,6 @@ export default function SiteHeader() {
       </header>
 
       <CartDrawer open={isDrawerOpen} onClose={closeDrawer} />
-      <ProductSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

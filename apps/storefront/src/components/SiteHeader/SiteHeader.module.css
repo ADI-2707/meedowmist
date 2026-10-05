@@ -134,8 +134,8 @@
   line-height: 1;
 }
 
-.mobileSearchBtn {
-  display: none;
+.bagButton {
+  display: flex;
 }
 
 @media (max-width: 768px) {
@@ -143,8 +143,8 @@
     display: none;
   }
 
-  .mobileSearchBtn {
-    display: flex;
+  .bagButton {
+    display: none;
   }
 
   .actions {
