@@ -1,0 +1,119 @@
+.container {
+  width: 100%;
+  padding: var(--space-3) 0 var(--space-4);
+  background-color: transparent;
+}
+
+.scrollArea {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-6);
+  overflow-x: auto;
+  padding: var(--space-2) var(--container-pad);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.bubbleItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  gap: var(--space-2);
+  width: 78px;
+  cursor: pointer;
+}
+
+.imageRing {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  border-radius: var(--radius-full);
+  padding: 2.5px;
+  background: linear-gradient(135deg, var(--color-gold-soft), var(--color-gold));
+  box-shadow: 0 4px 12px rgba(51, 66, 42, 0.08);
+  transition:
+    transform var(--duration-fast) var(--ease-smooth),
+    box-shadow var(--duration-fast) var(--ease-smooth),
+    background var(--duration-fast) var(--ease-smooth);
+}
+
+.bubbleItem:hover .imageRing {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(180, 144, 63, 0.28);
+  background: linear-gradient(135deg, var(--color-gold), var(--color-forest));
+}
+
+.imageThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  background-color: var(--color-canvas-alt);
+  display: block;
+}
+
+.tag {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background-color: var(--color-gold);
+  color: var(--color-canvas);
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-forest);
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  transition: color var(--duration-fast);
+  white-space: nowrap;
+}
+
+.bubbleItem:hover .label {
+  color: var(--color-gold);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-2) 0 var(--space-3);
+  }
+
+  .scrollArea {
+    justify-content: flex-start;
+    gap: var(--space-4);
+    padding-inline: var(--space-4);
+  }
+
+  .bubbleItem {
+    width: 68px;
+  }
+
+  .imageRing {
+    width: 60px;
+    height: 60px;
+  }
+
+  .label {
+    font-size: 0.68rem;
+  }
+}
