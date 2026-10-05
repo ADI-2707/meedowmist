@@ -95,7 +95,10 @@ export function HeroCarousel({
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
-        <div className={styles.slideTrack}>
+        <div
+          className={styles.slideTrack}
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
           {slides.map((slide, index) => {
             const isActive = index === currentIndex;
             return (

@@ -39,21 +39,21 @@ describe('HeroCarousel Component', () => {
     expect(screen.getByText(HERO_SLIDES[0].primaryCta.label)).toBeDefined();
   });
 
-  it('automatically advances slides based on autoPlayInterval', () => {
+  it('automatically advances slides with horizontal right-to-left slide transforms', () => {
     vi.useFakeTimers();
-    render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={5000} />);
-
-    expect(screen.getByText(HERO_SLIDES[0].badge)).toBeDefined();
-
-    act(() => {
-      vi.advanceTimersByTime(5000);
-    });
-    expect(screen.getByText(HERO_SLIDES[1].badge)).toBeDefined();
+    const { container } = render(<HeroCarousel slides={HERO_SLIDES} autoPlayInterval={5000} />);
+    const track = container.querySelector('[aria-roledescription="carousel"] > div') as HTMLElement;
+    expect(track.style.transform).toBe('translateX(-0%)');
 
     act(() => {
       vi.advanceTimersByTime(5000);
     });
-    expect(screen.getByText(HERO_SLIDES[2].badge)).toBeDefined();
+    expect(track.style.transform).toBe('translateX(-100%)');
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    expect(track.style.transform).toBe('translateX(-200%)');
 
     vi.useRealTimers();
   });
