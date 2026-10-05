@@ -41,3 +41,5 @@ export function HeroTrustStrip({ badges = TRUST_BADGES }: HeroTrustStripProps) {
     </section>
   );
 }
+
+export default HeroTrustStrip;

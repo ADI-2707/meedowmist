@@ -10,7 +10,7 @@ interface CategoryStoryBubblesProps {
   bubbles?: StoryBubble[];
 }
 
-export default function CategoryStoryBubbles({
+export function CategoryStoryBubbles({
   bubbles = STORY_BUBBLES,
 }: CategoryStoryBubblesProps) {
   return (
@@ -41,3 +41,5 @@ export default function CategoryStoryBubbles({
     </section>
   );
 }
+
+export default CategoryStoryBubbles;
