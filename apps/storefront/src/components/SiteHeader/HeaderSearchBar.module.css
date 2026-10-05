@@ -1,0 +1,218 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+.searchForm {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputBox {
+  width: 100%;
+  height: 42px;
+  padding: 0 74px 0 42px;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-canvas-alt);
+  border-radius: var(--radius-full);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-smooth),
+    box-shadow var(--duration-fast) var(--ease-smooth),
+    background-color var(--duration-fast) var(--ease-smooth);
+}
+
+.inputBox:hover {
+  border-color: var(--color-gold-soft);
+}
+
+.inputBox:focus {
+  border-color: var(--color-gold);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 3px rgba(180, 144, 63, 0.14);
+}
+
+.inputBox::placeholder {
+  color: rgba(36, 31, 26, 0.45);
+  font-size: var(--text-caption);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-forest);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.actionsRight {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-canvas-alt);
+  color: var(--color-forest);
+  padding: 0;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.clearBtn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-canvas);
+}
+
+.kbdHint {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  background-color: var(--color-canvas-alt);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--color-forest);
+  letter-spacing: 0.05em;
+  user-select: none;
+  pointer-events: none;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-gold-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  max-height: 420px;
+  overflow-y: auto;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownLoading,
+.dropdownEmpty {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-forest);
+  font-size: var(--text-caption);
+}
+
+.dropdownList {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) 0;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+  cursor: pointer;
+}
+
+.dropdownItem:hover,
+.dropdownItemSelected {
+  background-color: var(--color-canvas);
+}
+
+.itemThumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--color-canvas-alt);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  gap: 2px;
+}
+
+.itemName {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-forest);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.itemCategory {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.itemPrice {
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.dropdownFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--color-canvas-alt);
+  background-color: var(--color-canvas);
+  font-size: 0.72rem;
+  color: var(--color-forest);
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.footerAction {
+  color: var(--color-gold);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
