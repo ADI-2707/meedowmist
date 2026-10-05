@@ -71,6 +71,17 @@
   transform: rotate(180deg);
 }
 
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .dropdownCard {
   position: absolute;
   top: calc(100% + 8px);
@@ -85,6 +96,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  transform-origin: top right;
+  animation: dropdownSlide 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .cardHeader {
