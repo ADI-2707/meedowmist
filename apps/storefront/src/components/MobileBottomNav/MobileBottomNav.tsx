@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LayoutGrid, Search, User, ShoppingBag } from 'lucide-react';
+import { Home, LayoutGrid, Search, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { useAuthStore } from '@/store/authStore';
 import MobileCategoryDrawer from './MobileCategoryDrawer';
 import ProductSearchModal from '@/components/ProductSearchModal/ProductSearchModal';
 import styles from './MobileBottomNav.module.css';
@@ -14,16 +13,12 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { isAuthenticated } = useAuthStore();
   const items = useCartStore((s) => s.items);
   const openCartDrawer = useCartStore((s) => s.openDrawer);
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 
   const isHomeActive = pathname === '/';
   const isCategoryActive = pathname.startsWith('/candles') || pathname.startsWith('/ceramics');
-  const isAccountActive = pathname.startsWith('/account') || pathname.startsWith('/login') || pathname.startsWith('/signup');
-
-  const accountHref = isAuthenticated ? '/account' : '/login?redirect=/account';
 
   return (
     <>
@@ -64,18 +59,6 @@ export default function MobileBottomNav() {
           </span>
           <span className={styles.label}>Search</span>
         </button>
-
-        <Link
-          href={accountHref}
-          className={`${styles.navItem} ${isAccountActive ? styles.navItemActive : ''}`}
-          aria-label="Account & Orders"
-        >
-          {isAccountActive && <span className={styles.activeIndicator} aria-hidden="true" />}
-          <span className={styles.iconWrap}>
-            <User size={20} />
-          </span>
-          <span className={styles.label}>Account</span>
-        </Link>
 
         <button
           type="button"
