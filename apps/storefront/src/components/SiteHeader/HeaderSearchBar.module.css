@@ -43,6 +43,15 @@
   font-size: var(--text-caption);
 }
 
+.inputBox::-webkit-search-cancel-button,
+.inputBox::-webkit-search-decoration,
+.inputBox::-webkit-search-results-button,
+.inputBox::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 .searchIcon {
   position: absolute;
   left: 14px;
