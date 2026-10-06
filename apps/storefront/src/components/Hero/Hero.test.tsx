@@ -236,12 +236,33 @@ describe('HeroCarousel Component', () => {
 });
 
 describe('HeroTrustStrip Component', () => {
+  it('renders inside semantic section with accessible region label', () => {
+    render(<HeroTrustStrip />);
+    expect(screen.getByRole('region', { name: /meadow mist assurances/i })).toBeDefined();
+  });
+
   it('renders all trust badges with title and description', () => {
     render(<HeroTrustStrip badges={TRUST_BADGES} />);
 
     TRUST_BADGES.forEach((badge) => {
       expect(screen.getByText(badge.title)).toBeDefined();
       expect(screen.getByText(badge.description)).toBeDefined();
+    });
+  });
+
+  it('renders icons for truck, leaf, sparkles, and shield types with aria-hidden', () => {
+    const varietyBadges: TrustBadge[] = [
+      { id: '1', icon: 'truck', title: 'Delivery', description: 'Fast delivery.' },
+      { id: '2', icon: 'leaf', title: 'Pure Wax', description: 'Clean burning.' },
+      { id: '3', icon: 'sparkles', title: 'Handmade', description: 'Studio crafted.' },
+      { id: '4', icon: 'shield', title: 'Protected', description: 'Safe shipping.' },
+    ];
+
+    const { container } = render(<HeroTrustStrip badges={varietyBadges} />);
+    const svgs = container.querySelectorAll('svg');
+    expect(svgs.length).toBe(4);
+    svgs.forEach((svg) => {
+      expect(svg.getAttribute('aria-hidden')).toBe('true');
     });
   });
 
