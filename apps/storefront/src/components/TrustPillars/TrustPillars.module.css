@@ -1,0 +1,114 @@
+.section {
+  padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4.5rem);
+  background-color: var(--color-canvas);
+  position: relative;
+}
+
+.header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto clamp(2rem, 4vw, 3.25rem);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-gold);
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-display-md);
+  font-weight: 400;
+  color: var(--color-forest-deep);
+  line-height: 1.25;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid rgba(51, 66, 42, 0.08);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.25rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform var(--duration-base) var(--ease-expo-out),
+              box-shadow var(--duration-base) var(--ease-expo-out),
+              border-color var(--duration-base) var(--ease-smooth);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+  border-color: rgba(180, 144, 63, 0.35);
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-canvas-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  transition: background-color var(--duration-fast) var(--ease-smooth);
+}
+
+.card:hover .iconWrapper {
+  background-color: rgba(180, 144, 63, 0.15);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-forest);
+}
+
+.card:hover .icon {
+  color: var(--color-forest-deep);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-forest-deep);
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+}
+
+.cardDescription {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: rgba(36, 31, 26, 0.78);
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+}
