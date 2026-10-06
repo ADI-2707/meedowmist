@@ -2,7 +2,7 @@ import Hero from '@/components/Hero/Hero';
 import BrushDivider from '@/components/BrushDivider/BrushDivider';
 import FeaturedCategory from '@/components/FeaturedCategory/FeaturedCategory';
 import SectionReveal from '@/components/SectionReveal/SectionReveal';
-import TrustPillars from '@/components/TrustPillars/TrustPillars';
+import HeroTrustStrip from '@/components/Hero/HeroTrustStrip';
 import BackToTop from '@/components/BackToTop/BackToTop';
 import { getFeaturedProducts } from '@/lib/getProducts';
 import styles from './page.module.css';
@@ -74,7 +74,7 @@ export default async function HomePage() {
 
       <BrushDivider />
 
-      <TrustPillars />
+      <HeroTrustStrip />
 
       <BackToTop />
     </>

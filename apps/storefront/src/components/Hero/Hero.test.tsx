@@ -262,7 +262,7 @@ describe('HeroTrustStrip Component', () => {
 });
 
 describe('Hero Integrated Component', () => {
-  it('orchestrates story bubbles, carousel, and trust strip within semantic header', () => {
+  it('orchestrates story bubbles and carousel within semantic header', () => {
     render(<Hero />);
 
     expect(
@@ -271,6 +271,5 @@ describe('Hero Integrated Component', () => {
 
     expect(screen.getByRole('region', { name: /browse artisan collections/i })).toBeDefined();
     expect(screen.getByRole('region', { name: /meadow mist collections/i })).toBeDefined();
-    expect(screen.getByRole('region', { name: /meadow mist assurances/i })).toBeDefined();
   });
 });

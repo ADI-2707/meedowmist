@@ -1,7 +1,6 @@
 import React from 'react';
 import { CategoryStoryBubbles } from './CategoryStoryBubbles';
 import { HeroCarousel } from './HeroCarousel';
-import { HeroTrustStrip } from './HeroTrustStrip';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -12,7 +11,6 @@ export default function Hero() {
       </h1>
       <CategoryStoryBubbles />
       <HeroCarousel />
-      <HeroTrustStrip />
     </header>
   );
 }
