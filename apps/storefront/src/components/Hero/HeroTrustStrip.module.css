@@ -3,7 +3,8 @@
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--container-pad);
-  margin-top: var(--space-6);
+  margin-top: 0;
+  margin-bottom: var(--section-gap);
 }
 
 .grid {
@@ -87,7 +88,8 @@
 @media (max-width: 640px) {
   .wrapper {
     padding-inline: var(--space-3);
-    margin-top: var(--space-4);
+    margin-top: 0;
+    margin-bottom: var(--section-gap);
   }
 
   .grid {

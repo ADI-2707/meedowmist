@@ -2,6 +2,8 @@ import Hero from '@/components/Hero/Hero';
 import BrushDivider from '@/components/BrushDivider/BrushDivider';
 import FeaturedCategory from '@/components/FeaturedCategory/FeaturedCategory';
 import SectionReveal from '@/components/SectionReveal/SectionReveal';
+import HeroTrustStrip from '@/components/Hero/HeroTrustStrip';
+import BackToTop from '@/components/BackToTop/BackToTop';
 import { getFeaturedProducts } from '@/lib/getProducts';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
@@ -69,6 +71,12 @@ export default async function HomePage() {
           products={featuredCeramics}
         />
       </div>
+
+      <BrushDivider />
+
+      <HeroTrustStrip />
+
+      <BackToTop />
     </>
   );
 }
