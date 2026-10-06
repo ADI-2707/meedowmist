@@ -1,3 +1,4 @@
+import React from 'react';
 import Link from 'next/link';
 import type { Product } from '@/types/product';
 import ProductCard from '@/components/ProductCard/ProductCard';
