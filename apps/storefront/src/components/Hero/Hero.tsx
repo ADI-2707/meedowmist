@@ -1,3 +1,4 @@
+import React from 'react';
 import { CategoryStoryBubbles } from './CategoryStoryBubbles';
 import { HeroCarousel } from './HeroCarousel';
 import styles from './Hero.module.css';

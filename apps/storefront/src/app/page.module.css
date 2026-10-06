@@ -1,6 +1,6 @@
 .storySection {
   background-color: var(--color-canvas-alt);
-  padding-block: var(--space-24);
+  padding-block: var(--section-gap);
   position: relative;
   overflow: hidden;
 }
@@ -89,7 +89,7 @@
 
 
 .testimonial {
-  padding-block: var(--space-24);
+  padding-block: var(--section-gap);
   background-color: var(--color-forest);
 }
 

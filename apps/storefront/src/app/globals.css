@@ -41,6 +41,8 @@
   --space-16:  clamp(40px, 6vw, 64px);
   --space-24:  clamp(56px, 8vw, 96px);
   --space-32:  clamp(72px, 10vw, 128px);
+  --section-gap: clamp(48px, 6vw, 76px);
+  --section-gap-half: calc(var(--section-gap) / 2);
 
   
   --radius-sm:      6px;

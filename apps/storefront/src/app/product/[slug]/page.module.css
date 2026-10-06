@@ -1,6 +1,6 @@
 .page {
   padding-top: calc(var(--nav-height) + var(--space-12));
-  padding-bottom: var(--space-24);
+  padding-bottom: var(--section-gap);
 }
 
 .productGrid {
@@ -8,7 +8,7 @@
   grid-template-columns: 1fr 1fr;
   gap: clamp(var(--space-6), 4vw, var(--space-16));
   align-items: start;
-  padding-block: var(--space-8);
+  padding-block: 0;
 }
 
 
